@@ -2,10 +2,10 @@
 using Application.DTOs;
 using Core;
 using Core.Entities;
+using Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories
 
             if (chat is null)
             {
-                throw new Exception("No such chat");
+                throw new NoChatException();
             }
 
             _context.Chats.Remove(chat);
@@ -60,8 +60,7 @@ namespace Infrastructure.Repositories
 
             if (chat is null)
             {
-                //todo:create exceptions
-                throw new Exception("No such chat");
+                throw new NoChatException();
             }
 
             List<MessageModel> messages = new List<MessageModel>();
