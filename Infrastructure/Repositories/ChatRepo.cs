@@ -37,9 +37,9 @@ namespace Infrastructure.Repositories
         {
             Chat chat = await _context.Chats.FindAsync(chatId);
 
-            if(chat is null)
+            if (chat is null)
             {
-                throw new Exception("No such chat"); 
+                throw new Exception("No such chat");
             }
 
             _context.Chats.Remove(chat);
@@ -54,19 +54,34 @@ namespace Infrastructure.Repositories
 
         public async Task<ChatDisplayModel> GetChatModel(Guid chatId)
         {
-            var chat = await _context.Chats.Include(x=>x.Messages).FirstAsync(x=>x.ChatId.Equals(chatId));
+            var chat = await _context.Chats
+                .Include(x => x.Messages).ThenInclude(x=>x.User)
+                .FirstAsync(x => x.ChatId.Equals(chatId));
 
-            if(chat is null)
+            if (chat is null)
             {
                 //todo:create exceptions
                 throw new Exception("No such chat");
             }
 
-            List<Guid> userIds = new List<Guid>();
+            List<MessageModel> messages = new List<MessageModel>();
+
             foreach (var message in chat.Messages)
             {
-                userIds.Add(message.UserId);
+                messages.Add(new MessageModel
+                {
+                    Message = message.Text,
+                    Username = message.User.Username
+                });
             }
+
+            ChatDisplayModel output = new ChatDisplayModel
+            {
+                ChatName = chat.ChatName,
+                Messages = messages
+            };
+
+            return output;
         }
 
         public async Task<IEnumerable<Chat>> GetChats(ChatSelectionOptions options)
