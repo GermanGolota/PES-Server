@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
@@ -19,11 +17,8 @@ namespace Application.CQRS.Queries.Chat.GetChat
         }
         public async Task<ChatDisplayModel> Handle(GetChatQuery request, CancellationToken cancellationToken)
         {
-            var chat = await _repo.GetChatById(new Guid(request.ChatId));
-            ChatDisplayModel output = new ChatDisplayModel
-            {
-                ChatName = chat.ChatName
-            };
+            var chat = await _repo.GetChatModel(new Guid(request.ChatId));
+            return chat;
         }
     }
 }
