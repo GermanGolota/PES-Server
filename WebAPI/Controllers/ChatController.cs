@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
             this._mediator = mediator;
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<ChatDisplayModel>> GetChat([FromRoute]string id, CancellationToken cancellation)
+        public async Task<ActionResult<ChatDisplayModel>> GetChat([FromRoute] string id, CancellationToken cancellation)
         {
             GetChatQuery query = new GetChatQuery
             {
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
 
             var result = await _mediator.Send(query, cancellation);
 
-            if(result is null)
+            if (result is null)
             {
                 return BadRequest();
             }
@@ -71,12 +71,26 @@ namespace WebAPI.Controllers
 
             bool beenDeleted = await _mediator.Send(command, cancellation);
 
-            if(beenDeleted)
+            if (beenDeleted)
             {
                 return Ok(id);
             }
 
             return BadRequest();
         }
+        [Authorize]
+        [HttpPost("create")]
+        public async Task<ActionResult<bool>> CreateChat([FromBody]RegisterChatCommand command, CancellationToken cancellation)
+        {
+            bool beenCreated = await _mediator.Send(command, cancellation);
+
+            if (beenCreated)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
     }
 }
