@@ -105,7 +105,7 @@ namespace Infrastructure.Repositories
                 query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
-            var result = query.MapChatsToInfoModels().ToList();
+            var result = query.MapChatsToInfoModels();
 
             return result;
         }
