@@ -22,10 +22,12 @@ namespace WebAPI
         {
             services.AddInfrastructureServices(Configuration);
 
+            services.AddValidators();
+
             services.AddAuthentication();
 
             services.AddJwtTokenAuthorization(Configuration);
-
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -37,10 +39,11 @@ namespace WebAPI
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PES WebAPI v1"));
             }
+
+            app.UseExceptionHandler(handler => handler.UseCustomErrors(env));
 
             app.UseHttpsRedirection();
 

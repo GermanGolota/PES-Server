@@ -21,7 +21,7 @@ namespace WebAPI.Extensions
         public static IServiceCollection AddJwtTokenAuthorization(this IServiceCollection services, 
             IConfiguration conf)
         {
-            string key = conf["Key"];
+            string key = conf["EncryptionKey"];
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

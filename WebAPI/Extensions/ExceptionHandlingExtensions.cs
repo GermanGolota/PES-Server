@@ -10,7 +10,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace WebAPI.Middleware
+namespace WebAPI.Extensions
 {
     public static class ExceptionHandlingExtensions
     {
