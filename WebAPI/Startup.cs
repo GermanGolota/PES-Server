@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Infrastructure;
+using WebAPI.Extensions;
 
 namespace WebAPI
 {
@@ -20,6 +21,10 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddInfrastructureServices(Configuration);
+
+            services.AddAuthentication();
+
+            services.AddJwtTokenAuthorization(Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -38,6 +43,8 @@ namespace WebAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 

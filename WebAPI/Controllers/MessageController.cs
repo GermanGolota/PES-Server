@@ -1,6 +1,7 @@
 ﻿using Application.CQRS.Commands;
 using Application.DTOs;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace WebAPI.Controllers
         {
             this._mediator = mediator;
         }
+        [Authorize]
         [HttpPost("add")]
         public async Task<ActionResult<PostMessageResponse>> PostMessage([FromBody] PostMessageCommand command,
             CancellationToken cancellation)
@@ -30,6 +32,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        [Authorize]
         [HttpPut("edit")]
         public async Task<IActionResult> EditMessage([FromBody] EditMessageCommand command, CancellationToken cancellation)
         {
