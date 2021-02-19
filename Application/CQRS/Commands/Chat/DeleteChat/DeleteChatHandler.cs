@@ -20,8 +20,14 @@ namespace Application.CQRS.Commands
         {
             try
             {
-                await _repo.DeleteChat(request.ChatId);
-                return true;
+                List<Guid> admins = await _repo.GetAdminsOfChat(request.ChatId);
+
+                if (admins.Contains(request.UserId))
+                {
+                    await _repo.DeleteChat(request.ChatId);
+                    return true;
+                }
+                return false;
             }
             catch
             {
