@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -66,7 +67,8 @@ namespace WebAPI.Controllers
         {
             DeleteChatCommand command = new DeleteChatCommand
             {
-                ChatId = id
+                ChatId = id,
+                UserId = this.GetUserId()
             };
 
             bool beenDeleted = await _mediator.Send(command, cancellation);
