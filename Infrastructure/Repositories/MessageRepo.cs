@@ -24,11 +24,13 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task EditMessage(Guid messageId, string newText)
+        public async Task EditMessage(Guid userId, Guid chatId, string newText)
         {
-            var message = _context.Messages.Find(messageId);
+            var message = _context.Messages
+                .Where(x => x.UserId.Equals(userId) && x.ChatId.Equals(chatId))
+                .FirstOrDefault();
 
-            if(message.IsNotNull())
+            if (message.IsNotNull())
             {
                 message.Text = newText;
 

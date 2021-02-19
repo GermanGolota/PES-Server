@@ -9,7 +9,7 @@ namespace Application.Contracts
     public interface IMessageRepo
     {
         Task AddMessageToChat(Message message);
-        Task EditMessage(Guid messageId, string newText);
+        Task EditMessage(Guid userId, Guid chatId, string newText);
         Task<Guid> FindUserMessageInChat(Guid userId, Guid chatId);
     }
 }
