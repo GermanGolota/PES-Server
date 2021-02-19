@@ -1,6 +1,7 @@
 ﻿using Application.Contracts;
 using Core;
 using Core.Entities;
+using Core.Exceptions;
 using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -44,7 +45,7 @@ namespace Infrastructure.Repositories
 
             if(message is null)
             {
-                throw new Exception("No such message");
+                throw new NoMessageException();
             }
 
             return message.MessageId;
