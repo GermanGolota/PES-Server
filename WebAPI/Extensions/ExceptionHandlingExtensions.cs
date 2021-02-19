@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Core.Exceptions;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +43,7 @@ namespace WebAPI.Middleware
             httpContext.Response.ContentType = "application/problem+json";
             if (exc is not null)
             {
-                if (exc is ValidationException || exc is TaskCanceledException)
+                if (exc is ValidationException || exc is TaskCanceledException || exc is ExpectedException)
                 {
                     await ProcessExpectedException(httpContext, exc);
                 }
