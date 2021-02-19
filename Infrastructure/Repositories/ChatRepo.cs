@@ -49,6 +49,20 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Guid>> GetAdminsOfChat(Guid chatId)
+        {
+            var chat = _context.Chats.Where(x => x.ChatId.Equals(chatId))
+                .Include(x=>x.Admins)
+                .FirstOrDefault();
+
+            if(chat is null)
+            {
+                throw new NoChatException();
+            }
+
+            return chat.Admins.Select(x => x.UserId).ToList();
+        }
+
         public async Task<Chat> GetChatById(Guid chatId)
         {
             return await _context.Chats.FindAsync(chatId);

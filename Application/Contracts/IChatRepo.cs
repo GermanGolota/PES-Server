@@ -14,5 +14,6 @@ namespace Application.Contracts
         Task<Chat> GetChatById(Guid chatId);
         Task<ChatDisplayModel> GetChatModel(Guid chatId);
         Task<IEnumerable<ChatInfoModel>> GetChats(ChatSelectionOptions options);
+        Task<List<Guid>> GetAdminsOfChat(Guid chatId);
     }
 }
