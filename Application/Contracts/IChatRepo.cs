@@ -13,6 +13,6 @@ namespace Application.Contracts
         Task DeleteChat(Guid chatId);
         Task<Chat> GetChatById(Guid chatId);
         Task<ChatDisplayModel> GetChatModel(Guid chatId);
-        Task<IEnumerable<Chat>> GetChats(ChatSelectionOptions options);
+        Task<IEnumerable<ChatInfoModel>> GetChats(ChatSelectionOptions options);
     }
 }

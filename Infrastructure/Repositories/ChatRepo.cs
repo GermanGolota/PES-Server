@@ -3,9 +3,11 @@ using Application.DTOs;
 using Core;
 using Core.Entities;
 using Core.Exceptions;
+using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -83,9 +85,29 @@ namespace Infrastructure.Repositories
             return output;
         }
 
-        public async Task<IEnumerable<Chat>> GetChats(ChatSelectionOptions options)
+        public async Task<IEnumerable<ChatInfoModel>> GetChats(ChatSelectionOptions options)
         {
-            throw new NotImplementedException();
+            int count = options.MaxCount;
+            bool takeAll = count.Equals(-1);
+
+            string term = options.SearchTerm;
+            bool takeAny = String.IsNullOrEmpty(term);
+
+            var query = _context.Chats.Include(x => x.Users);
+
+            if(!takeAll)
+            {
+                query.Take(count);
+            }
+
+            if(!takeAny)
+            {
+                query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
+            }
+
+            var result = query.MapChatsToInfoModels().ToList();
+
+            return result;
         }
     }
 }
