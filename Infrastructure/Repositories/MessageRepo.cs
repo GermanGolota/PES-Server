@@ -25,6 +25,18 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddMessageToChat(string messageText, Guid chatId, Guid userId)
+        {
+            Message message = new Message
+            {
+                ChatId = chatId,
+                UserId = userId,
+                Text = messageText
+            };
+
+            await AddMessageToChat(message);
+        }
+
         public async Task EditMessage(Guid userId, Guid chatId, string newText)
         {
             var message = _context.Messages
