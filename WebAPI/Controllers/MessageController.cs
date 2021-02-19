@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using WebAPI.RequestModels;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -34,8 +36,15 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPut("edit")]
-        public async Task<IActionResult> EditMessage([FromBody] EditMessageCommand command, CancellationToken cancellation)
+        public async Task<IActionResult> EditMessage([FromBody] EditMessageRequest request, CancellationToken cancellation)
         {
+            EditMessageCommand command = new()
+            {
+                ChatId = request.ChatId,
+                UpdatedMessage = request.UpdatedMessage,
+                UserId = this.GetUserId()
+            };
+
             var response = await _mediator.Send(command, cancellation);
 
             if(response.SuccessfullyEdited)
@@ -45,5 +54,6 @@ namespace WebAPI.Controllers
 
             return BadRequest(response);
         }
+
     }
 }
