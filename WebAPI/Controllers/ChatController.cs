@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
+using WebAPI.RequestModels;
 
 namespace WebAPI.Controllers
 {
@@ -82,8 +83,14 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("create")]
-        public async Task<ActionResult<bool>> CreateChat([FromBody]RegisterChatCommand command, CancellationToken cancellation)
+        public async Task<ActionResult<bool>> CreateChat([FromBody]CreateChatRequest request, CancellationToken cancellation)
         {
+            RegisterChatCommand command = new()
+            {
+                AdminId = this.GetUserId(),
+                ChatName = request.ChatName
+            };
+
             bool beenCreated = await _mediator.Send(command, cancellation);
 
             if (beenCreated)
