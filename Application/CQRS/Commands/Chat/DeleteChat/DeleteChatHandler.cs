@@ -4,11 +4,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
+using Application.DTOs;
+using Core.Exceptions;
 using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class DeleteChatHandler : IRequestHandler<DeleteChatCommand, bool>
+    public class DeleteChatHandler : IRequestHandler<DeleteChatCommand, CommandResponse>
     {
         private readonly IChatRepo _repo;
 
@@ -16,8 +18,9 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<bool> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponse> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
         {
+            CommandResponse response = new CommandResponse();
             try
             {
                 List<Guid> admins = await _repo.GetAdminsOfChat(request.ChatId);
@@ -25,14 +28,26 @@ namespace Application.CQRS.Commands
                 if (admins.Contains(request.UserId))
                 {
                     await _repo.DeleteChat(request.ChatId);
-                    return true;
+                    response.Successfull = true;
+                    response.ResultMessage = $"Successfully deleted chat {request.ChatId}";
                 }
-                return false;
+
+
+                response.Successfull = false;
+                response.ResultMessage = ExceptionMessages.Unathorized;
+            }
+            catch(ExpectedException exc)
+            {
+                response.Successfull = false;
+                response.ResultMessage = exc.Message;
             }
             catch
             {
-                return false;
+                response.Successfull = false;
+                response.ResultMessage = ExceptionMessages.ServerError;
             }
+
+            return response;
         }
     }
 }

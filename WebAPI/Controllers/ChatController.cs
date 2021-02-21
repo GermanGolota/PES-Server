@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> DeleteChat([FromRoute] Guid id, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> DeleteChat([FromRoute] Guid id, CancellationToken cancellation)
         {
             DeleteChatCommand command = new DeleteChatCommand
             {
@@ -72,14 +72,14 @@ namespace WebAPI.Controllers
                 UserId = this.GetUserId()
             };
 
-            bool beenDeleted = await _mediator.Send(command, cancellation);
+            var response = await _mediator.Send(command, cancellation);
 
-            if (beenDeleted)
+            if (response.Successfull)
             {
-                return Ok(id);
+                return Ok(response);
             }
 
-            return BadRequest();
+            return BadRequest(response);
         }
         [Authorize]
         [HttpPost("create")]
