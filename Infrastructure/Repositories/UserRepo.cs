@@ -2,6 +2,8 @@
 using Application.DTOs;
 using Core;
 using Core.Entities;
+using Core.Exceptions;
+using Core.Extensions;
 using Infrastructure.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,7 +41,7 @@ namespace Infrastructure.Repositories
         {
             int userCount = await _context.Users.CountAsync(x => x.Username.Equals(username));
 
-            if(userCount != 0)
+            if (userCount != 0)
             {
                 return true;
             }
@@ -54,7 +56,23 @@ namespace Infrastructure.Repositories
 
         public async Task<User> FindUserByUsername(string username)
         {
-            return await _context.Users.Where(x=>x.Username.Equals(username)).FirstOrDefaultAsync();
+            return await _context.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();
+        }
+
+        public async Task RemoveUser(string id)
+        {
+            var user = await _context.Users
+                .Where(x => x.UserId.Equals(id))
+                .FirstOrDefaultAsync();
+
+            if (user is null)
+            {
+                throw new NoUserException();
+            }
+
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

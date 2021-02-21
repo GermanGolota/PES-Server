@@ -11,5 +11,6 @@ namespace Application.Contracts
         Task<User> FindUserByUsername(string username);
         Task AddUser(UserRegistrationModel user);
         Task<bool> CheckIfUsernameIsTaken(string username, CancellationToken cancellation);
+        Task RemoveUser(string id);
     }
 }
