@@ -43,12 +43,33 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPut("edit")]
-        public async Task<IActionResult> EditMessage([FromBody] EditMessageRequest request, CancellationToken cancellation)
+        public async Task<IActionResult> EditMessage([FromBody] EditMessageRequest request, 
+            CancellationToken cancellation)
         {
             EditMessageCommand command = new()
             {
                 ChatId = request.ChatId,
                 UpdatedMessage = request.UpdatedMessage,
+                UserId = this.GetUserId()
+            };
+
+            var response = await _mediator.Send(command, cancellation);
+
+            if(response.Successfull)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+        [Authorize]
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteMessage([FromBody] DeleteMessageRequest request,
+            CancellationToken cancellation)
+        {
+            var command = new DeleteMessageCommand
+            {
+                ChatId = request.ChatId,
                 UserId = this.GetUserId()
             };
 
