@@ -51,9 +51,9 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Guid>> GetAdminsOfChat(Guid chatId)
         {
-            var chat = _context.Chats.Where(x => x.ChatId.Equals(chatId))
+            var chat = await _context.Chats.Where(x => x.ChatId.Equals(chatId))
                 .Include(x=>x.Admins)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if(chat is null)
             {

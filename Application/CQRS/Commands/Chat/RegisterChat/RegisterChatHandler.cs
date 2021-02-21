@@ -4,12 +4,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
+using Application.DTOs;
 using Core.Entities;
 using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class RegisterChatHandler : IRequestHandler<RegisterChatCommand, bool>
+    public class RegisterChatHandler : IRequestHandler<RegisterChatCommand, CommandResponse>
     {
         private readonly IChatRepo _repo;
 
@@ -17,14 +18,18 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<bool> Handle(RegisterChatCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponse> Handle(RegisterChatCommand request, 
+            CancellationToken cancellationToken)
         {
+            var response = new CommandResponse();
+
             Guid chatId = Guid.NewGuid();
             Chat chat = new Chat
             {
                 ChatId = chatId,
                 ChatName = request.ChatName
             };
+
             User admin = new User
             {
                 UserId = request.AdminId
@@ -32,7 +37,9 @@ namespace Application.CQRS.Commands
 
             await _repo.CreateChat(chat, admin);
 
-            return true;
+            response.Successfull = true;
+            response.ResultMessage = $"Successfully registered chat {chatId}";
+            return response;
         }
     }
 }
