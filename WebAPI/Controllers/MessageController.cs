@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.RequestModels;
 using WebAPI.Extensions;
+using System;
 
 namespace WebAPI.Controllers
 {
@@ -63,13 +64,13 @@ namespace WebAPI.Controllers
             return BadRequest(response);
         }
         [Authorize]
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteMessage([FromBody] DeleteMessageRequest request,
+        [HttpDelete("delete/{chatId}")]
+        public async Task<IActionResult> DeleteMessage([FromRoute] string chatId,
             CancellationToken cancellation)
         {
             var command = new DeleteMessageCommand
             {
-                ChatId = request.ChatId,
+                ChatId = new Guid(chatId),
                 UserId = this.GetUserId()
             };
 
