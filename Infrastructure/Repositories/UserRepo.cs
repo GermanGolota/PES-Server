@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories
             return false;
         }
 
-        public async Task<User> FindUserById(string id)
+        public async Task<User> FindUserById(Guid id)
         {
             return await _context.Users.FindAsync(id);
         }
@@ -59,7 +59,7 @@ namespace Infrastructure.Repositories
             return await _context.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();
         }
 
-        public async Task RemoveUser(string id)
+        public async Task RemoveUser(Guid id)
         {
             var user = await _context.Users
                 .Where(x => x.UserId.Equals(id))
