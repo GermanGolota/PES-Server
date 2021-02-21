@@ -1,6 +1,7 @@
 ﻿using Application.CQRS.Commands;
 using Application.CQRS.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,8 @@ namespace WebAPI.Controllers
 
             return Ok(token);
         }
+
+        [Authorize]
         [HttpDelete("unregister")]
         public async Task<ActionResult<string>> UnregisterUser(CancellationToken cancellation)
         {

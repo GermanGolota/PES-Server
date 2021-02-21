@@ -39,8 +39,9 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
-        [HttpGet("search/{term?}/{maxCount?}")]
-        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] string term, [FromRoute] int? maxCount, CancellationToken cancellation)
+        [HttpGet("search/{maxCount?}/{term?}")]
+        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? maxCount, [FromRoute] string term,
+            CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
             {
