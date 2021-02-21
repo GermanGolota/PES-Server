@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("add")]
-        public async Task<ActionResult<PostMessageResponse>> PostMessage([FromBody] PostMessageRequest request,
+        public async Task<ActionResult<CommandResponse>> PostMessage([FromBody] PostMessageRequest request,
             CancellationToken cancellation)
         {
             PostMessageCommand command = new PostMessageCommand
@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
 
             var result = await _mediator.Send(command, cancellation);
 
-            if(result.SuccessfullyPosted)
+            if(result.Successfull)
             {
                 return Ok(result);
             }

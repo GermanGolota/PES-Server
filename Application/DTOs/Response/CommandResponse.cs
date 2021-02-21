@@ -1,8 +1,8 @@
 ﻿namespace Application.DTOs
 {
-    public class PostMessageResponse
+    public class CommandResponse
     {
-        public bool SuccessfullyPosted { get; set; }
+        public bool Successfull { get; set; }
         public string ResultMessage { get; set; }
     }
 }

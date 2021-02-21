@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class PostMessageHandler : IRequestHandler<PostMessageCommand, PostMessageResponse>
+    public class PostMessageHandler : IRequestHandler<PostMessageCommand, CommandResponse>
     {
         private readonly IMessageRepo _repo;
 
@@ -18,7 +18,7 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<PostMessageResponse> Handle(PostMessageCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponse> Handle(PostMessageCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -26,25 +26,25 @@ namespace Application.CQRS.Commands
             }
             catch(ExpectedException exc)
             {
-                return new PostMessageResponse
+                return new CommandResponse
                 {
                     ResultMessage = exc.Message,
-                    SuccessfullyPosted = false
+                    Successfull = false
                 };
             }
             catch
             {
-                return new PostMessageResponse
+                return new CommandResponse
                 {
                     ResultMessage = "Something went wrong",
-                    SuccessfullyPosted = false
+                    Successfull = false
                 };
             }
 
-            return new PostMessageResponse
+            return new CommandResponse
             {
                 ResultMessage = "Success",
-                SuccessfullyPosted = true
+                Successfull = true
             };
         }
     }

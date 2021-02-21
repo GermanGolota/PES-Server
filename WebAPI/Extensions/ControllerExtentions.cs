@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace WebAPI.Extensions
 {
-    public static class ControllersExceptions
+    public static class ControllerExtentions
     {
         public static Guid GetUserId(this ControllerBase controller)
         {
