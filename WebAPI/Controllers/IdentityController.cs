@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using WebAPI.Extensions;
 
 namespace WebAPI.Controllers
 {
@@ -43,6 +44,23 @@ namespace WebAPI.Controllers
             }
 
             return Ok(token);
+        }
+        [HttpDelete("unregister")]
+        public async Task<ActionResult<string>> UnregisterUser(CancellationToken cancellation)
+        {
+            var command = new UnregisterUserCommand
+            {
+                UserId = this.GetUserId()
+            };
+
+            var response = await _mediator.Send(command, cancellation);
+
+            if (response.Successfull)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
     }
 }
