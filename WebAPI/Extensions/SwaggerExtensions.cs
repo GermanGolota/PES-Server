@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace WebAPI.Extensions
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Extensions
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 var requiremenets = new OpenApiSecurityRequirement
                 {
-                    {securityScheme, new string[] { }}
+                    {securityScheme, Array.Empty<string>()}
                 };
                 c.AddSecurityRequirement(requiremenets);
             });

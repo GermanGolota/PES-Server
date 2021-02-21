@@ -17,7 +17,7 @@ namespace Application.CQRS.Queries
         }
         public async Task<ChatsModel> Handle(GetChatsQuery request, CancellationToken cancellationToken)
         {
-            var chats = (await _repo.GetChats(request.Options)).ToList();
+            var chats = await _repo.GetChats(request.Options);
 
             ChatsModel chatsModel = new ChatsModel
             {

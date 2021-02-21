@@ -91,14 +91,14 @@ namespace WebAPI.Controllers
                 ChatName = request.ChatName
             };
 
-            bool beenCreated = await _mediator.Send(command, cancellation);
+            var response = await _mediator.Send(command, cancellation);
 
-            if (beenCreated)
+            if (response.Successfull)
             {
-                return Ok();
+                return Ok(response);
             }
 
-            return BadRequest();
+            return BadRequest(response);
         }
 
     }

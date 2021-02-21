@@ -99,7 +99,7 @@ namespace Infrastructure.Repositories
             return output;
         }
 
-        public async Task<IEnumerable<ChatInfoModel>> GetChats(ChatSelectionOptions options)
+        public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options)
         {
             int count = options.MaxCount;
             bool takeAll = count.Equals(-1);
@@ -121,7 +121,7 @@ namespace Infrastructure.Repositories
 
             var result = query.MapChatsToInfoModels();
 
-            return result;
+            return await result.ToListAsync();
         }
     }
 }
