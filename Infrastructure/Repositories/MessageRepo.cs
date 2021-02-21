@@ -37,6 +37,25 @@ namespace Infrastructure.Repositories
             await AddMessageToChat(message);
         }
 
+        public async Task DeleteMessage(Guid userId, Guid chatId)
+        {
+            var message = await _context.Messages
+                //this check can't be separated into a function, becouse it would
+                //result in a client-side evaluation
+                .Where(x => x.UserId.Equals(userId) && x.ChatId.Equals(chatId))
+                .FirstOrDefaultAsync();
+
+            if (message is null)
+            {
+                throw new NoMessageException();
+            }
+
+            _context.Messages.Remove(message);
+
+            await _context.SaveChangesAsync();
+
+        }
+
         public async Task EditMessage(Guid userId, Guid chatId, string newText)
         {
             var message = _context.Messages
