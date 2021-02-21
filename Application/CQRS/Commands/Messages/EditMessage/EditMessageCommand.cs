@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class EditMessageCommand: IRequest<EditMessageResponse>
+    public class EditMessageCommand: IRequest<CommandResponse>
     {
         public Guid UserId { get; set; }
         public Guid ChatId { get; set; }

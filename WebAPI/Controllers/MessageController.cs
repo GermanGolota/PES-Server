@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
 
             var response = await _mediator.Send(command, cancellation);
 
-            if(response.SuccessfullyEdited)
+            if(response.Successfull)
             {
                 return Ok(response);
             }

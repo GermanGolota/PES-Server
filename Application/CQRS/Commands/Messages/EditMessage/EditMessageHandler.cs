@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class EditMessageHandler : IRequestHandler<EditMessageCommand, EditMessageResponse>
+    public class EditMessageHandler : IRequestHandler<EditMessageCommand, CommandResponse>
     {
         private readonly IMessageRepo _repo;
 
@@ -18,7 +18,7 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<EditMessageResponse> Handle(EditMessageCommand request, CancellationToken cancellationToken)
+        public async Task<CommandResponse> Handle(EditMessageCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -26,25 +26,25 @@ namespace Application.CQRS.Commands
             }
             catch(ExpectedException exc)
             {
-                return new EditMessageResponse
+                return new CommandResponse
                 {
-                    SuccessfullyEdited = false,
-                    Message = exc.Message
+                    Successfull = false,
+                    ResultMessage = exc.Message
                 };
             }
             catch
             {
-                return new EditMessageResponse
+                return new CommandResponse
                 {
-                    SuccessfullyEdited = false,
-                    Message = "Something went wrong"
+                    Successfull = false,
+                    ResultMessage = "Something went wrong"
                 };
             }
 
-            return new EditMessageResponse
+            return new CommandResponse
             {
-                SuccessfullyEdited = true,
-                Message = "Successfullt edited"
+                Successfull = true,
+                ResultMessage = "Successfullt edited"
             };
         }
     }

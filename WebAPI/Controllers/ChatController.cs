@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("create")]
-        public async Task<ActionResult<bool>> CreateChat([FromBody]CreateChatRequest request, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> CreateChat([FromBody]CreateChatRequest request, CancellationToken cancellation)
         {
             RegisterChatCommand command = new()
             {
