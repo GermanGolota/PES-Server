@@ -1,10 +1,12 @@
 ﻿using Application.CQRS.Commands;
 using Application.CQRS.Queries;
 using Application.DTOs;
+using Application.DTOs.Chat;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
@@ -84,7 +86,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("create")]
-        public async Task<ActionResult<CommandResponse>> CreateChat([FromBody]CreateChatRequest request, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> CreateChat([FromBody] CreateChatRequest request, CancellationToken cancellation)
         {
             RegisterChatCommand command = new()
             {
@@ -120,6 +122,32 @@ namespace WebAPI.Controllers
 
             return BadRequest(response);
         }
-      
+        [Authorize]
+        [HttpPost("{chatId}/admin/getMembers")]
+        public async Task<ActionResult<List<ChatMemberModelAdmin>>> GetChatMembersAdmin([FromRoute] string chatId,
+            CancellationToken cancellation)
+        {
+            GetChatMembersAdminQuery query = new()
+            {
+                ChatId = new Guid(chatId),
+                UserId = this.GetUserId()
+            };
+
+            return await _mediator.Send(query, cancellation);
+        }
+        [Authorize]
+        [HttpPost("{chatId}/getMembers")]
+        public async Task<ActionResult<List<ChatMemberModel>>> GetChatMembers([FromRoute] string chatId,
+            CancellationToken cancellation)
+        {
+            GetChatMembersQuery query = new()
+            {
+                ChatId = new Guid(chatId),
+                UserId = this.GetUserId()
+            };
+
+            return await _mediator.Send(query, cancellation);
+        }
+        
     }
 }
