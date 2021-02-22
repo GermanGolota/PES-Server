@@ -18,12 +18,6 @@ namespace Infrastructure.Repositories
         {
             this._context = context;
         }
-        public async Task AddMessageToChat(Message message)
-        {
-            await _context.Messages.AddAsync(message);
-
-            await _context.SaveChangesAsync();
-        }
 
         public async Task AddMessageToChat(string messageText, Guid chatId, Guid userId)
         {
@@ -37,6 +31,13 @@ namespace Infrastructure.Repositories
 
             await AddMessageToChat(message);
         }
+        private async Task AddMessageToChat(Message message)
+        {
+            await _context.Messages.AddAsync(message);
+
+            await _context.SaveChangesAsync();
+        }
+
 
         public async Task DeleteMessage(Guid userId, Guid chatId)
         {
