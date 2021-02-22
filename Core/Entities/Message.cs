@@ -14,5 +14,6 @@ namespace Core.Entities
         public User User { get; set; }
         [MaxLength(2048)]
         public string Text { get; set; }
+        public DateTime LastEditedDate { get; set; }
     }
 }
