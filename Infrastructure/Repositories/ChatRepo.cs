@@ -71,32 +71,27 @@ namespace Infrastructure.Repositories
         public async Task<ChatDisplayModel> GetChatModel(Guid chatId)
         {
             var chat = await _context.Chats
-                .Include(x => x.Messages).ThenInclude(x=>x.User)
-                .FirstAsync(x => x.ChatId.Equals(chatId));
+                .Include(x => x.Messages).ThenInclude(x => x.User)
+                .Where(x => x.ChatId.Equals(chatId))
+                .Select(x => new ChatDisplayModel
+                {
+                    ChatName = x.ChatName,
+                    Messages = (List<MessageModel>)x.Messages
+                    .OrderByDescending(message => message.LastEditedDate)
+                    .Select(message => new MessageModel
+                    {
+                        Message = message.Text,
+                        Username = message.User.Username
+                    })
+                })
+                .FirstOrDefaultAsync();
 
             if (chat is null)
             {
                 throw new NoChatException();
             }
 
-            List<MessageModel> messages = new List<MessageModel>();
-
-            foreach (var message in chat.Messages)
-            {
-                messages.Add(new MessageModel
-                {
-                    Message = message.Text,
-                    Username = message.User.Username
-                });
-            }
-
-            ChatDisplayModel output = new ChatDisplayModel
-            {
-                ChatName = chat.ChatName,
-                Messages = messages
-            };
-
-            return output;
+            return chat;
         }
 
         public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options)
