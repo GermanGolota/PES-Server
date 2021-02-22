@@ -29,7 +29,8 @@ namespace Infrastructure.Repositories
             User user = new User
             {
                 Username = userModel.Username,
-                PasswordHash = hash
+                PasswordHash = hash,
+                UserId = Guid.NewGuid()
             };
 
             await _context.Users.AddAsync(user);

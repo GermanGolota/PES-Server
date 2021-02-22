@@ -26,7 +26,8 @@ namespace Infrastructure.Repositories
                 ChatId = chatId,
                 UserId = userId,
                 Text = messageText,
-                LastEditedDate = DateTime.UtcNow
+                LastEditedDate = DateTime.UtcNow,
+                MessageId = Guid.NewGuid()
             };
 
             await AddMessageToChat(message);
