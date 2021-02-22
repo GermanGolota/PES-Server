@@ -234,7 +234,8 @@ namespace Infrastructure.Repositories
             var members =  await GetMembers(chatId);
             return members.Select(x => new ChatMemberModel
             {
-                Username = x.Username
+                Username = x.Username,
+                IsAdmin = x.IsAdmin
             }).ToList();
         }
         public async Task<List<ChatMemberModelAdmin>> GetChatMembersAdmin(Guid chatId)
@@ -244,13 +245,15 @@ namespace Infrastructure.Repositories
         private async Task<List<ChatMemberModelAdmin>> GetMembers(Guid chatId)
         {
             var chat = await GetChatWithUsers(chatId);
+            List<Guid> admins = await GetAdminsOfChat(chatId);
             List<Guid> userIds = GetUserIds(chat);
             List<ChatMemberModelAdmin> models = await _context.Users
                 .Where(x => userIds.Contains(x.UserId))
                 .Select(x => new ChatMemberModelAdmin
                 {
                     Username = x.Username,
-                    MemberId = x.UserId
+                    MemberId = x.UserId,
+                    IsAdmin = admins.Contains(x.UserId)
                 })
                 .ToListAsync();
 
