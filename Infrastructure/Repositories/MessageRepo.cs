@@ -31,7 +31,8 @@ namespace Infrastructure.Repositories
             {
                 ChatId = chatId,
                 UserId = userId,
-                Text = messageText
+                Text = messageText,
+                LastEditedDate = DateTime.UtcNow
             };
 
             await AddMessageToChat(message);
@@ -65,6 +66,8 @@ namespace Infrastructure.Repositories
             if (message.IsNotNull())
             {
                 message.Text = newText;
+
+                message.LastEditedDate = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
             }
