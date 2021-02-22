@@ -19,5 +19,7 @@ namespace Application.Contracts
         Task AddUser(Guid chatId, Guid userId);
         Task PromoteToAdmin(Guid chatId, Guid userId);
         Task<MemberModel> GetMember(Guid chatId, Guid userId);
+        Task<List<ChatMemberModel>> GetChatMembers(Guid chatId);
+        Task<List<ChatMemberModelAdmin>> GetChatMembersAdmin(Guid chatId);
     }
 }

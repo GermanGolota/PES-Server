@@ -50,6 +50,7 @@ namespace Infrastructure.Repositories
         {
             var chat = await _context.Chats
                 .Include(x => x.Users)
+                .Include(x=>x.Admins)
                 .Where(x => x.ChatId.Equals(chatId))
                 .FirstOrDefaultAsync();
 
@@ -217,5 +218,38 @@ namespace Infrastructure.Repositories
         {
             return !userIsAdmin && !userIsInChat;
         }
+
+        public async Task<List<ChatMemberModel>> GetChatMembers(Guid chatId)
+        {
+            var members =  await GetMembers(chatId);
+            return members.Select(x => new ChatMemberModel
+            {
+                Username = x.Username
+            }).ToList();
+        }
+        public async Task<List<ChatMemberModelAdmin>> GetChatMembersAdmin(Guid chatId)
+        {
+            return await GetMembers(chatId);
+        }
+        private async Task<List<ChatMemberModelAdmin>> GetMembers(Guid chatId)
+        {
+            var chat = await GetChatWithUsers(chatId);
+            List<Guid> userIds = GetUserIds(chat);
+            List<ChatMemberModelAdmin> models = await _context.Users
+                .Where(x => userIds.Contains(x.UserId))
+                .Select(x => new ChatMemberModelAdmin
+                {
+                    Username = x.Username,
+                    MemberId = x.UserId
+                })
+                .ToListAsync();
+
+            return models;
+        }
+        private List<Guid> GetUserIds(Chat chat)
+        {
+            return chat.Users.Select(x => x.UserId).Union(chat.Admins.Select(x => x.UserId)).ToList();
+        }
+  
     }
 }
