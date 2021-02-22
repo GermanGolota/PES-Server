@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
             return BadRequest(response);
         }
         [Authorize]
-        [HttpPost("{chatId}/admin/getMembers")]
+        [HttpGet("{chatId}/admin/getMembers")]
         public async Task<ActionResult<List<ChatMemberModelAdmin>>> GetChatMembersAdmin([FromRoute] string chatId,
             CancellationToken cancellation)
         {
@@ -136,7 +136,7 @@ namespace WebAPI.Controllers
             return await _mediator.Send(query, cancellation);
         }
         [Authorize]
-        [HttpPost("{chatId}/getMembers")]
+        [HttpGet("{chatId}/getMembers")]
         public async Task<ActionResult<List<ChatMemberModel>>> GetChatMembers([FromRoute] string chatId,
             CancellationToken cancellation)
         {
@@ -148,6 +148,5 @@ namespace WebAPI.Controllers
 
             return await _mediator.Send(query, cancellation);
         }
-        
     }
 }
