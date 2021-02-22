@@ -12,5 +12,6 @@ namespace Core.Exceptions
         public static string Unathorized { get; } = "You do not have a permission to do that";
         public static string ServerError { get; } = "Something went wrong";
         public static string UserAlreadyInChat { get; } = "This user is already present in this chat";
+        public static string CannotPromoteAdmin { get; } = "Admin can not be promoted";
     }
 }

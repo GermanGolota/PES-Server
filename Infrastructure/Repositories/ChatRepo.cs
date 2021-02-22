@@ -82,9 +82,19 @@ namespace Infrastructure.Repositories
             }
             else
             {
+                if(UserIsAdmin(userId, chat.Admins))
+                {
+                    throw new CannotPromoteAdminException();
+                }
                 throw new NoUserException();
             }
         }
+
+        private bool UserIsAdmin(Guid userId, List<AdminToChat> admins)
+        {
+            return admins.Where(x => x.UserId.Equals(userId)).Any();
+        }
+
         public async Task CreateChat(Chat chat, User admin)
         {
             chat.Admins = new List<AdminToChat>();
