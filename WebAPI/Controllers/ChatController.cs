@@ -148,5 +148,27 @@ namespace WebAPI.Controllers
 
             return await _mediator.Send(query, cancellation);
         }
+
+        [Authorize]
+        [HttpPost("{chatId}/admin/promote/{userId}")]
+        public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
+            string userId, CancellationToken cancellation)
+        {
+            PromoteUserCommand command = new PromoteUserCommand
+            {
+                ChatId = new Guid(chatId),
+                UserId = new Guid(userId),
+                RequesterId = this.GetUserId()
+            };
+
+            var response = await _mediator.Send(command, cancellation);
+
+            if (response.Successfull)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
     }
 }
