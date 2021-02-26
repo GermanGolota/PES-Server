@@ -16,7 +16,7 @@ namespace Application.Contracts
         Task<ChatDisplayModel> GetChatModel(Guid chatId);
         Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options);
         Task<List<Guid>> GetAdminsOfChat(Guid chatId);
-        Task AddUser(Guid chatId, Guid userId);
+        Task AddUser(Guid chatId, Guid userId, string chatPassword);
         Task PromoteToAdmin(Guid chatId, Guid userId);
         Task<MemberModel> GetMember(Guid chatId, Guid userId);
         Task<List<ChatMemberModel>> GetChatMembers(Guid chatId);

@@ -23,13 +23,18 @@ namespace Infrastructure.Repositories
             this._context = context;
         }
 
-        public async Task AddUser(Guid chatId, Guid userId)
+        public async Task AddUser(Guid chatId, Guid userId, string chatPassword)
         {
             var chat = await GetChatWithUsers(chatId);
 
             if(UserAlreadyPresent(userId, chat.Users))
             {
                 throw new UserAlreadyInTheChatException();
+            }
+
+            if (!chat.ChatPassword.Equals(chatPassword))
+            {
+                throw new IncorrectPasswordException();
             }
 
             var user = new UserToChat
