@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace PESTests
+namespace InfrastructureTests
 {
     public class ChatRepoTests : IDisposable
     {

@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{25CA8F62-1F70-40DA-B1C8-3FF87903F98E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PESTests", "..\Tests\PESTests\PESTests.csproj", "{8DCFC0AC-69FF-44DA-8FC9-3DF9008EB0B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InfrastructureTests", "..\Tests\InfrastructureTests\InfrastructureTests.csproj", "{8DCFC0AC-69FF-44DA-8FC9-3DF9008EB0B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{283BC48A-DA9A-4040-AEC5-105FF3DDD20D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{113C13EE-F1BB-4C0E-823B-E3EA2F2ED0CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +46,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CD722B15-5397-469A-807B-15A0CC27C522} = {283BC48A-DA9A-4040-AEC5-105FF3DDD20D}
+		{71617C96-F93A-488F-BB4B-B45FFCD68B2F} = {283BC48A-DA9A-4040-AEC5-105FF3DDD20D}
+		{1F67D276-AF85-4291-AB9A-8D777790838E} = {283BC48A-DA9A-4040-AEC5-105FF3DDD20D}
+		{25CA8F62-1F70-40DA-B1C8-3FF87903F98E} = {283BC48A-DA9A-4040-AEC5-105FF3DDD20D}
+		{8DCFC0AC-69FF-44DA-8FC9-3DF9008EB0B7} = {113C13EE-F1BB-4C0E-823B-E3EA2F2ED0CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81D04F74-B870-41F9-9377-E7FEA2A3417A}
