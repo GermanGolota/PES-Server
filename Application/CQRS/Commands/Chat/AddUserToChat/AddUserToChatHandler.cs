@@ -23,7 +23,7 @@ namespace Application.CQRS.Commands
             CommandResponse response;
             try
             {
-                await _repo.AddUser(request.ChatId, request.UserId);
+                await _repo.AddUser(request.ChatId, request.UserId, request.Password);
                 response = CommandResponse.CreateSuccessfull("Succesfully added user to chat");
             }
             catch(ExpectedException exc)

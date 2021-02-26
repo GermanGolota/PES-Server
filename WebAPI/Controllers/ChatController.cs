@@ -106,12 +106,14 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPost("{chatId}/join")]
-        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId, 
+            [FromBody]JoinChatRequest request, CancellationToken cancellation)
         {
             AddUserToChatCommand command = new()
             {
                 ChatId = new Guid(chatId),
-                UserId = this.GetUserId()
+                UserId = this.GetUserId(),
+                Password = request.Password
             };
 
             var response = await _mediator.Send(command, cancellation);
