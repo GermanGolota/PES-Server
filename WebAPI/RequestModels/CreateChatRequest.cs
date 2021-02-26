@@ -6,5 +6,6 @@ namespace WebAPI.RequestModels
     {
         [Required]
         public string ChatName { get; set; }
+        public string ChatPassword { get; set; }
     }
 }

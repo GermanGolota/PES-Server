@@ -24,10 +24,13 @@ namespace Application.CQRS.Commands
             var response = new CommandResponse();
 
             Guid chatId = Guid.NewGuid();
+
+
             Chat chat = new Chat
             {
                 ChatId = chatId,
-                ChatName = request.ChatName
+                ChatName = request.ChatName,
+                ChatPassword = GetChatPassword(request)
             };
 
             User admin = new User
@@ -40,6 +43,16 @@ namespace Application.CQRS.Commands
             response.Successfull = true;
             response.ResultMessage = $"Successfully registered chat {chatId}";
             return response;
+        }
+
+        private string GetChatPassword(RegisterChatCommand request)
+        {
+            string output = "1";
+            if(!String.IsNullOrEmpty(request.ChatPassword))
+            {
+                output = request.ChatPassword;
+            }
+            return output;
         }
     }
 }

@@ -91,7 +91,8 @@ namespace WebAPI.Controllers
             RegisterChatCommand command = new()
             {
                 AdminId = this.GetUserId(),
-                ChatName = request.ChatName
+                ChatName = request.ChatName,
+                ChatPassword = request.ChatPassword
             };
 
             var response = await _mediator.Send(command, cancellation);
