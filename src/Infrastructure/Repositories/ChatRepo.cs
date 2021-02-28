@@ -176,7 +176,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options)
         {
-            int count = options.MaxCount;
+            int count = options.ChatsPerPage;
             bool takeAll = count.Equals(-1);
 
             string term = options.SearchTerm;

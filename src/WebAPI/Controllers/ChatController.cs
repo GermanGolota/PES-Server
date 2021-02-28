@@ -41,14 +41,15 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
-        [HttpGet("search/{maxCount?}/{term?}")]
-        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? maxCount, [FromRoute] string term,
+        [HttpGet("search/{page?}/{maxCount?}/{term?}")]
+        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page,[FromRoute] int? maxCount, [FromRoute] string term,
             CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
             {
-                MaxCount = maxCount ?? -1,
-                SearchTerm = term
+                ChatsPerPage = maxCount ?? -1,
+                SearchTerm = term,
+                PageNumber = page ?? 1
             };
 
             GetChatsQuery query = new GetChatsQuery

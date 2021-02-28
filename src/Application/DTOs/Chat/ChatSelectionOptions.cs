@@ -2,7 +2,8 @@
 {
     public class ChatSelectionOptions
     {
-        public int MaxCount { get; set; }
+        public int ChatsPerPage { get; set; }
         public string SearchTerm { get; set; }
+        public int PageNumber { get; set; }
     }
 }
