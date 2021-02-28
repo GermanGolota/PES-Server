@@ -186,6 +186,11 @@ namespace Infrastructure.Repositories
 
             if(!takeAll)
             {
+                int numberOfPrecidingPages = options.PageNumber - 1;
+                int skipCount = options.ChatsPerPage * numberOfPrecidingPages;
+
+                query.Skip(skipCount);
+
                 query.Take(count);
             }
 
