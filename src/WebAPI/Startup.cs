@@ -30,6 +30,8 @@ namespace WebAPI
             services.AddControllers();
 
             services.AddSwaggerWithAuthorization();
+
+            services.AddWebsocketServices(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
