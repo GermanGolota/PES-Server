@@ -17,7 +17,7 @@ namespace WebAPI.WebSockets
             Guid guid = Guid.NewGuid();
             ChatWebSocket chatSocket = new ChatWebSocket
             {
-                WebSocket = socket,
+                Client = socket,
                 ChatId = chatId
             };
             WebSockets.Add(guid, chatSocket);
@@ -29,7 +29,7 @@ namespace WebAPI.WebSockets
             {
                 var webSocket = WebSockets[socketId];
 
-                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, 
+                await webSocket.Client.CloseAsync(WebSocketCloseStatus.NormalClosure, 
                     WebSocketMessages.ConnectionClosingRequestSucceeded,
                     CancellationToken.None);
 
@@ -43,7 +43,7 @@ namespace WebAPI.WebSockets
             {
                 var webSocket = WebSockets[socketId];
 
-                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation,
+                await webSocket.Client.CloseAsync(WebSocketCloseStatus.PolicyViolation,
                     closureReason, CancellationToken.None);
 
                 WebSockets.Remove(socketId);
@@ -58,7 +58,7 @@ namespace WebAPI.WebSockets
             List<Task> sendTasks = new List<Task>();
             foreach (var webSocket in webSockets)
             {
-                sendTasks.Add(SendMessage(message, webSocket.WebSocket));
+                sendTasks.Add(SendMessage(message, webSocket.Client));
             }
 
             await Task.WhenAll(sendTasks);

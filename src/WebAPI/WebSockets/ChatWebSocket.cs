@@ -6,6 +6,6 @@ namespace WebAPI.WebSockets
     public class ChatWebSocket
     {
         public Guid ChatId { get; set; }
-        public WebSocket WebSocket{ get; set; }
+        public WebSocket Client{ get; set; }
     }
 }
