@@ -42,6 +42,8 @@ namespace WebAPI
 
             app.UseExceptionHandler(handler => handler.UseCustomErrors(env));
 
+            app.UseWebSocketsServer();
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
