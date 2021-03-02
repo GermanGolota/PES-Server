@@ -10,7 +10,7 @@ namespace WebAPI.WebSockets
     public class WebSocketsManager : IWebSocketsManager
     {
         private Dictionary<Guid, WebSocket> WebSockets { get; set; }
-        public Guid AddSocket(WebSocket socket)
+        public Guid AddSocket(WebSocket socket, Guid chatId)
         {
             Guid guid = Guid.NewGuid();
             if (WebSockets.TryAdd(guid, socket))

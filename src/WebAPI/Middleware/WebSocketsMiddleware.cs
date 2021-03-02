@@ -22,8 +22,8 @@ namespace WebApi.Middleware
             if (context.WebSockets.IsWebSocketRequest)
             {
                 WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-
-                Guid socketId = _webSocketsManager.AddSocket(webSocket);
+                Guid chatId = GetChatId(context);
+                Guid socketId = _webSocketsManager.AddSocket(webSocket, chatId);
 
                 await Receive(webSocket, async (result, buffer) =>
                 {
@@ -45,6 +45,12 @@ namespace WebApi.Middleware
                 await _next(context);
             }
         }
+
+        private Guid GetChatId(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
         {
             var buffer = new byte[1024 * 4];
