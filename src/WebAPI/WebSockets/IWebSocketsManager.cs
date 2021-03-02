@@ -8,5 +8,6 @@ namespace WebAPI.WebSockets
     {
         Guid AddSocket(WebSocket socket);
         Task RemoveSocket(Guid socketId);
+        Task RemoveSocketForPolicyVialtion(Guid socketId, string closureReason);
     }
 }

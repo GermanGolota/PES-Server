@@ -24,13 +24,25 @@ namespace WebAPI.WebSockets
         }
         public async Task RemoveSocket(Guid socketId)
         {
-
             if (WebSockets.ContainsKey(socketId))
             {
                 var webSocket = WebSockets[socketId];
 
                 await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
                     "Connection closed as requested", CancellationToken.None);
+
+                WebSockets.Remove(socketId);
+            }
+        }
+
+        public async Task RemoveSocketForPolicyVialtion(Guid socketId, string closureReason)
+        {
+            if (WebSockets.ContainsKey(socketId))
+            {
+                var webSocket = WebSockets[socketId];
+
+                await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation,
+                    closureReason, CancellationToken.None);
 
                 WebSockets.Remove(socketId);
             }
