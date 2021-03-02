@@ -32,6 +32,11 @@ namespace WebApi.Middleware
                         case WebSocketMessageType.Close:
                             await _webSocketsManager.RemoveSocket(socketId);
                             break;
+                        case WebSocketMessageType.Text:
+                        case WebSocketMessageType.Binary:
+                            await _webSocketsManager.RemoveSocketForPolicyVialtion(socketId,
+                                WebSocketMessages.UnexpectedMessageType);
+                            break;
                     }
                 });
             }
