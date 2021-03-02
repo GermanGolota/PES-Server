@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +8,16 @@ namespace WebAPI.WebSockets
 {
     public class WebSocketsManager : IWebSocketsManager
     {
-        private Dictionary<Guid, WebSocket> WebSockets { get; set; }
+        private Dictionary<Guid, ChatWebSocket> WebSockets { get; set; }
         public Guid AddSocket(WebSocket socket, Guid chatId)
         {
             Guid guid = Guid.NewGuid();
-            if (WebSockets.TryAdd(guid, socket))
+            ChatWebSocket chatSocket = new ChatWebSocket
+            {
+                WebSocket = socket,
+                ChatId = chatId
+            };
+            if (WebSockets.TryAdd(guid, chatSocket))
             {
                 return guid;
             }
@@ -28,7 +32,7 @@ namespace WebAPI.WebSockets
             {
                 var webSocket = WebSockets[socketId];
 
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
+                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
                     "Connection closed as requested", CancellationToken.None);
 
                 WebSockets.Remove(socketId);
@@ -41,7 +45,7 @@ namespace WebAPI.WebSockets
             {
                 var webSocket = WebSockets[socketId];
 
-                await webSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation,
+                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.PolicyViolation,
                     closureReason, CancellationToken.None);
 
                 WebSockets.Remove(socketId);
