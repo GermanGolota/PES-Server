@@ -26,8 +26,9 @@ namespace WebAPI.WebSockets
             {
                 var webSocket = WebSockets[socketId];
 
-                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure,
-                    "Connection closed as requested", CancellationToken.None);
+                await webSocket.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, 
+                    WebSocketMessages.ConnectionClosingRequestSucceeded,
+                    CancellationToken.None);
 
                 WebSockets.Remove(socketId);
             }
