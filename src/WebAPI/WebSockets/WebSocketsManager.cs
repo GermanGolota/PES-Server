@@ -17,14 +17,8 @@ namespace WebAPI.WebSockets
                 WebSocket = socket,
                 ChatId = chatId
             };
-            if (WebSockets.TryAdd(guid, chatSocket))
-            {
-                return guid;
-            }
-            else
-            {
-                throw new Exception("Can't add a socket");
-            }
+            WebSockets.Add(guid, chatSocket);
+            return guid;
         }
         public async Task RemoveSocket(Guid socketId)
         {
