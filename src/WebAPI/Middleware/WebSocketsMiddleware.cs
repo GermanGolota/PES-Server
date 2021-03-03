@@ -39,6 +39,8 @@ namespace WebApi.Middleware
                             break;
                     }
                 });
+
+                await _webSocketsManager.RemoveSocket(socketId);
             }
             else
             {
