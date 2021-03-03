@@ -28,10 +28,12 @@ namespace WebAPI.WebSockets
             if (WebSockets.ContainsKey(socketId))
             {
                 var webSocket = WebSockets[socketId];
-
-                await webSocket.Client.CloseAsync(WebSocketCloseStatus.NormalClosure, 
-                    WebSocketMessages.ConnectionClosingRequestSucceeded,
-                    CancellationToken.None);
+                if (WebSocketIsOpen(webSocket))
+                {
+                    await webSocket.Client.CloseAsync(WebSocketCloseStatus.NormalClosure,
+                        WebSocketMessages.ConnectionClosingRequestSucceeded,
+                        CancellationToken.None);
+                }
 
                 WebSockets.Remove(socketId);
             }
@@ -42,12 +44,19 @@ namespace WebAPI.WebSockets
             if (WebSockets.ContainsKey(socketId))
             {
                 var webSocket = WebSockets[socketId];
-
-                await webSocket.Client.CloseAsync(WebSocketCloseStatus.PolicyViolation,
+                if (WebSocketIsOpen(webSocket))
+                {
+                    await webSocket.Client.CloseAsync(WebSocketCloseStatus.PolicyViolation,
                     closureReason, CancellationToken.None);
-
+                }
                 WebSockets.Remove(socketId);
             }
+        }
+
+        private static bool WebSocketIsOpen(ChatWebSocket webSocket)
+        {
+            return webSocket.Client.State.Equals(WebSocketState.CloseReceived)
+                                || webSocket.Client.State.Equals(WebSocketState.Open);
         }
 
         public async Task SendTextMessageToSocketsConnectedToChat(Guid chatId, string textMessage)
