@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
 using Application.DTOs;
+using Application.DTOs.UpdateMessages;
 using Core.Exceptions;
 using MediatR;
 
@@ -13,10 +14,14 @@ namespace Application.CQRS.Commands
     public class DeleteChatHandler : IRequestHandler<DeleteChatCommand, CommandResponse>
     {
         private readonly IChatRepo _repo;
+        private readonly IUserRepo _userRepo;
+        private readonly IMessageSender _sender;
 
-        public DeleteChatHandler(IChatRepo repo)
+        public DeleteChatHandler(IChatRepo repo, IUserRepo userRepo, IMessageSender sender)
         {
             this._repo = repo;
+            _userRepo = userRepo;
+            _sender = sender;
         }
         public async Task<CommandResponse> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
         {
@@ -47,7 +52,16 @@ namespace Application.CQRS.Commands
                 response.ResultMessage = ExceptionMessages.ServerError;
             }
 
+            await SendUpdateMessage(request);
+
             return response;
+        }
+
+        private async Task SendUpdateMessage(DeleteChatCommand request)
+        {
+            string userName = await _userRepo.GetUsersUsername(request.UserId);
+            var updateMessage = UpdateMessageFactory.CreateChatDeletedMessage(userName);
+            await _sender.SendMessageToSocket(updateMessage, request.ChatId);
         }
     }
 }
