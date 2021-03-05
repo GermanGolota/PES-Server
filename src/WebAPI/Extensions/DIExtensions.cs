@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Contracts;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.WebSockets;
@@ -46,16 +47,8 @@ namespace WebAPI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddWebsocketServices(this IServiceCollection services,
-            IConfiguration config)
+        public static IServiceCollection AddWebsocketServices(this IServiceCollection services)
         {
-            string client = config.GetValue<string>("WebSocketClient");
-            services.AddWebSockets(x =>
-            {
-                x.AllowedOrigins.Add(client);
-                x.KeepAliveInterval = TimeSpan.FromSeconds(30);
-            }
-            );
             services.AddSingleton<IWebSocketsManager, WebSocketsManager>();
             return services;
         }

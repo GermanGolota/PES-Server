@@ -31,7 +31,7 @@ namespace WebAPI
 
             services.AddSwaggerWithAuthorization();
 
-            services.AddWebsocketServices(Configuration);
+            services.AddWebsocketServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
