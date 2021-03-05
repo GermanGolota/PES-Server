@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.WebSockets.UpdatedMessages
 {
-    public class UserLeftChatUpdateMessage
+    public class UserLeftChatUpdateMessage : UpdateMessageBase
     {
         public string Username { get; set; }
     }

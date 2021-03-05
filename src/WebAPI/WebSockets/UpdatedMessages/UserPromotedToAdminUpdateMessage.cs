@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.WebSockets.UpdatedMessages
 {
-    public class UserPromotedToAdminUpdateMessage
+    public class UserPromotedToAdminUpdateMessage : UpdateMessageBase
     {
         public string Username { get; set; }
     }
