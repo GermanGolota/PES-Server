@@ -60,6 +60,14 @@ namespace Infrastructure.Repositories
             return await _context.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();
         }
 
+        public async Task<string> GetUsersUsername(Guid id)
+        {
+            return await _context.Users
+                .Where(x => x.UserId.Equals(id))
+                .Select(x=>x.Username)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task RemoveUser(Guid id)
         {
             var user = await _context.Users
