@@ -174,5 +174,25 @@ namespace WebAPI.Controllers
 
             return BadRequest(response);
         }
+        [Authorize]
+        [HttpPost("{chatId}/leave")]
+        public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
+            CancellationToken cancellation)
+        {
+            LeaveChatCommand command = new LeaveChatCommand
+            {
+                ChatId = new Guid(chatId),
+                UserId = this.GetUserId()
+            };
+
+            var response = await _mediator.Send(command, cancellation);
+
+            if (response.Successfull)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
     }
 }
