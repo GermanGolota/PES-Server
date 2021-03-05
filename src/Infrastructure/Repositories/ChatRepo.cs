@@ -273,6 +273,36 @@ namespace Infrastructure.Repositories
         {
             return chat.Users.Select(x => x.UserId).Union(chat.Admins.Select(x => x.UserId)).ToList();
         }
-  
+
+        public async Task RemoveUserFromChat(Guid chatId, Guid userId)
+        {
+            var chat = await GetChatWithUsers(userId);
+
+            var userQuerry = chat.Users.Where(x => x.UserId.Equals(userId));
+            bool userInChat = userQuerry.Any();
+
+            var adminQuerry = chat.Admins.Where(x => x.UserId.Equals(userId));
+            bool userIsAdmin = adminQuerry.Any();
+
+            if(userInChat)
+            {
+                var user = userQuerry.FirstOrDefault();
+                chat.Users.Remove(user);
+            }
+            else
+            {
+                if(userIsAdmin)
+                {
+                    var admin = adminQuerry.FirstOrDefault();
+                    chat.Admins.Remove(admin);
+                }
+                else
+                {
+                    throw new NoUserException();
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
