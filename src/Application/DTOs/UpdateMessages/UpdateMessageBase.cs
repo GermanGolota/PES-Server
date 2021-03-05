@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WebAPI.WebSockets.UpdatedMessages
+namespace Application.DTOs.UpdateMessages
 {
     public class UpdateMessageBase
     {

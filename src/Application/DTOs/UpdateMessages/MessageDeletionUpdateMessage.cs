@@ -1,4 +1,4 @@
-﻿namespace WebAPI.WebSockets.UpdatedMessages
+﻿namespace Application.DTOs.UpdateMessages
 {
     public class MessageDeletionUpdateMessage : UpdateMessageBase
     {

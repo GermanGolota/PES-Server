@@ -2,7 +2,7 @@
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
-namespace WebAPI.WebSockets
+namespace Application.Contracts
 {
     public interface IWebSocketsManager
     {
