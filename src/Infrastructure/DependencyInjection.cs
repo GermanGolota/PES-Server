@@ -3,6 +3,7 @@ using Core;
 using Infrastructure.Authentication;
 using Infrastructure.Contracts;
 using Infrastructure.Repositories;
+using Infrastructure.WebSockets;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,6 +39,8 @@ namespace Infrastructure
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IMessageRepo, MessageRepo>();
             services.AddScoped<IChatRepo, ChatRepo>();
+
+            services.AddScoped<IMessageSender, MessageSender>();
 
             return services;
         }
