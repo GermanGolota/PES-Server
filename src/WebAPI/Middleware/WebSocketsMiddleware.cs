@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,7 +52,15 @@ namespace WebApi.Middleware
 
         private Guid GetChatId(HttpContext context)
         {
-            throw new NotImplementedException();
+            var payload = context.Request.Body;
+            string content;
+            using (StreamReader sr = new StreamReader(payload))
+            {
+                content = sr.ReadToEnd();
+            }
+            WebsocketConnectionMessage message
+                = JsonConvert.DeserializeObject<WebsocketConnectionMessage>(content);
+            return message.ChatId;
         }
 
         private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
