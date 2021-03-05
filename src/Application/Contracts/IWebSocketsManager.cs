@@ -10,5 +10,6 @@ namespace Application.Contracts
         Task RemoveSocket(Guid socketId);
         Task RemoveSocketForPolicyVialtion(Guid socketId, string closureReason);
         Task SendTextMessageToSocketsConnectedToChat(Guid chatId, string textMessage);
+        Task SendJsonToSocketsConnectedToChat<T>(Guid chatId, T jsonObject);
     }
 }

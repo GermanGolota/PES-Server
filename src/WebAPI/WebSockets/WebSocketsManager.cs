@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,12 @@ namespace WebAPI.WebSockets
         {
             return socket.SendAsync(message, WebSocketMessageType.Text,
                    endOfMessage: true, cancellationToken: CancellationToken.None);
+        }
+
+        public async Task SendJsonToSocketsConnectedToChat<T>(Guid chatId, T jsonObject)
+        {
+            string message = JsonConvert.SerializeObject(jsonObject);
+            await SendTextMessageToSocketsConnectedToChat(chatId, message);
         }
     }
 }
