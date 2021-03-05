@@ -37,7 +37,7 @@
                 Username = username,
             };
         }
-        public static UserLeftChatUpdateMessage CreateUserLeftdUpdate(string username)
+        public static UserLeftChatUpdateMessage CreateUserLeftUpdate(string username)
         {
             return new UserLeftChatUpdateMessage
             {
@@ -51,6 +51,15 @@
             return new UserPromotedToAdminUpdateMessage
             {
                 ActionType = "userPromotedToAdmin",
+                Username = username
+            };
+        }
+
+        public static ChatDeletedUpdateMessage CreateChatDeletedMessage(string username)
+        {
+            return new ChatDeletedUpdateMessage
+            {
+                ActionType = "chatDeleted",
                 Username = username
             };
         }
