@@ -32,19 +32,34 @@ namespace Infrastructure
             Assembly applicationAssembly = typeof(IChatRepo).Assembly;
             services.AddMediatR(applicationAssembly);
 
-            services.AddScoped<HashAlgorithm>(x=>MD5.Create());
-            services.AddScoped<IEncrypter, Encrypter>();
-            services.AddScoped<IJWTokenManager, JWTokenManager>();
+            services.AddSecurityServices();
 
-            services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<IMessageRepo, MessageRepo>();
-            services.AddScoped<IChatRepo, ChatRepo>();
+            services.AddRepositories();
 
             services.AddScoped<IMessageSender, MessageSender>();
 
             return services;
         }
+        private static IServiceCollection AddSecurityServices(this IServiceCollection services)
+        {
+            services.AddScoped<HashAlgorithm>(x => MD5.Create());
+            services.AddScoped<IEncrypter, Encrypter>();
+            services.AddScoped<IJWTokenManager, JWTokenManager>();
 
+            return services;
+        }
+        private static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<IMessageRepo, MessageRepo>();
+            services.AddScoped<IChatRepo, ChatRepo>();
+
+            return services;
+        }
+        private static IServiceCollection AddWebSocketServices(this IServiceCollection services)
+        {
+            return services;
+        }
         private static string CreateConnectionString(IConfiguration configuration)
         {
             string host = configuration["Host"]??"localhost";
