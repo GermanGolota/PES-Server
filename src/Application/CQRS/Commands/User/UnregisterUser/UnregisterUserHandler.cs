@@ -13,10 +13,12 @@ namespace Application.CQRS.Commands
     public class UnregisterUserHandler : IRequestHandler<UnregisterUserCommand, CommandResponse>
     {
         private readonly IUserRepo _repo;
+        private readonly IChatMembersService _chatMembersService;
 
-        public UnregisterUserHandler(IUserRepo repo)
+        public UnregisterUserHandler(IUserRepo repo, IChatMembersService chatMembersService)
         {
             this._repo = repo;
+            _chatMembersService = chatMembersService;
         }
         public async Task<CommandResponse> Handle(UnregisterUserCommand request,
             CancellationToken cancellationToken)
@@ -28,6 +30,7 @@ namespace Application.CQRS.Commands
             try
             {
                 await _repo.RemoveUser(id);
+                await _chatMembersService.RemoveUserFromAllChats(id);
                 response = CommandResponse.CreateSuccessfull("Successfully removed user");
             }
             catch(ExpectedException exc)
