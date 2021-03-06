@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Exceptions;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,21 +11,21 @@ using Xunit;
 
 namespace InfrastructureTests
 {
-    public class ChatRepoTests : IDisposable
+    public class ChatMembersServiceTests : IDisposable
     {
-        private readonly ChatRepo _sut;
+        private readonly ChatMembersService _sut;
         private PESContext _context;
 
         private Guid adminId = new Guid("0bc3086a-0060-433f-b7ca-ad535e1c3465");
 
         private Guid chatId = new Guid("b71ffcf6-fdae-4936-b0fe-d596a21f0d04");
-        public ChatRepoTests()
+        public ChatMembersServiceTests()
         {
             var options = new DbContextOptionsBuilder<PESContext>()
             .UseInMemoryDatabase(databaseName: "PESDB")
             .Options;
             _context = new PESContext(options);
-            _sut = new ChatRepo(_context);
+            _sut = new ChatMembersService(_context);
         }
         public void Dispose()
         {
