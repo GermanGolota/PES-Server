@@ -18,5 +18,10 @@ namespace Infrastructure.Extensions
                 UserCount = chat.Users.Count
             });
         }
+        public static IQueryable<Chat> ContainsUser(this IQueryable<Chat> chats, Guid userId)
+        {
+            return chats.Where(x => x.Admins.Where(admin => admin.UserId.Equals(userId)).Any()
+                                 || x.Users.Where(user => user.UserId.Equals(userId)).Any());
+        }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Application.Contracts;
 using Application.DTOs;
-using Application.DTOs.Chat;
 using Core;
 using Core.Entities;
 using Core.Exceptions;
-using Core.Extensions;
 using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -122,6 +120,15 @@ namespace Infrastructure.Repositories
 
             return await result.ToListAsync();
         }
-        
+
+        public async Task<List<Guid>> GetChatsOfUser(Guid userId)
+        {
+            return await _context.Chats
+                .Include(x => x.Users)
+                .Include(x => x.Admins)
+                .ContainsUser(userId)
+                .Select(x => x.ChatId)
+                .ToListAsync();
+        }
     }
 }
