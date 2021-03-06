@@ -23,22 +23,6 @@ namespace Infrastructure.Repositories
             this._context = context;
         }
 
-        private async Task<Chat> GetChatWithUsers(Guid chatId)
-        {
-            var chat = await _context.Chats
-                .Include(x => x.Users)
-                .Include(x=>x.Admins)
-                .Where(x => x.ChatId.Equals(chatId))
-                .FirstOrDefaultAsync();
-
-            if(chat is null)
-            {
-                throw new NoChatException();
-            }
-
-            return chat;
-        }
-
         public async Task CreateChat(Chat chat, User admin)
         {
             chat.Admins = new List<AdminToChat>();
@@ -54,6 +38,31 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword)
+        {
+            Guid chatId = Guid.NewGuid();
+            AdminToChat admin = new AdminToChat
+            {
+                ChatId = chatId,
+                UserId = adminId
+            };
+            Chat chat = new Chat
+            {
+                ChatName = chatName,
+                ChatPassword = chatPassword,
+                Admins = new List<AdminToChat>
+                {
+                    admin
+                }
+            };
+
+            _context.Chats.Add(chat);
+
+            await _context.SaveChangesAsync();
+
+            return chatId;
+        }
+
         public async Task DeleteChat(Guid chatId)
         {
             Chat chat = await _context.Chats.FindAsync(chatId);
@@ -66,20 +75,6 @@ namespace Infrastructure.Repositories
             _context.Chats.Remove(chat);
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Guid>> GetAdminsOfChat(Guid chatId)
-        {
-            var chat = await _context.Chats.Where(x => x.ChatId.Equals(chatId))
-                .Include(x=>x.Admins)
-                .FirstOrDefaultAsync();
-
-            if(chat is null)
-            {
-                throw new NoChatException();
-            }
-
-            return chat.Admins.Select(x => x.UserId).ToList();
         }
 
         public async Task<Chat> GetChatById(Guid chatId)

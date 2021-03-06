@@ -8,6 +8,8 @@ namespace Application.Contracts
 {
     public interface IChatRepo
     {
+        /// <returns>Id of created chat</returns>
+        Task<Guid> CreateChat(Guid admin, string chatName, string chatPassword);
         Task CreateChat(Chat chat, User admin);
         Task DeleteChat(Guid chatId);
         Task<Chat> GetChatById(Guid chatId);
