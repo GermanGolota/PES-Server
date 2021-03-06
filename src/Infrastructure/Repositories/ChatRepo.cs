@@ -23,21 +23,6 @@ namespace Infrastructure.Repositories
             this._context = context;
         }
 
-        public async Task CreateChat(Chat chat, User admin)
-        {
-            chat.Admins = new List<AdminToChat>();
-            var adminToChat = new AdminToChat
-            {
-                ChatId = chat.ChatId,
-                UserId = admin.UserId
-            };
-            chat.Admins.Add(adminToChat);
-
-            await _context.Chats.AddAsync(chat);
-
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword)
         {
             Guid chatId = Guid.NewGuid();

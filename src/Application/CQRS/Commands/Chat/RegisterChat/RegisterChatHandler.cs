@@ -23,22 +23,8 @@ namespace Application.CQRS.Commands
         {
             var response = new CommandResponse();
 
-            Guid chatId = Guid.NewGuid();
-
-
-            Chat chat = new Chat
-            {
-                ChatId = chatId,
-                ChatName = request.ChatName,
-                ChatPassword = GetChatPassword(request)
-            };
-
-            User admin = new User
-            {
-                UserId = request.AdminId
-            };
-
-            await _repo.CreateChat(request.AdminId, request.ChatName, request.ChatPassword);
+            string password = GetChatPassword(request);
+            Guid chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password);
 
             response.Successfull = true;
             response.ResultMessage = $"Successfully registered chat {chatId}";
