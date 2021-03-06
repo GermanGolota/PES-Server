@@ -15,10 +15,12 @@ namespace Infrastructure.Services
     public class ChatMembersService : IChatMembersService
     {
         private readonly PESContext _context;
+        private readonly IChatRepo _chatRepo;
 
-        public ChatMembersService(PESContext context)
+        public ChatMembersService(PESContext context, IChatRepo chatRepo)
         {
             this._context = context;
+            _chatRepo = chatRepo;
         }
 
         public async Task AddUser(Guid chatId, Guid userId, string chatPassword)
@@ -212,6 +214,18 @@ namespace Infrastructure.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveUserFromAllChats(Guid userId)
+        {
+            List<Guid> chats = await _chatRepo.GetChatsOfUser(userId);
+            List<Task> removeTasks = new List<Task>();
+            foreach (var chat in chats)
+            {
+                removeTasks.Add(this.RemoveUserFromChat(chat, userId));
+            }
+
+            await Task.WhenAll(removeTasks);
         }
     }
 }

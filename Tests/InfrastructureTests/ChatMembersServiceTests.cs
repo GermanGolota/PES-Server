@@ -1,9 +1,11 @@
-﻿using Core;
+﻿using Application.Contracts;
+using Core;
 using Core.Entities;
 using Core.Exceptions;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,13 +21,14 @@ namespace InfrastructureTests
         private Guid adminId = new Guid("0bc3086a-0060-433f-b7ca-ad535e1c3465");
 
         private Guid chatId = new Guid("b71ffcf6-fdae-4936-b0fe-d596a21f0d04");
+        private Mock<IChatRepo> _repoMock = new Mock<IChatRepo>();
         public ChatMembersServiceTests()
         {
             var options = new DbContextOptionsBuilder<PESContext>()
             .UseInMemoryDatabase(databaseName: "PESDB")
             .Options;
             _context = new PESContext(options);
-            _sut = new ChatMembersService(_context);
+            _sut = new ChatMembersService(_context, _repoMock.Object);
         }
         public void Dispose()
         {
