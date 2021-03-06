@@ -36,6 +36,8 @@ namespace Infrastructure
 
             services.AddRepositories();
 
+            services.AddScoped<IChatMembersService, ChatRepo>();
+
             services.AddScoped<IMessageSender, MessageSender>();
 
             return services;

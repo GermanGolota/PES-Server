@@ -11,13 +11,13 @@ namespace Application.CQRS.Commands
 {
     class LeaveChatHandler : IRequestHandler<LeaveChatCommand, CommandResponse>
     {
-        private readonly IChatRepo _chatRepo;
+        private readonly IChatMembersService _membersService;
         private readonly IMessageSender _sender;
         private readonly IUserRepo _userRepo;
 
-        public LeaveChatHandler(IChatRepo chatRepo, IMessageSender sender, IUserRepo userRepo)
+        public LeaveChatHandler(IChatMembersService membersService,IMessageSender sender, IUserRepo userRepo)
         {
-            _chatRepo = chatRepo;
+            _membersService = membersService;
             _sender = sender;
             _userRepo = userRepo;
         }
@@ -27,7 +27,7 @@ namespace Application.CQRS.Commands
             CommandResponse response;
             try
             {
-                await _chatRepo.RemoveUserFromChat(request.ChatId, request.UserId);
+                await _membersService.RemoveUserFromChat(request.ChatId, request.UserId);
                 response = CommandResponse.CreateSuccessfull($"Sucessfully left chat {request.ChatId}");
                 await SendUpdateMessage(request);
             }

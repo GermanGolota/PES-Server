@@ -12,24 +12,24 @@ namespace Application.CQRS.Queries.Chat.GetChatMembers
 {
     public class GetChatMembersHandler : IRequestHandler<GetChatMembersQuery, List<ChatMemberModel>>
     {
-        private readonly IChatRepo _repo;
+        private readonly IChatMembersService _membersService;
 
-        public GetChatMembersHandler(IChatRepo repo)
+        public GetChatMembersHandler(IChatMembersService membersService)
         {
-            this._repo = repo;
+            _membersService = membersService;
         }
         public async Task<List<ChatMemberModel>> Handle(GetChatMembersQuery request, CancellationToken cancellationToken)
         {
             if (await UserIsInChat(request.ChatId, request.UserId))
             {
-                return await _repo.GetChatMembers(request.ChatId);
+                return await _membersService.GetChatMembers(request.ChatId);
             }
 
             throw new UnauthorizedException();
         }
         private async Task<bool> UserIsInChat(Guid chatId, Guid userId)
         {
-            await _repo.GetMember(chatId, userId);
+            await _membersService.GetMember(chatId, userId);
             return true;
         }
     }

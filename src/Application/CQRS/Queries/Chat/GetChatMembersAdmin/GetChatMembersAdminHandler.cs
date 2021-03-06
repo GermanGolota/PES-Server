@@ -12,11 +12,11 @@ namespace Application.CQRS.Queries
 {
     public class GetChatMembersAdminHandler : IRequestHandler<GetChatMembersAdminQuery, List<ChatMemberModelAdmin>>
     {
-        private readonly IChatRepo _repo;
+        private readonly IChatMembersService _membersService;
 
-        public GetChatMembersAdminHandler(IChatRepo repo)
+        public GetChatMembersAdminHandler(IChatMembersService membersService)
         {
-            this._repo = repo;
+            _membersService = membersService;
         }
         public async Task<List<ChatMemberModelAdmin>> Handle(GetChatMembersAdminQuery request, 
             CancellationToken cancellationToken)
@@ -25,13 +25,13 @@ namespace Application.CQRS.Queries
             Guid userId = request.UserId;
             if(await UserIsAdmin(userId, chatId))
             {
-                return await _repo.GetChatMembersAdmin(chatId);
+                return await _membersService.GetChatMembersAdmin(chatId);
             }
             throw new UnauthorizedException();
         }
         private async Task<bool> UserIsAdmin(Guid userId, Guid chatId)
         {
-            var user = await _repo.GetMember(chatId, userId);
+            var user = await _membersService.GetMember(chatId, userId);
             return user.IsAdmin;
         }
     }

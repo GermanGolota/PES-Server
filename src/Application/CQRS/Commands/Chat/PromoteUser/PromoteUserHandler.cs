@@ -13,26 +13,26 @@ namespace Application.CQRS.Commands
 {
     public class PromoteUserHandler : IRequestHandler<PromoteUserCommand, CommandResponse>
     {
-        private readonly IChatRepo _repo;
         private readonly IUserRepo _userRepo;
         private readonly IMessageSender _sender;
+        private readonly IChatMembersService _membersService;
 
-        public PromoteUserHandler(IChatRepo repo, IUserRepo userRepo, IMessageSender sender)
+        public PromoteUserHandler(IUserRepo userRepo, IMessageSender sender, IChatMembersService membersService)
         {
-            this._repo = repo;
             _userRepo = userRepo;
             _sender = sender;
+            _membersService = membersService;
         }
         public async Task<CommandResponse> Handle(PromoteUserCommand request, CancellationToken cancellationToken)
         {
             CommandResponse response = new CommandResponse();
             try
             {
-                List<Guid> admins = await _repo.GetAdminsOfChat(request.ChatId);
+                List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
 
                 if (admins.Contains(request.UserId))
                 {
-                    await _repo.PromoteToAdmin(request.ChatId, request.UserId);
+                    await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
                     response.Successfull = true;
                     response.ResultMessage = $"Successfully promoted user {request.UserId} in chat {request.ChatId}";
                 }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class ChatRepo : IChatRepo
+    public class ChatRepo : IChatRepo, IChatMembersService
     {
         private readonly PESContext _context;
 
