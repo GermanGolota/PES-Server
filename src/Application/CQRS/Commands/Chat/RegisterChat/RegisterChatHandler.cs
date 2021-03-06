@@ -38,7 +38,7 @@ namespace Application.CQRS.Commands
                 UserId = request.AdminId
             };
 
-            await _repo.CreateChat(chat, admin);
+            await _repo.CreateChat(request.AdminId, request.ChatName, request.ChatPassword);
 
             response.Successfull = true;
             response.ResultMessage = $"Successfully registered chat {chatId}";
