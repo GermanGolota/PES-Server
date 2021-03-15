@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace WebAPI.Extensions
 {
@@ -16,9 +17,15 @@ namespace WebAPI.Extensions
         {
             using (var scope = host.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<PESContext>();
+                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
-                context.Database.Migrate();
+                string initialize = config["InitializeDb"];
+                bool hasValue = Boolean.TryParse(initialize, out bool shouldInitialize);
+                if (hasValue && shouldInitialize)
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<PESContext>();
+                    context.Database.Migrate();
+                }
             }
 
             return host;
