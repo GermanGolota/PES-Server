@@ -45,7 +45,7 @@ namespace WebAPI.Extensions
             {
                 if (exc is ValidationException || exc is TaskCanceledException || exc is ExpectedException)
                 {
-                    await ProcessExpectedException(httpContext, exc);
+                    await ProcessExpectedException(httpContext, exc, includeDetails);
                 }
                 else
                 {
@@ -53,16 +53,17 @@ namespace WebAPI.Extensions
                 }
             }
         }
-        private static Task ProcessExpectedException(HttpContext httpContext, Exception exc)
+        private static Task ProcessExpectedException(HttpContext httpContext, Exception exc, bool includeDetails)
         {
-            int badRequestStatusCode = 400;
-            httpContext.Response.StatusCode = badRequestStatusCode;
-            var stream = httpContext.Response.Body;
-            return JsonSerializer.SerializeAsync(stream, exc.Message);
+            return ProcessException(httpContext, exc, includeDetails, 400, exc.Message);
         }
         private static Task ProcessUnexpectedException(HttpContext httpContext, Exception exc, bool includeDetails)
         {
-            string title = "An error has occured";
+            return ProcessException(httpContext, exc, includeDetails, 500, "An error has occured");
+        }
+        private static Task ProcessException(HttpContext httpContext, Exception exc, bool includeDetails, int statusCode,
+            string title)
+        {
             string details = null;
             if (includeDetails)
             {
@@ -70,10 +71,9 @@ namespace WebAPI.Extensions
                 details = exc.ToString();
             }
 
-            int serverErrorStatusCode = 500;
             var problem = new ProblemDetails
             {
-                Status = serverErrorStatusCode,
+                Status = statusCode,
                 Title = title,
                 Detail = details
             };

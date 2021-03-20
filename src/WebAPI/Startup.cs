@@ -46,7 +46,7 @@ namespace WebAPI
 
             app.UseWebSocketsServer();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
