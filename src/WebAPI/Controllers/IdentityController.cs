@@ -1,5 +1,6 @@
 ﻿using Application.CQRS.Commands;
 using Application.CQRS.Queries;
+using Application.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,14 +50,14 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpDelete("unregister")]
-        public async Task<ActionResult<string>> UnregisterUser(CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> UnregisterUser(CancellationToken cancellation)
         {
             var command = new UnregisterUserCommand
             {
                 UserId = this.GetUserId()
             };
 
-            var response = await _mediator.Send(command, cancellation);
+            CommandResponse response = await _mediator.Send(command, cancellation);
 
             if (response.Successfull)
             {
