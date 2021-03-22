@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
                 UserId = this.GetUserId()
             };
 
-            var result = await _mediator.Send(command, cancellation);
+            CommandResponse result = await _mediator.Send(command, cancellation);
 
             if(result.Successfull)
             {
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpPut("edit")]
-        public async Task<IActionResult> EditMessage([FromBody] EditMessageRequest request, 
+        public async Task<ActionResult<CommandResponse>> EditMessage([FromBody] EditMessageRequest request, 
             CancellationToken cancellation)
         {
             EditMessageCommand command = new()
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
                 UserId = this.GetUserId()
             };
 
-            var response = await _mediator.Send(command, cancellation);
+            CommandResponse response = await _mediator.Send(command, cancellation);
 
             if(response.Successfull)
             {
@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
         }
         [Authorize]
         [HttpDelete("delete/{chatId}")]
-        public async Task<IActionResult> DeleteMessage([FromRoute] string chatId,
+        public async Task<ActionResult<CommandResponse>> DeleteMessage([FromRoute] string chatId,
             CancellationToken cancellation)
         {
             var command = new DeleteMessageCommand
@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
                 UserId = this.GetUserId()
             };
 
-            var response = await _mediator.Send(command, cancellation);
+            CommandResponse response = await _mediator.Send(command, cancellation);
 
             if(response.Successfull)
             {
