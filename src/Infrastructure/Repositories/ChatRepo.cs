@@ -101,21 +101,21 @@ namespace Infrastructure.Repositories
 
             var query = _context.Chats
                 .AsNoTracking()
-                .Include(x=>x.Admins)
+                .Include(x => x.Admins)
                 .Include(x => x.Users)
                 .AsQueryable();
 
-            if(!takeAll)
+            if (!takeAll)
             {
                 int numberOfPrecidingPages = options.PageNumber - 1;
                 int skipCount = options.ChatsPerPage * numberOfPrecidingPages;
 
+                query = query.OrderBy(x => x.ChatName);
                 query = query.Skip(skipCount);
-
                 query = query.Take(count);
             }
 
-            if(!takeAny)
+            if (!takeAny)
             {
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
