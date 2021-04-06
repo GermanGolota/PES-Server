@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Application.PesScore;
 using Core;
 using Infrastructure.Authentication;
 using Infrastructure.Contracts;
@@ -37,9 +38,11 @@ namespace Infrastructure
 
             services.AddRepositories();
 
-            services.AddScoped<IChatMembersService, ChatMembersService>();
+            services.AddWebSocketServices();
 
-            services.AddScoped<IMessageSender, MessageSender>();
+            services.AddPesScoreServices();
+
+            services.AddScoped<IChatMembersService, ChatMembersService>();
 
             return services;
         }
@@ -51,6 +54,14 @@ namespace Infrastructure
 
             return services;
         }
+
+        private static IServiceCollection AddPesScoreServices(this IServiceCollection services)
+        {
+            services.AddScoped<IPesScoreCalculator, PesScoreCalculator>();
+            services.AddScoped<IPesScoreService, PesScoreService>();
+            return services;
+        }
+
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepo, UserRepo>();
@@ -59,10 +70,14 @@ namespace Infrastructure
 
             return services;
         }
+
         private static IServiceCollection AddWebSocketServices(this IServiceCollection services)
         {
+            services.AddScoped<IMessageSender, MessageSender>();
+
             return services;
         }
+
         private static string CreateConnectionString(IConfiguration configuration)
         {
             string host = configuration["Host"]??"localhost";

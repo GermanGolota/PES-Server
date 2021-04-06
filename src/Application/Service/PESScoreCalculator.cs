@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Application.PesScore
 {
-    public class PESScoreCalculator : IPesScoreCalculator
+    public class PesScoreCalculator : IPesScoreCalculator
     {
         public int CalculateScore(PesScoreModel scoreModel)
         {
