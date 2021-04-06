@@ -15,7 +15,7 @@ namespace Infrastructure.Extensions
             {
                 ChatId = chat.ChatId,
                 ChatName = chat.ChatName,
-                UserCount = chat.Users.Count
+                UserCount = chat.Users.Count + chat.Admins.Count
             });
         }
         public static IQueryable<Chat> ContainsUser(this IQueryable<Chat> chats, Guid userId)

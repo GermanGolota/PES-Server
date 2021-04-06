@@ -99,21 +99,25 @@ namespace Infrastructure.Repositories
             string term = options.SearchTerm;
             bool takeAny = String.IsNullOrEmpty(term);
 
-            var query = _context.Chats.Include(x => x.Users);
+            var query = _context.Chats
+                .AsNoTracking()
+                .Include(x=>x.Admins)
+                .Include(x => x.Users)
+                .AsQueryable();
 
             if(!takeAll)
             {
                 int numberOfPrecidingPages = options.PageNumber - 1;
                 int skipCount = options.ChatsPerPage * numberOfPrecidingPages;
 
-                query.Skip(skipCount);
+                query = query.Skip(skipCount);
 
-                query.Take(count);
+                query = query.Take(count);
             }
 
             if(!takeAny)
             {
-                query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
+                query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
             var result = query.MapChatsToInfoModels();
