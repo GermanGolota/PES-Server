@@ -5,6 +5,7 @@ using Core.Exceptions;
 using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -85,6 +86,15 @@ namespace Infrastructure.Repositories
             }
 
             return message.MessageId;
+        }
+
+        public async Task<List<string>> GetAllUserMessages(Guid userId)
+        {
+            return await _context.Messages
+                .AsNoTracking()
+                .Where(x => x.UserId.Equals(userId))
+                .Select(x=>x.Text)
+                .ToListAsync();
         }
     }
 }
