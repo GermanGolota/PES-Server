@@ -20,7 +20,7 @@ namespace Application.CQRS.Queries.Service.GetPesScore
         }
         public async Task<int> Handle(GetPesScoreQuery request, CancellationToken cancellationToken)
         {
-            var scoreModel = await _scoreService.GetPESScoreFor(request.Username);
+            var scoreModel = await _scoreService.GetPesScoreFor(request.Username);
             int score = _calculator.CalculateScore(scoreModel);
             return score;
         }

@@ -18,7 +18,7 @@ namespace Infrastructure.Services
             _context = context;
         }
 
-        public async Task<PesScoreModel> GetPESScoreFor(string username)
+        public async Task<PesScoreModel> GetPesScoreFor(string username)
         {
             var userId = await _context.Users
                 .AsNoTracking()
@@ -29,7 +29,7 @@ namespace Infrastructure.Services
             return await GetPesScore(userId);
         }
 
-        public async Task<PesScoreModel> GetPESScoreFor(Guid userId)
+        public async Task<PesScoreModel> GetPesScoreFor(Guid userId)
         {
             return await GetPesScore(userId);
         }

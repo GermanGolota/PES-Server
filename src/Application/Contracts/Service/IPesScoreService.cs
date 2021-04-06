@@ -8,7 +8,7 @@ namespace Application.Contracts
 {
     public interface IPesScoreService
     {
-        Task<PesScoreModel> GetPESScoreFor(string username);
-        Task<PesScoreModel> GetPESScoreFor(Guid userId);
+        Task<PesScoreModel> GetPesScoreFor(string username);
+        Task<PesScoreModel> GetPesScoreFor(Guid userId);
     }
 }
