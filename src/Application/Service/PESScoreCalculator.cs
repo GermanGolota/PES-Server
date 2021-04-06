@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Application.Contracts;
+using Application.DTOs.Service;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Application.PESScore
+namespace Application.PesScore
 {
-    public class PESScoreCalculator
+    public class PESScoreCalculator : IPesScoreCalculator
     {
-        public int CalculateScore(List<string> messages, string pesKey)
+        public int CalculateScore(PesScoreModel scoreModel)
         {
-            List<char> pesChars = pesKey.ToList();
+            List<char> pesChars = scoreModel.PesKey.ToList();
             long matches = 0;
             long total = 0;
-            foreach (string message in messages)
+            foreach (string message in scoreModel.Messages)
             {
                 for (int i = 0; i < message.Length; i++)
                 {
