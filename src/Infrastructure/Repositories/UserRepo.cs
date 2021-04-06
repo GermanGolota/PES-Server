@@ -30,7 +30,8 @@ namespace Infrastructure.Repositories
             {
                 Username = userModel.Username,
                 PasswordHash = hash,
-                UserId = Guid.NewGuid()
+                UserId = Guid.NewGuid(),
+                PESKey = userModel.PesKey
             };
 
             await _context.Users.AddAsync(user);

@@ -28,7 +28,8 @@ namespace Application.CQRS.Commands
             UserRegistrationModel user = new UserRegistrationModel
             {
                 Username = request.Username,
-                Password = request.Password
+                Password = request.Password,
+                PesKey = request.PesKey
             };
             await _repo.AddUser(user);
 
