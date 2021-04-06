@@ -13,5 +13,7 @@ namespace Core.Entities
         public string Username { get; set; }
         [MaxLength(40)]
         public string PasswordHash { get; set; }
+        [MaxLength(40)] // would be used to calculate users PES Score
+        public string PESKey { get; set; }
     }
 }
