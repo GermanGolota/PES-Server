@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Infrastructure;
 using WebAPI.Extensions;
+using Microsoft.AspNetCore.Localization;
+using WebAPI.Culture;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace WebAPI
 {
@@ -42,10 +46,26 @@ namespace WebAPI
                     builder.AllowAnyHeader();
                 });
             });
+
+            IList<CultureInfo> supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"), 
+                new CultureInfo("ru-RU")
+            };
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.RequestCultureProviders.Insert(0, new OverridenCultureProvider());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRequestLocalization();
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
