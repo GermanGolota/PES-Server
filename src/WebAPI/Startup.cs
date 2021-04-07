@@ -50,7 +50,8 @@ namespace WebAPI
             IList<CultureInfo> supportedCultures = new List<CultureInfo>
             {
                 new CultureInfo("en-US"), 
-                new CultureInfo("ru-RU")
+                new CultureInfo("ru"),
+                new CultureInfo("ua")
             };
 
             services.Configure<RequestLocalizationOptions>(options =>
