@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Application.Contracts
+namespace Application.Contracts.Service
 {
     public interface IChatMembersService
     {

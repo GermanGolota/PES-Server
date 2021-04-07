@@ -6,6 +6,8 @@ using System.Threading;
 using Core.Exceptions;
 using Application.Contracts;
 using Application.DTOs.UpdateMessages;
+using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 
 namespace Application.CQRS.Commands
 {

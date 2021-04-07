@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
+using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 using Application.DTOs;
 using Application.DTOs.UpdateMessages;
 using Core.Exceptions;

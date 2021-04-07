@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Extensions;
+using Application.Contracts.Repositories;
 
 namespace Infrastructure.Authentication
 {

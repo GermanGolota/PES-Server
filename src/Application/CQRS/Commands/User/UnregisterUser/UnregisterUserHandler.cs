@@ -5,8 +5,9 @@ using System.Text;
 using Application.DTOs;
 using System.Threading.Tasks;
 using System.Threading;
-using Application.Contracts;
 using Core.Exceptions;
+using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 
 namespace Application.CQRS.Commands
 {

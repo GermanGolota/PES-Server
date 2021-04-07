@@ -1,4 +1,5 @@
-﻿using Application.Contracts;
+﻿using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 using Application.DTOs.Chat;
 using Core;
 using Core.Entities;

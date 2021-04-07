@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Contracts;
+using Application.Contracts.Service;
 using Application.DTOs.Chat;
 using Core.Exceptions;
 using MediatR;

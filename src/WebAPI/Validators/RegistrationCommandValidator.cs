@@ -1,4 +1,4 @@
-﻿using Application.Contracts;
+﻿using Application.Contracts.Repositories;
 using Application.CQRS.Commands;
 using FluentValidation;
 using FluentValidation.Results;

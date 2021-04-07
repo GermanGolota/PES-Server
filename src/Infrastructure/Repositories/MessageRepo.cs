@@ -1,4 +1,4 @@
-﻿using Application.Contracts;
+﻿using Application.Contracts.Repositories;
 using Core;
 using Core.Entities;
 using Core.Exceptions;

@@ -1,4 +1,6 @@
 ﻿using Application.Contracts;
+using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 using Application.PesScore;
 using Core;
 using Infrastructure.Authentication;

@@ -1,4 +1,4 @@
-﻿using Application.Contracts;
+﻿using Application.Contracts.Repositories;
 using Application.DTOs;
 using Core;
 using Core.Entities;
