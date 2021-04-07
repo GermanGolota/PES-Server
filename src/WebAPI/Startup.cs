@@ -32,6 +32,16 @@ namespace WebAPI
             services.AddSwaggerWithAuthorization();
 
             services.AddWebsocketServices();
+            
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
+                    builder.AllowAnyHeader();
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,11 +56,11 @@ namespace WebAPI
 
             app.UseWebSocketsServer();
 
-            //app.UseHttpsRedirection();
-
             app.UseAuthentication();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
