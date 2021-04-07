@@ -1,10 +1,39 @@
-﻿namespace Core.Extensions
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+
+namespace Core.Extensions
 {
     public static class GenericExtensions
     {
         public static bool IsNotNull(this object obj)
         {
             return obj is object;
+        }
+
+        public static bool TryAddWithReties<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
+        {
+            int i = 0;
+            while (i < retryCount)
+            {
+                if (dict.TryAdd(key, value))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool TryRemoveWithReties<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, int retryCount)
+        {
+            int i = 0;
+            while (i < retryCount)
+            {
+                if (dict.TryRemove(key, out TValue _))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

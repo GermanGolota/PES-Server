@@ -1,9 +1,11 @@
 ﻿using Application.Contracts;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
+using Core.Extensions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +14,7 @@ namespace WebAPI.WebSockets
 {
     public class WebSocketsManager : IWebSocketsManager
     {
-        private Dictionary<Guid, ChatWebSocket> WebSockets { get; set; }
+        private ConcurrentDictionary<Guid, ChatWebSocket> WebSockets { get; set; }
         
         public Guid AddSocket(WebSocket socket, Guid chatId)
         {
@@ -22,7 +24,7 @@ namespace WebAPI.WebSockets
                 Client = socket,
                 ChatId = chatId
             };
-            WebSockets.Add(guid, chatSocket);
+            WebSockets.TryAddWithReties(guid, chatSocket, 10);
             return guid;
         }
         public async Task RemoveSocket(Guid socketId)
@@ -37,7 +39,7 @@ namespace WebAPI.WebSockets
                         CancellationToken.None);
                 }
 
-                WebSockets.Remove(socketId);
+                WebSockets.TryRemoveWithReties(socketId, 10);
             }
         }
 
@@ -51,7 +53,7 @@ namespace WebAPI.WebSockets
                     await webSocket.Client.CloseAsync(WebSocketCloseStatus.PolicyViolation,
                     closureReason, CancellationToken.None);
                 }
-                WebSockets.Remove(socketId);
+                WebSockets.TryRemoveWithReties(socketId, 10);
             }
         }
 
