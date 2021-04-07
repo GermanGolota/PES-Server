@@ -14,7 +14,8 @@ namespace Infrastructure.Services
         public PesScoreConfig(IConfiguration config)
         {
             _config = config;
-            _pesScores = _config.GetSection("PesConfig")
+            _pesScores = _config
+                .GetSection("PesConfig")
                 .GetChildren()
                 .Select(x => new KeyValuePair<int, string>(Int32.Parse(x.Key), x.Value))
                 .OrderBy(x => x.Key)
@@ -37,30 +38,28 @@ namespace Infrastructure.Services
                 int score = scores[i];
                 if (pesScore >= score)
                 {
-                    if (NotLastScore(scores, i))
+                    for (int j = i; j < scores.Count; j++)
                     {
-                        closestScore = score;
-                        break;
+                        if(scores[j] < pesScore)
+                        {
+                            closestScore = scores[j];
+                            break;
+                        }
                     }
-                    else
+
+                    if (closestScore == -1)
                     {
                         closestScore = scores.Last();
-                        break;
                     }
                 }
             }
 
-            if (closestScore != -1)
+            if (closestScore == -1)
             {
                 closestScore = scores.First();
             }
 
             return closestScore;
-        }
-
-        private bool NotLastScore(List<int> scores, int i)
-        {
-            return i != scores.Count - 1;
         }
     }
 }
