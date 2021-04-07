@@ -60,11 +60,6 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Chat> GetChatById(Guid chatId)
-        {
-            return await _context.Chats.FindAsync(chatId);
-        }
-
         public async Task<ChatDisplayModel> GetChatModel(Guid chatId)
         {
             var chat = await _context.Chats

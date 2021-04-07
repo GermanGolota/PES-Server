@@ -51,11 +51,6 @@ namespace Infrastructure.Repositories
             return false;
         }
 
-        public async Task<User> FindUserById(Guid id)
-        {
-            return await _context.Users.FindAsync(id);
-        }
-
         public async Task<User> FindUserByUsername(string username)
         {
             return await _context.Users.Where(x => x.Username.Equals(username)).FirstOrDefaultAsync();

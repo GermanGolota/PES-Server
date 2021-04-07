@@ -8,7 +8,6 @@ namespace Application.Contracts.Repositories
 {
     public interface IUserRepo
     {
-        Task<User> FindUserById(Guid id);
         Task<User> FindUserByUsername(string username);
         Task AddUser(UserRegistrationModel user);
         Task<bool> CheckIfUsernameIsTaken(string username, CancellationToken cancellation);

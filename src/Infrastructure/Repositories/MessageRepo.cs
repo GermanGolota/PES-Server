@@ -75,26 +75,5 @@ namespace Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<Guid> FindUserMessageInChat(Guid userId, Guid chatId)
-        {
-            var message = await _context.Messages.Where(x => x.ChatId.Equals(chatId) && x.UserId.Equals(userId)).FirstOrDefaultAsync();
-
-            if(message is null)
-            {
-                throw new NoMessageException();
-            }
-
-            return message.MessageId;
-        }
-
-        public async Task<List<string>> GetAllUserMessages(Guid userId)
-        {
-            return await _context.Messages
-                .AsNoTracking()
-                .Where(x => x.UserId.Equals(userId))
-                .Select(x=>x.Text)
-                .ToListAsync();
-        }
     }
 }
