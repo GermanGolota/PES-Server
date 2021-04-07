@@ -10,7 +10,7 @@ namespace Core.Extensions
             return obj is object;
         }
 
-        public static bool TryAddWithReties<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
+        public static bool TryAddWithRetries<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
         {
             int i = 0;
             while (i < retryCount)
@@ -23,7 +23,7 @@ namespace Core.Extensions
             return false;
         }
 
-        public static bool TryRemoveWithReties<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, int retryCount)
+        public static bool TryRemoveWithRetries<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, int retryCount)
         {
             int i = 0;
             while (i < retryCount)

@@ -24,7 +24,7 @@ namespace WebAPI.WebSockets
                 Client = socket,
                 ChatId = chatId
             };
-            WebSockets.TryAddWithReties(guid, chatSocket, 10);
+            WebSockets.TryAddWithRetries(guid, chatSocket, 10);
             return guid;
         }
         public async Task RemoveSocket(Guid socketId)
@@ -39,7 +39,7 @@ namespace WebAPI.WebSockets
                         CancellationToken.None);
                 }
 
-                WebSockets.TryRemoveWithReties(socketId, 10);
+                WebSockets.TryRemoveWithRetries(socketId, 10);
             }
         }
 
@@ -53,7 +53,7 @@ namespace WebAPI.WebSockets
                     await webSocket.Client.CloseAsync(WebSocketCloseStatus.PolicyViolation,
                     closureReason, CancellationToken.None);
                 }
-                WebSockets.TryRemoveWithReties(socketId, 10);
+                WebSockets.TryRemoveWithRetries(socketId, 10);
             }
         }
 
