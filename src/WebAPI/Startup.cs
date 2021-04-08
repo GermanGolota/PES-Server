@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Localization;
 using WebAPI.Culture;
 using System.Collections.Generic;
 using System.Globalization;
+using Application.Contracts.PesScore;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -61,6 +63,8 @@ namespace WebAPI
                 options.DefaultRequestCulture = new RequestCulture("en-US");
                 options.RequestCultureProviders.Insert(0, new OverridenCultureProvider());
             });
+
+            services.AddScoped<IPesScoreBadgeLocationResolver, PesScoreBadgeLocationResolver>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
