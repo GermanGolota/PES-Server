@@ -1,4 +1,5 @@
 ﻿using Application.CQRS.Queries.Service.GetPesScore;
+using Application.DTOs.Service;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
@@ -18,13 +19,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("pesScore/{username}")]
-        public async Task<ActionResult<int>> GetPesScore(string username, CancellationToken token)
+        public async Task<ActionResult<PesScoreResultModel>> GetPesScore(string username, CancellationToken token)
         {
             var query = new GetPesScoreQuery
             {
                 Username = username
             };
-            int reponse = await _mediator.Send(query, token);
+            PesScoreResultModel reponse = await _mediator.Send(query, token);
             return reponse;
         }
     }
