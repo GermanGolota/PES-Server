@@ -77,6 +77,8 @@ namespace WebAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PES WebAPI v1"));
             }
 
+            app.UseStaticFiles();
+
             app.UseExceptionHandler(handler => handler.UseCustomErrors(env));
 
             app.UseWebSocketsServer();
