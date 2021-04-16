@@ -1,4 +1,5 @@
 ﻿using Application.Contracts;
+using Application.Contracts.PesScore;
 using Application.Contracts.Repositories;
 using Application.Contracts.Service;
 using Application.PesScore;
@@ -61,6 +62,8 @@ namespace Infrastructure
         {
             services.AddScoped<IPesScoreCalculator, PesScoreCalculator>();
             services.AddScoped<IPesScoreService, PesScoreService>();
+            services.AddScoped<IPesScoreConfig, PesScoreConfig>();
+            services.AddScoped<IPesScoreLocalizer, PesScoreLocalizer>();
             return services;
         }
 
