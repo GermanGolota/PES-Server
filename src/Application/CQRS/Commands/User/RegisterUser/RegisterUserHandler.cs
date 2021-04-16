@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Repositories;
 using Application.DTOs;
+using Application.DTOs.Response;
 using Core.Entities;
 using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, string>
+    public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, JWTokenModel>
     {
         private readonly IUserRepo _repo;
         private readonly IJWTokenManager _tokenManager;
@@ -23,7 +24,7 @@ namespace Application.CQRS.Commands
         }
 
 
-        public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<JWTokenModel> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             //TODO:Automapper
             UserRegistrationModel user = new UserRegistrationModel
@@ -34,7 +35,7 @@ namespace Application.CQRS.Commands
             };
             await _repo.AddUser(user);
 
-            string response = await _tokenManager.Authorize(user.Username, user.Password, cancellationToken);
+            JWTokenModel response = await _tokenManager.Authorize(user.Username, user.Password, cancellationToken);
 
             return response;
         }

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Extensions;
 using Application.Contracts.Repositories;
+using Application.DTOs.Response;
 
 namespace Infrastructure.Authentication
 {
@@ -26,27 +27,33 @@ namespace Infrastructure.Authentication
             this._repo = repo;
             this._encrypter = encrypter;
         }
-        public async Task<string> Authorize(string username, string password, CancellationToken cancellation)
+        public async Task<JWTokenModel> Authorize(string username, string password, CancellationToken cancellation)
         {
             User user = await _repo.FindUserByUsername(username);
 
             string encryptedPassword = await _encrypter.Encrypt(password);
 
-            if(user.IsNotNull()&&user.PasswordHash.Equals(encryptedPassword))
+            if (user.IsNotNull() && user.PasswordHash.Equals(encryptedPassword))
             {
                 var TokenHandler = new JwtSecurityTokenHandler();
                 var TokenKey = Encoding.ASCII.GetBytes(key);
+                var expires = DateTime.UtcNow.AddDays(1);
                 var TokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
                     }),
-                    Expires = DateTime.Now.AddDays(1),
+                    Expires = expires,
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(TokenKey), SecurityAlgorithms.HmacSha256Signature)
                 };
-                var token = TokenHandler.CreateToken(TokenDescriptor);
-                return TokenHandler.WriteToken(token);
+                SecurityToken token = TokenHandler.CreateToken(TokenDescriptor);
+                int expiresIn = (int)(expires - DateTime.UtcNow).TotalSeconds;
+                return new JWTokenModel
+                {
+                    AccessToken = TokenHandler.WriteToken(token),
+                    ExpiresIn = expiresIn
+                };
             }
             else
             {

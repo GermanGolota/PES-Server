@@ -1,6 +1,7 @@
 ﻿using Application.CQRS.Commands;
 using Application.CQRS.Queries;
 using Application.DTOs;
+using Application.DTOs.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +25,9 @@ namespace WebAPI.Controllers
             this._mediator = mediator;
         }
         [HttpPost("register")]
-        public async Task<ActionResult<string>> RegisterUser([FromBody]RegisterUserCommand command, CancellationToken cancellation)
+        public async Task<ActionResult<JWTokenModel>> RegisterUser([FromBody]RegisterUserCommand command, CancellationToken cancellation)
         {
-            var token = await _mediator.Send(command, cancellation);
+            JWTokenModel token = await _mediator.Send(command, cancellation);
 
             if(token is null)
             {
@@ -36,9 +37,9 @@ namespace WebAPI.Controllers
             return Ok(token);
         }
         [HttpPost("login")]
-        public async Task<ActionResult<string>> LoginUser([FromBody] LoginUserQuery query, CancellationToken cancellation)
+        public async Task<ActionResult<JWTokenModel>> LoginUser([FromBody] LoginUserQuery query, CancellationToken cancellation)
         {
-            var token = await _mediator.Send(query, cancellation);
+            JWTokenModel token = await _mediator.Send(query, cancellation);
 
             if (token is null)
             {
