@@ -38,7 +38,7 @@ namespace WebAPI
             services.AddSwaggerWithAuthorization();
 
             services.AddWebsocketServices();
-            
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder =>
@@ -49,20 +49,7 @@ namespace WebAPI
                 });
             });
 
-            IList<CultureInfo> supportedCultures = new List<CultureInfo>
-            {
-                new CultureInfo("en-US"), 
-                new CultureInfo("ru"),
-                new CultureInfo("ua")
-            };
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-                options.DefaultRequestCulture = new RequestCulture("en-US");
-                options.RequestCultureProviders.Insert(0, new OverridenCultureProvider());
-            });
+            services.AddCustomLocalization();
 
             services.AddScoped<IPesScoreBadgeLocationResolver, PesScoreBadgeLocationResolver>();
         }
