@@ -2,12 +2,17 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.WebSockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using WebAPI.Culture;
 using WebAPI.PipelineBehaviours;
 using WebAPI.WebSockets;
 
@@ -42,6 +47,26 @@ namespace WebAPI.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddCustomLocalization(this IServiceCollection services)
+        {
+            IList<CultureInfo> supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("ru"),
+                new CultureInfo("ua")
+            };
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.RequestCultureProviders.Insert(0, new OverridenCultureProvider());
             });
 
             return services;

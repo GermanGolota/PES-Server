@@ -13,5 +13,8 @@ namespace Application.Contracts.Repositories
         Task<bool> CheckIfUsernameIsTaken(string username, CancellationToken cancellation);
         Task RemoveUser(Guid id);
         Task<string> GetUsersUsername(Guid id);
+
+        Task<string> GetRefreshTokenFor(Guid userId);
+        Task SetRefreshTokenFor(Guid userId, string refreshToken);
     }
 }

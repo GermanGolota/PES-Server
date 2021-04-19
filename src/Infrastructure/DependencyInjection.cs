@@ -1,9 +1,11 @@
 ﻿using Application.Contracts;
+using Application.Contracts.PesScore;
 using Application.Contracts.Repositories;
 using Application.Contracts.Service;
 using Application.PesScore;
 using Core;
 using Infrastructure.Authentication;
+using Infrastructure.Config;
 using Infrastructure.Contracts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -44,6 +46,11 @@ namespace Infrastructure
 
             services.AddPesScoreServices();
 
+            services.AddScoped<TokenConfig>(factory => new TokenConfig
+            {
+                EncryptionKey = configuration["EncryptionKey"]
+            });
+
             services.AddScoped<IChatMembersService, ChatMembersService>();
 
             return services;
@@ -61,6 +68,8 @@ namespace Infrastructure
         {
             services.AddScoped<IPesScoreCalculator, PesScoreCalculator>();
             services.AddScoped<IPesScoreService, PesScoreService>();
+            services.AddScoped<IPesScoreConfig, PesScoreConfig>();
+            services.AddScoped<IPesScoreLocalizer, PesScoreLocalizer>();
             return services;
         }
 
@@ -82,7 +91,7 @@ namespace Infrastructure
 
         private static string CreateConnectionString(IConfiguration configuration)
         {
-            string host = configuration["Host"]??"localhost";
+            string host = configuration["Host"] ?? "localhost";
             string port = configuration["Port"] ?? "5432";
             string database = configuration["DB"] ?? "PesDB";
             string username = configuration["User"] ?? "postgres";

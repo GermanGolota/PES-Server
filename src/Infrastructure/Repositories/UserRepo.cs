@@ -79,5 +79,34 @@ namespace Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<string> GetRefreshTokenFor(Guid userId)
+        {
+            var refreshToken = await _context.Tokens
+                .AsNoTracking()
+                .Where(x => x.UserId.Equals(userId))
+                .FirstOrDefaultAsync();
+            return refreshToken.Token;
+        }
+
+        public async Task SetRefreshTokenFor(Guid userId, string refreshToken)
+        {
+            var tokens = await _context.Tokens
+                .Where(x => x.UserId.Equals(userId))
+                .ToListAsync();
+
+            if(tokens.Any())
+            {
+                _context.Tokens.RemoveRange(tokens);
+            }
+
+            _context.Tokens.Add(new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = userId
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

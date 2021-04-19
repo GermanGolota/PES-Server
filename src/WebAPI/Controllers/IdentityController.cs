@@ -5,9 +5,6 @@ using Application.DTOs.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
@@ -24,18 +21,20 @@ namespace WebAPI.Controllers
         {
             this._mediator = mediator;
         }
+
         [HttpPost("register")]
-        public async Task<ActionResult<JWTokenModel>> RegisterUser([FromBody]RegisterUserCommand command, CancellationToken cancellation)
+        public async Task<ActionResult<JWTokenModel>> RegisterUser([FromBody] RegisterUserCommand command, CancellationToken cancellation)
         {
             JWTokenModel token = await _mediator.Send(command, cancellation);
 
-            if(token is null)
+            if (token is null)
             {
                 return BadRequest();
             }
 
             return Ok(token);
         }
+
         [HttpPost("login")]
         public async Task<ActionResult<JWTokenModel>> LoginUser([FromBody] LoginUserQuery query, CancellationToken cancellation)
         {
@@ -47,6 +46,22 @@ namespace WebAPI.Controllers
             }
 
             return Ok(token);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult<RefreshTokenResponse>> RefreshToken([FromBody] RefreshTokenCommand command, CancellationToken cancellation)
+        {
+            RefreshTokenResponse token = await _mediator.Send(command, cancellation);
+            ActionResult<RefreshTokenResponse> result;
+            if (token.Successfull)
+            {
+                result = Ok(token);
+            }
+            else
+            {
+                result = BadRequest(token);
+            }
+            return result;
         }
 
         [Authorize]
