@@ -60,13 +60,15 @@ namespace Infrastructure.Authentication
                 Expires = expires,
                 SigningCredentials = credentials
             };
+
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-            int expiresIn = (int)(expires - DateTime.UtcNow).TotalSeconds;
+            var offset = new DateTimeOffset(expires);
+            long expiresIn = offset.ToUnixTimeSeconds();
 
             return new JWTokenModel
             {
                 AccessToken = tokenHandler.WriteToken(token),
-                ExpiresIn = expiresIn
+                ExpirationStamp = expiresIn
             };
         }
 

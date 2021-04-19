@@ -8,7 +8,7 @@ namespace Application.DTOs.Response
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
-        //seconds
-        public int ExpiresIn { get; set; }
+        //unix time-stamp
+        public long ExpirationStamp { get; set; }
     }
 }
