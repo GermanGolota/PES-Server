@@ -5,6 +5,7 @@ using Application.Contracts.Service;
 using Application.PesScore;
 using Core;
 using Infrastructure.Authentication;
+using Infrastructure.Config;
 using Infrastructure.Contracts;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -44,6 +45,11 @@ namespace Infrastructure
             services.AddWebSocketServices();
 
             services.AddPesScoreServices();
+
+            services.AddScoped<TokenConfig>(factory => new TokenConfig
+            {
+                EncryptionKey = configuration["EncryptionKey"]
+            });
 
             services.AddScoped<IChatMembersService, ChatMembersService>();
 
@@ -85,7 +91,7 @@ namespace Infrastructure
 
         private static string CreateConnectionString(IConfiguration configuration)
         {
-            string host = configuration["Host"]??"localhost";
+            string host = configuration["Host"] ?? "localhost";
             string port = configuration["Port"] ?? "5432";
             string database = configuration["DB"] ?? "PesDB";
             string username = configuration["User"] ?? "postgres";

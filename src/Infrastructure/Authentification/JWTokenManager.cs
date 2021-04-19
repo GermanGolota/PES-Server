@@ -14,22 +14,24 @@ using Application.Contracts.Repositories;
 using Application.DTOs.Response;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using Infrastructure.Config;
 
 namespace Infrastructure.Authentication
 {
     public class JWTokenManager : IJWTokenManager
     {
         private const string SecurityAlgorithm = SecurityAlgorithms.HmacSha256Signature;
-        private readonly string key;
+        private readonly string _key;
         private readonly IUserRepo _repo;
         private readonly IEncrypter _encrypter;
 
-        public JWTokenManager(IConfiguration config, IUserRepo repo, IEncrypter encrypter)
+        public JWTokenManager(TokenConfig config, IUserRepo repo, IEncrypter encrypter)
         {
-            this.key = config["EncryptionKey"];
+            this._key = config.EncryptionKey;
             this._repo = repo;
             this._encrypter = encrypter;
         }
+
         public async Task<JWTokenModel> Authorize(string username, string password, CancellationToken cancellation)
         {
             User user = await _repo.FindUserByUsername(username);
@@ -51,7 +53,7 @@ namespace Infrastructure.Authentication
         private JWTokenModel CreateTokenForClaims(IEnumerable<Claim> claims)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.ASCII.GetBytes(key);
+            var tokenKey = Encoding.ASCII.GetBytes(_key);
             var expires = DateTime.UtcNow.AddDays(1);
             var credentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithm);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -121,7 +123,7 @@ namespace Infrastructure.Authentication
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_key)),
                 ValidateLifetime = false //important
             };
 
