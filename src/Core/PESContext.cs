@@ -27,11 +27,6 @@ namespace Core
                 o.ChatId,
                 o.UserId
             });
-            modelBuilder.Entity<AdminToChat>().HasKey(o => new
-            {
-                o.ChatId,
-                o.UserId
-            });
         }
     }
 }
