@@ -86,6 +86,7 @@ namespace Infrastructure.Repositories
                 .AsNoTracking()
                 .Where(x => x.UserId.Equals(userId))
                 .FirstOrDefaultAsync();
+
             return refreshToken.Token;
         }
 

@@ -15,13 +15,12 @@ namespace Infrastructure.Extensions
             {
                 ChatId = chat.ChatId,
                 ChatName = chat.ChatName,
-                UserCount = chat.Users.Count + chat.Admins.Count
+                UserCount = chat.Users.Count
             });
         }
         public static IQueryable<Chat> ContainsUser(this IQueryable<Chat> chats, Guid userId)
         {
-            return chats.Where(x => x.Admins.Where(admin => admin.UserId.Equals(userId)).Any()
-                                 || x.Users.Where(user => user.UserId.Equals(userId)).Any());
+            return chats.Where(x => x.Users.Any(user => user.UserId.Equals(userId)));
         }
     }
 }

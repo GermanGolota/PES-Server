@@ -28,7 +28,7 @@ namespace Infrastructure.Services
         {
             var chat = await GetChatWithUsers(chatId);
 
-            if (UserAlreadyPresent(userId, chat.Users))
+            if (UserIsPresent(userId, chat.Users))
             {
                 throw new UserAlreadyInTheChatException();
             }
@@ -41,14 +41,15 @@ namespace Infrastructure.Services
             var user = new UserToChat
             {
                 ChatId = chatId,
-                UserId = userId
+                UserId = userId,
+                Role = Role.User
             };
 
             chat.Users.Add(user);
 
             await _context.SaveChangesAsync();
         }
-        private bool UserAlreadyPresent(Guid userId, List<UserToChat> users)
+        private bool UserIsPresent(Guid userId, List<UserToChat> users)
         {
             return users.IsNotNull() && users.Where(x => x.UserId.Equals(userId)).Any();
         }
@@ -56,7 +57,6 @@ namespace Infrastructure.Services
         {
             var chat = await _context.Chats
                 .Include(x => x.Users)
-                .Include(x => x.Admins)
                 .Where(x => x.ChatId.Equals(chatId))
                 .FirstOrDefaultAsync();
 
@@ -71,7 +71,7 @@ namespace Infrastructure.Services
         public async Task<List<Guid>> GetAdminsOfChat(Guid chatId)
         {
             var chat = await _context.Chats.Where(x => x.ChatId.Equals(chatId))
-                .Include(x => x.Admins)
+                .Include(x => x.Users)
                 .FirstOrDefaultAsync();
 
             if (chat is null)
@@ -79,7 +79,7 @@ namespace Infrastructure.Services
                 throw new NoChatException();
             }
 
-            return chat.Admins.Select(x => x.UserId).ToList();
+            return chat.Users.Where(x => x.Role.Equals(Role.Admin)).Select(x => x.UserId).ToList();
         }
 
         private async Task<List<ChatMemberModelAdmin>> GetMembers(Guid chatId)
@@ -101,7 +101,7 @@ namespace Infrastructure.Services
         }
         private List<Guid> GetUserIds(Chat chat)
         {
-            return chat.Users.Select(x => x.UserId).Union(chat.Admins.Select(x => x.UserId)).ToList();
+            return chat.Users.Select(x => x.UserId).ToList();
         }
         public async Task<List<ChatMemberModel>> GetChatMembers(Guid chatId)
         {
@@ -121,14 +121,9 @@ namespace Infrastructure.Services
         {
             var chat = await GetChatWithUsers(chatId);
 
-            var user = chat.Users.Where(x => x.UserId.Equals(chatId)).FirstOrDefault();
+            var user = chat.Users.Where(x => x.UserId.Equals(userId)).FirstOrDefault();
 
-            var admin = chat.Admins.Where(x => x.UserId.Equals(chatId)).FirstOrDefault();
-
-            bool userIsAdmin = admin.IsNotNull();
-            bool userIsInChat = user.IsNotNull();
-
-            if (UserNotInChat(userIsAdmin, userIsInChat))
+            if (user is null)
             {
                 throw new NoUserException();
             }
@@ -140,50 +135,31 @@ namespace Infrastructure.Services
 
             MemberModel member = new MemberModel
             {
-                IsAdmin = userIsAdmin,
+                IsAdmin = user.Role == Role.Admin,
                 Username = username
             };
 
             return member;
         }
 
-        private bool UserNotInChat(bool userIsAdmin, bool userIsInChat)
-        {
-            return !userIsAdmin && !userIsInChat;
-        }
-
         public async Task PromoteToAdmin(Guid chatId, Guid userId)
         {
             var chat = await GetChatWithUsers(chatId);
 
-            if (UserAlreadyPresent(userId, chat.Users))
+            if (UserIsPresent(userId, chat.Users))
             {
-                AdminToChat admin = new AdminToChat
+                var user = chat.Users.Where(x => x.UserId.Equals(userId)).First();
+                if(user.Role == Role.Admin)
                 {
-                    ChatId = chatId,
-                    UserId = userId
-                };
-
-                chat.Admins.Add(admin);
-
-                var user = chat.Users.Where(x => x.UserId.Equals(userId)).FirstOrDefault();
-                chat.Users.Remove(user);
-
+                    throw new CannotPromoteAdminException();
+                }
+                user.Role = Role.Admin;
                 await _context.SaveChangesAsync();
             }
             else
             {
-                if (UserIsAdmin(userId, chat.Admins))
-                {
-                    throw new CannotPromoteAdminException();
-                }
                 throw new NoUserException();
             }
-        }
-
-        private bool UserIsAdmin(Guid userId, List<AdminToChat> admins)
-        {
-            return admins.Where(x => x.UserId.Equals(userId)).Any();
         }
 
         public async Task RemoveUserFromChat(Guid chatId, Guid userId)
@@ -191,27 +167,16 @@ namespace Infrastructure.Services
             var chat = await GetChatWithUsers(userId);
 
             var userQuerry = chat.Users.Where(x => x.UserId.Equals(userId));
-            bool userInChat = userQuerry.Any();
 
-            var adminQuerry = chat.Admins.Where(x => x.UserId.Equals(userId));
-            bool userIsAdmin = adminQuerry.Any();
+            var user = userQuerry.FirstOrDefault();
 
-            if (userInChat)
+            if (user.IsNotNull())
             {
-                var user = userQuerry.FirstOrDefault();
                 chat.Users.Remove(user);
             }
             else
             {
-                if (userIsAdmin)
-                {
-                    var admin = adminQuerry.FirstOrDefault();
-                    chat.Admins.Remove(admin);
-                }
-                else
-                {
-                    throw new NoUserException();
-                }
+                throw new NoUserException();
             }
 
             await _context.SaveChangesAsync();

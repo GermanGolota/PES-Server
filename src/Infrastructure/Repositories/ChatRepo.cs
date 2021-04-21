@@ -24,16 +24,17 @@ namespace Infrastructure.Repositories
         public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword)
         {
             Guid chatId = Guid.NewGuid();
-            AdminToChat admin = new AdminToChat
+            UserToChat admin = new UserToChat
             {
                 ChatId = chatId,
-                UserId = adminId
+                UserId = adminId,
+                Role = Role.Admin
             };
             Chat chat = new Chat
             {
                 ChatName = chatName,
                 ChatPassword = chatPassword,
-                Admins = new List<AdminToChat>
+                Users = new List<UserToChat>
                 {
                     admin
                 }
@@ -96,7 +97,6 @@ namespace Infrastructure.Repositories
 
             var query = _context.Chats
                 .AsNoTracking()
-                .Include(x => x.Admins)
                 .Include(x => x.Users)
                 .AsQueryable();
 
@@ -124,7 +124,6 @@ namespace Infrastructure.Repositories
         {
             return await _context.Chats
                 .Include(x => x.Users)
-                .Include(x => x.Admins)
                 .ContainsUser(userId)
                 .Select(x => x.ChatId)
                 .ToListAsync();
