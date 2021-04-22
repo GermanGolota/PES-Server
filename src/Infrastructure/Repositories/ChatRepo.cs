@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
             {
                 ChatId = chatId,
                 UserId = adminId,
-                Role = Role.Admin
+                Role = Role.Creator
             };
             Chat chat = new Chat
             {

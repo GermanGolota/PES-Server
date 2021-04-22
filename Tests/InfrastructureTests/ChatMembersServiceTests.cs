@@ -81,9 +81,9 @@ namespace InfrastructureTests
                     {
                         new UserToChat
                         {
-                            ChatId =chatId,
+                            ChatId = chatId,
                             UserId = adminId,
-                            Role = Role.Admin
+                            Role = Role.Creator
                         }
                     },
                     ChatId = chatId

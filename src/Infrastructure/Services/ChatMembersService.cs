@@ -79,7 +79,10 @@ namespace Infrastructure.Services
                 throw new NoChatException();
             }
 
-            return chat.Users.Where(x => x.Role.Equals(Role.Admin)).Select(x => x.UserId).ToList();
+            return chat.Users
+                .Where(x => x.Role.Equals(Role.Admin) || x.Role.Equals(Role.Creator))
+                .Select(x => x.UserId)
+                .ToList();
         }
 
         private async Task<List<ChatMemberModelAdmin>> GetMembers(Guid chatId)
@@ -121,7 +124,9 @@ namespace Infrastructure.Services
         {
             var chat = await GetChatWithUsers(chatId);
 
-            var user = chat.Users.Where(x => x.UserId.Equals(userId)).FirstOrDefault();
+            var user = chat.Users
+                .Where(x => x.UserId.Equals(userId))
+                .FirstOrDefault();
 
             if (user is null)
             {
@@ -135,7 +140,7 @@ namespace Infrastructure.Services
 
             MemberModel member = new MemberModel
             {
-                IsAdmin = user.Role == Role.Admin,
+                IsAdmin = user.Role == Role.Admin || user.Role == Role.Creator,
                 Username = username
             };
 
@@ -149,7 +154,7 @@ namespace Infrastructure.Services
             if (UserIsPresent(userId, chat.Users))
             {
                 var user = chat.Users.Where(x => x.UserId.Equals(userId)).First();
-                if(user.Role == Role.Admin)
+                if (user.Role == Role.Admin || user.Role == Role.Creator)
                 {
                     throw new CannotPromoteAdminException();
                 }
@@ -192,6 +197,13 @@ namespace Infrastructure.Services
             }
 
             await Task.WhenAll(removeTasks);
+        }
+
+        public async Task<Guid> GetChatCreator(Guid chatId)
+        {
+            var chat = await GetChatWithUsers(chatId);
+
+            return chat.Users.Where(x => x.Role.Equals(Role.Creator)).Select(x => x.UserId).FirstOrDefault();
         }
     }
 }

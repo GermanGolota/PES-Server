@@ -14,6 +14,7 @@ namespace Core.Entities
     public enum Role
     {
         User = 1,
-        Admin = 3
+        Admin = 3,
+        Creator = 5
     }
 }
