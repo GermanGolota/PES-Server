@@ -16,5 +16,6 @@ namespace Application.Contracts.Repositories
 
         Task<string> GetRefreshTokenFor(Guid userId);
         Task SetRefreshTokenFor(Guid userId, string refreshToken);
+        Task Logout(Guid userId);
     }
 }

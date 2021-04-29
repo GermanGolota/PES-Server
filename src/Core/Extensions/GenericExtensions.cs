@@ -10,6 +10,12 @@ namespace Core.Extensions
             return obj is object;
         }
 
+        public static bool IsNotNullOrEmpty<T>(this ICollection<T> collection)
+        {
+            return collection.IsNotNull() && collection.Count > 0;
+        }
+
+
         public static bool TryAddWithRetries<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
         {
             int i = 0;
