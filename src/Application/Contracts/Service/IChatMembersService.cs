@@ -9,6 +9,7 @@ namespace Application.Contracts.Service
     {
         Task RemoveUserFromChat(Guid chatId, Guid userId);
         Task<List<Guid>> GetAdminsOfChat(Guid chatId);
+        Task<Guid> GetChatCreator(Guid chatId);
         Task AddUser(Guid chatId, Guid userId, string chatPassword);
         Task PromoteToAdmin(Guid chatId, Guid userId);
         Task<MemberModel> GetMember(Guid chatId, Guid userId);

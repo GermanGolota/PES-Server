@@ -2,7 +2,6 @@
 using Core;
 using Core.Entities;
 using Core.Exceptions;
-using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -78,14 +77,15 @@ namespace InfrastructureTests
                 {
                     ChatName = "test",
                     ChatPassword = "1",
-                    Admins = new List<AdminToChat>
-                {
-                    new AdminToChat
+                    Users = new List<UserToChat>
                     {
-                        ChatId =chatId,
-                        UserId = adminId
-                    }
-                },
+                        new UserToChat
+                        {
+                            ChatId = chatId,
+                            UserId = adminId,
+                            Role = Role.Creator
+                        }
+                    },
                     ChatId = chatId
                 };
 

@@ -13,7 +13,6 @@ namespace Core.Entities
         public string ChatName { get; set; }
         [MaxLength(50)]
         public string ChatPassword { get; set; }
-        public List<AdminToChat> Admins { get; set; }
         public List<Message> Messages { get; set; }
         public List<UserToChat> Users { get; set; }
     }

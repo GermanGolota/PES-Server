@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,9 +33,9 @@ namespace Application.CQRS.Commands
             CommandResponse response = new CommandResponse();
             try
             {
-                List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
+                Guid creatorId = await _membersService.GetChatCreator(request.ChatId);
 
-                if (admins.Contains(request.UserId))
+                if (creatorId.Equals(request.UserId))
                 {
                     await _repo.DeleteChat(request.ChatId);
                     response.Successfull = true;
