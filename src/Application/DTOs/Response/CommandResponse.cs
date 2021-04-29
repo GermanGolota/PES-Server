@@ -4,6 +4,7 @@
     {
         public bool Successfull { get; set; }
         public string ResultMessage { get; set; }
+
         public static CommandResponse CreateSuccessfull(string message)
         {
             return new CommandResponse

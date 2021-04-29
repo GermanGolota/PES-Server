@@ -75,12 +75,21 @@ namespace WebAPI.Controllers
 
             CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
+            return this.CommandResponse(response);
+        }
 
-            return BadRequest(response);
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult<CommandResponse>> LogoutUser(CancellationToken cancellation)
+        {
+            var command = new LogoutCommand
+            {
+                UserId = this.GetUserId()
+            };
+
+            CommandResponse response = await _mediator.Send(command, cancellation);
+
+            return this.CommandResponse(response);
         }
     }
 }
