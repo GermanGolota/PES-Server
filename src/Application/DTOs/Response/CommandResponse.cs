@@ -1,13 +1,9 @@
-﻿using Core.Exceptions;
-
-namespace Application.DTOs
+﻿namespace Application.DTOs
 {
     public class CommandResponse
     {
         public bool Successfull { get; set; }
         public string ResultMessage { get; set; }
-
-        public bool IsServerError => ResultMessage.Equals(ExceptionMessages.ServerError);
 
         public static CommandResponse CreateSuccessfull(string message)
         {

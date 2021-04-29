@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -27,7 +28,8 @@ namespace WebAPI.Extensions
             }
             else
             {
-                if(response.IsServerError)
+                
+                if (IsServerError(response))
                 {
                     result = controller.StatusCode(StatusCodes.Status500InternalServerError, response);
                 }
@@ -37,6 +39,11 @@ namespace WebAPI.Extensions
                 }
             }
             return result;
+        }
+
+        public static bool IsServerError(CommandResponse response)
+        {
+            return response.ResultMessage.Equals(ExceptionMessages.ServerError);
         }
     }
 }
