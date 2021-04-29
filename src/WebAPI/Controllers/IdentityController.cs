@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize]
-        [HttpDelete("logout")]
+        [HttpPost("logout")]
         public async Task<ActionResult<CommandResponse>> LogoutUser(CancellationToken cancellation)
         {
             var command = new LogoutCommand
