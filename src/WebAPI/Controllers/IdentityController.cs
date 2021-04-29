@@ -75,12 +75,7 @@ namespace WebAPI.Controllers
 
             CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [Authorize]
@@ -94,12 +89,7 @@ namespace WebAPI.Controllers
 
             CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
     }
 }
