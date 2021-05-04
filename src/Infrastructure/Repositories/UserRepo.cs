@@ -109,5 +109,31 @@ namespace Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateCredentials(Guid userId, string newUsername, string newPassword, string newPesKey)
+        {
+            User user = await _context.Users.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
+            if(user is null)
+            {
+                throw new NoUserException();
+            }
+
+            if (newUsername.IsNotNull())
+            {
+                user.Username = newUsername;
+            }
+
+            if (newPassword.IsNotNull())
+            {
+                user.PasswordHash = await _encrypter.Encrypt(newPassword);
+            }
+
+            if (newPesKey.IsNotNull())
+            {
+                user.PESKey = newPesKey;
+            }
+
+            await _context.SaveChangesAsync();
+        }
     }
 }
