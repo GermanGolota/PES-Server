@@ -110,6 +110,19 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task Logout(Guid userId)
+        {
+            var tokens = await _context.Tokens
+                .Where(x => x.UserId.Equals(userId))
+                .ToListAsync();
+
+            if(tokens.IsNotNullOrEmpty())
+            {
+                _context.Tokens.RemoveRange(tokens);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task UpdateCredentials(Guid userId, string newUsername, string newPassword, string newPesKey)
         {
             User user = await _context.Users.Where(x => x.UserId.Equals(userId)).FirstOrDefaultAsync();
