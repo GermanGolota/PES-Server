@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
   api:
-    image: yaroslavholota/pes_api:0.1
+    image: yaroslavholota/pes_api:latest
     environment:
       Port: 5432
       User: postgres
