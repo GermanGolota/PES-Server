@@ -2,21 +2,23 @@
 using Application.CQRS.Commands;
 using FluentValidation;
 using FluentValidation.Results;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WEBApi.Validators
+namespace WebAPI.Validators
 {
-    public class RegistrationCommandValidator : AbstractValidator<RegisterUserCommand>
+    public class UpdateCredentialsCommandValidator : AbstractValidator<UpdateCredentialsCommand>
     {
         private readonly IUserRepo _repo;
 
-        public RegistrationCommandValidator(IUserRepo repo)
+        public UpdateCredentialsCommandValidator(IUserRepo repo)
         {
-            this._repo = repo;
+            _repo = repo;
         }
-
-        public override Task<ValidationResult> ValidateAsync(ValidationContext<RegisterUserCommand> context, CancellationToken cancellation = default)
+        public override Task<ValidationResult> ValidateAsync(ValidationContext<UpdateCredentialsCommand> context, CancellationToken cancellation = default)
         {
             RuleFor(command => command.Username)
                .NotEmpty().WithMessage("Username can't be empty")
@@ -30,6 +32,7 @@ namespace WEBApi.Validators
                 .MaximumLength(64).WithMessage("Password is too long");
             return base.ValidateAsync(context, cancellation);
         }
+
         protected async Task<bool> BeAvailable(string username, CancellationToken cancellation)
         {
             return !await _repo.CheckIfUsernameIsTaken(username, cancellation);
