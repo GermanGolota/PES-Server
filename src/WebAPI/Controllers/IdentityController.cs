@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
+using WebAPI.RequestModels;
 
 namespace WebAPI.Controllers
 {
@@ -82,5 +83,28 @@ namespace WebAPI.Controllers
 
             return BadRequest(response);
         }
+
+        [Authorize]
+        [HttpPost("updateCredentials")]
+        public async Task<ActionResult<CommandResponse>> UpdateCredentials([FromBody] UpdateCredentialRequest request, CancellationToken cancellation)
+        {
+            var command = new UpdateCredentialsCommand
+            {
+                UserId = this.GetUserId(),
+                Password = request.Password,
+                PesKey = request.PesKey,
+                Username = request.Username
+            };
+
+            CommandResponse response = await _mediator.Send(command, cancellation);
+
+            if (response.Successfull)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
+        }
+
     }
 }
