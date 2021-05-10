@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts.Repositories;
@@ -7,17 +9,18 @@ using MediatR;
 
 namespace Application.CQRS.Queries
 {
-    public class GetChatsHandler : IRequestHandler<GetChatsQuery, ChatsModel>
+    public class GetMyChatsHandler : IRequestHandler<GetMyChatsQuery, ChatsModel>
     {
         private readonly IChatRepo _repo;
 
-        public GetChatsHandler(IChatRepo repo)
+        public GetMyChatsHandler(IChatRepo repo)
         {
-            this._repo = repo;
+            _repo = repo;
         }
-        public async Task<ChatsModel> Handle(GetChatsQuery request, CancellationToken cancellationToken)
+
+        public async Task<ChatsModel> Handle(GetMyChatsQuery request, CancellationToken cancellationToken)
         {
-            var chats = await _repo.GetChats(request.Options, request.UserId);
+            var chats = await _repo.GetMyChats(request.Options, request.UserId);
 
             ChatsModel chatsModel = new ChatsModel
             {

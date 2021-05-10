@@ -14,6 +14,7 @@ using WebAPI.RequestModels;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/chat")]
     public class ChatController : ControllerBase
@@ -44,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("search/{page?}/{maxCount?}/{term?}")]
-        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page,[FromRoute] int? maxCount, [FromRoute] string term,
+        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page, [FromRoute] int? maxCount, [FromRoute] string term,
             CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
@@ -56,6 +57,34 @@ namespace WebAPI.Controllers
 
             GetChatsQuery query = new GetChatsQuery
             {
+                Options = options,
+                UserId = this.GetUserId()
+            };
+
+            var result = await _mediator.Send(query, cancellation);
+
+            if (result is null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("search/my/{page?}/{maxCount?}/{term?}")]
+        public async Task<ActionResult<CommandResponse>> GetMyChats([FromRoute] int? page, [FromRoute] int? maxCount,
+            [FromRoute] string term, CancellationToken cancellation)
+        {
+            var options = new ChatSelectionOptions
+            {
+                ChatsPerPage = maxCount ?? -1,
+                SearchTerm = term,
+                PageNumber = page ?? 1
+            };
+
+            GetMyChatsQuery query = new GetMyChatsQuery
+            {
+                UserId = this.GetUserId(),
                 Options = options
             };
 
@@ -69,7 +98,6 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult<CommandResponse>> DeleteChat([FromRoute] Guid id, CancellationToken cancellation)
         {
@@ -84,7 +112,6 @@ namespace WebAPI.Controllers
             return this.CommandResponse(response);
         }
 
-        [Authorize]
         [HttpPost("create")]
         public async Task<ActionResult<CommandResponse>> CreateChat([FromBody] CreateChatRequest request, CancellationToken cancellation)
         {
@@ -100,10 +127,9 @@ namespace WebAPI.Controllers
             return this.CommandResponse(response);
         }
 
-        [Authorize]
         [HttpPost("{chatId}/join")]
-        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId, 
-            [FromBody]JoinChatRequest request, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId,
+            [FromBody] JoinChatRequest request, CancellationToken cancellation)
         {
             AddUserToChatCommand command = new()
             {
@@ -117,7 +143,6 @@ namespace WebAPI.Controllers
             return this.CommandResponse(response);
         }
 
-        [Authorize]
         [HttpGet("{chatId}/admin/getMembers")]
         public async Task<ActionResult<List<ChatMemberModelAdmin>>> GetChatMembersAdmin([FromRoute] string chatId,
             CancellationToken cancellation)
@@ -131,7 +156,6 @@ namespace WebAPI.Controllers
             return await _mediator.Send(query, cancellation);
         }
 
-        [Authorize]
         [HttpGet("{chatId}/getMembers")]
         public async Task<ActionResult<List<ChatMemberModel>>> GetChatMembers([FromRoute] string chatId,
             CancellationToken cancellation)
@@ -145,7 +169,6 @@ namespace WebAPI.Controllers
             return await _mediator.Send(query, cancellation);
         }
 
-        [Authorize]
         [HttpPost("{chatId}/admin/promote/{userId}")]
         public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
             string userId, CancellationToken cancellation)
@@ -160,7 +183,7 @@ namespace WebAPI.Controllers
             var response = await _mediator.Send(command, cancellation);
             return this.CommandResponse(response);
         }
-        [Authorize]
+
         [HttpPost("{chatId}/leave")]
         public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
             CancellationToken cancellation)

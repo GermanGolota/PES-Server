@@ -9,13 +9,16 @@ namespace Infrastructure.Extensions
 {
     public static class QueryExtensions
     {
-        public static IQueryable<ChatInfoModel> MapChatsToInfoModels(this IQueryable<Chat> chats)
+        public static IQueryable<ChatInfoModel> MapChatsToInfoModels(this IQueryable<Chat> chats, Guid memberId)
         {
             return chats.Select(chat => new ChatInfoModel
             {
                 ChatId = chat.ChatId,
                 ChatName = chat.ChatName,
-                UserCount = chat.Users.Count
+                UserCount = chat.Users.Count,
+                Role = chat.Users.Where(x => x.UserId.Equals(memberId)).FirstOrDefault() == null
+                ? (Role?)chat.Users.Where(x => x.UserId.Equals(memberId)).FirstOrDefault().Role
+                : null
             });
         }
         public static IQueryable<Chat> ContainsUser(this IQueryable<Chat> chats, Guid userId)

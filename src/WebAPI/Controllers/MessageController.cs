@@ -11,6 +11,7 @@ using System;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/messages")]
     public class MessageController : ControllerBase
@@ -21,7 +22,7 @@ namespace WebAPI.Controllers
         {
             this._mediator = mediator;
         }
-        [Authorize]
+
         [HttpPost("add")]
         public async Task<ActionResult<CommandResponse>> PostMessage([FromBody] PostMessageRequest request,
             CancellationToken cancellation)
@@ -38,7 +39,6 @@ namespace WebAPI.Controllers
             return this.CommandResponse(response);
         }
 
-        [Authorize]
         [HttpPut("edit")]
         public async Task<ActionResult<CommandResponse>> EditMessage([FromBody] EditMessageRequest request, 
             CancellationToken cancellation)
@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
 
             return this.CommandResponse(response);
         }
-        [Authorize]
+
         [HttpDelete("delete/{chatId}")]
         public async Task<ActionResult<CommandResponse>> DeleteMessage([FromRoute] string chatId,
             CancellationToken cancellation)

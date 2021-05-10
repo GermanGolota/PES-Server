@@ -16,12 +16,12 @@ namespace Infrastructure.Authentication
         {
             this._algorithm = algorithm;
         }
-        public async Task<string> Encrypt(string ToBeEncrypt)
+        public Task<string> Encrypt(string ToBeEncrypt)
         {
             var bytes = Encoding.UTF8.GetBytes(ToBeEncrypt);
             var hash = _algorithm.ComputeHash(bytes);
             string output = Convert.ToBase64String(hash);
-            return output;
+            return Task.FromResult(output);
         }
     }
 }
