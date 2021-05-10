@@ -114,7 +114,19 @@ namespace Infrastructure.Repositories
 
             var result = query.MapChatsToInfoModels(memberId);
 
-            return await result.ToListAsync();
+            var pre = await result.ToListAsync();
+            return CalculateRole(memberId, pre);
+        }
+
+        private List<ChatInfoModel> CalculateRole(Guid memberId, List<PreChatInfoModel> pre)
+        {
+            return pre.Select(x => new ChatInfoModel
+            {
+                ChatId = x.ChatId,
+                ChatName = x.ChatName,
+                UserCount = x.Users.Count,
+                Role = x.Users.Where(x => x.UserId.Equals(memberId)).FirstOrDefault()?.Role
+            }).ToList();
         }
 
         private IQueryable<Chat> ApplySearchOptionsToQuery(ChatSelectionOptions options, IQueryable<Chat> query)
