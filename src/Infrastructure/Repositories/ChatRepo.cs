@@ -89,16 +89,41 @@ namespace Infrastructure.Repositories
 
         public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options, Guid memberId)
         {
+            var query = _context.Chats
+                .AsNoTracking()
+                .Include(x => x.Users)
+                .AsQueryable();
+
+            return await GetSelectionForUserFromQuery(options, memberId, query);
+        }
+
+        public async Task<List<ChatInfoModel>> GetMyChats(ChatSelectionOptions options, Guid memberId)
+        {
+            var query = _context.Chats
+             .AsNoTracking()
+             .Include(x => x.Users)
+             .Where(x => x.Users.Where(x => x.UserId.Equals(memberId)).Count() > 0);
+
+            return await GetSelectionForUserFromQuery(options, memberId, query);
+        }
+
+        private async Task<List<ChatInfoModel>> GetSelectionForUserFromQuery(ChatSelectionOptions options,
+            Guid memberId, IQueryable<Chat> query)
+        {
+            query = ApplySearchOptionsToQuery(options, query);
+
+            var result = query.MapChatsToInfoModels(memberId);
+
+            return await result.ToListAsync();
+        }
+
+        private IQueryable<Chat> ApplySearchOptionsToQuery(ChatSelectionOptions options, IQueryable<Chat> query)
+        {
             int count = options.ChatsPerPage;
             bool takeAll = count.Equals(-1);
 
             string term = options.SearchTerm;
             bool takeAny = String.IsNullOrEmpty(term);
-
-            var query = _context.Chats
-                .AsNoTracking()
-                .Include(x => x.Users)
-                .AsQueryable();
 
             if (!takeAll)
             {
@@ -115,10 +140,9 @@ namespace Infrastructure.Repositories
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
-            var result = query.MapChatsToInfoModels(memberId);
-
-            return await result.ToListAsync();
+            return query;
         }
+
 
         public async Task<List<Guid>> GetChatsOfUser(Guid userId)
         {
@@ -126,15 +150,6 @@ namespace Infrastructure.Repositories
                 .Include(x => x.Users)
                 .ContainsUser(userId)
                 .Select(x => x.ChatId)
-                .ToListAsync();
-        }
-
-        public async Task<List<ChatInfoModel>> GetMyChats(Guid memberId)
-        {
-            return await _context.Chats
-                .Include(x => x.Users)
-                .Where(x => x.Users.Where(x => x.UserId.Equals(memberId)).Count() > 0)
-                .MapChatsToInfoModels(memberId)
                 .ToListAsync();
         }
     }

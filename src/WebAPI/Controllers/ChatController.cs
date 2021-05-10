@@ -71,12 +71,21 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search/my")]
-        public async Task<ActionResult<CommandResponse>> GetMyChats(CancellationToken cancellation)
+        [HttpGet("search/my/{page?}/{maxCount?}/{term?}")]
+        public async Task<ActionResult<CommandResponse>> GetMyChats([FromRoute] int? page, [FromRoute] int? maxCount,
+            [FromRoute] string term, CancellationToken cancellation)
         {
+            var options = new ChatSelectionOptions
+            {
+                ChatsPerPage = maxCount ?? -1,
+                SearchTerm = term,
+                PageNumber = page ?? 1
+            };
+
             GetMyChatsQuery query = new GetMyChatsQuery
             {
-                UserId = this.GetUserId()
+                UserId = this.GetUserId(),
+                Options = options
             };
 
             var result = await _mediator.Send(query, cancellation);
