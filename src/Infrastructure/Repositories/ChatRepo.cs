@@ -74,7 +74,8 @@ namespace Infrastructure.Repositories
                     .Select(message => new MessageModel
                     {
                         Message = message.Text,
-                        Username = message.User.Username
+                        Username = message.User.Username,
+                        MessageId = message.MessageId
                     })
                 })
                 .FirstOrDefaultAsync();
