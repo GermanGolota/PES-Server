@@ -30,6 +30,7 @@ namespace Application.CQRS.Commands
             {
                 await _membersService.AddUser(request.ChatId, request.UserId, request.Password);
                 response = CommandResponse.CreateSuccessfull("Succesfully added user to chat");
+                await SendUpdateMessage(request);
             }
             catch(ExpectedException exc)
             {
@@ -39,8 +40,6 @@ namespace Application.CQRS.Commands
             {
                 response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
             }
-
-            await SendUpdateMessage(request);
 
             return response;
         }

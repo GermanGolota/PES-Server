@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("search/my/{page?}/{maxCount?}/{term?}")]
-        public async Task<ActionResult<CommandResponse>> GetMyChats([FromRoute] int? page, [FromRoute] int? maxCount,
+        public async Task<ActionResult<ChatsModel>> GetMyChats([FromRoute] int? page, [FromRoute] int? maxCount,
             [FromRoute] string term, CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions

@@ -41,6 +41,8 @@ namespace Application.CQRS.Commands
 
                 response.Successfull = false;
                 response.ResultMessage = ExceptionMessages.Unathorized;
+
+                await SendUpdateMessage(request);
             }
             catch (ExpectedException exc)
             {
@@ -52,8 +54,6 @@ namespace Application.CQRS.Commands
                 response.Successfull = false;
                 response.ResultMessage = ExceptionMessages.ServerError;
             }
-
-            await SendUpdateMessage(request);
 
             return response;
         }
