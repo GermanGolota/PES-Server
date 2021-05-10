@@ -34,14 +34,9 @@ namespace WebAPI.Controllers
                 UserId = this.GetUserId()
             };
 
-            CommandResponse result = await _mediator.Send(command, cancellation);
+            CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if(result.Successfull)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return this.CommandResponse(response);
         }
 
         [HttpPut("edit")]
@@ -57,12 +52,7 @@ namespace WebAPI.Controllers
 
             CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if(response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [HttpDelete("delete/{chatId}")]
@@ -77,12 +67,7 @@ namespace WebAPI.Controllers
 
             CommandResponse response = await _mediator.Send(command, cancellation);
 
-            if(response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
     }

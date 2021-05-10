@@ -45,7 +45,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("search/{page?}/{maxCount?}/{term?}")]
-        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page,[FromRoute] int? maxCount, [FromRoute] string term,
+        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page, [FromRoute] int? maxCount, [FromRoute] string term,
             CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
@@ -82,12 +82,7 @@ namespace WebAPI.Controllers
 
             var response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [HttpPost("create")]
@@ -102,17 +97,12 @@ namespace WebAPI.Controllers
 
             var response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [HttpPost("{chatId}/join")]
-        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId, 
-            [FromBody]JoinChatRequest request, CancellationToken cancellation)
+        public async Task<ActionResult<CommandResponse>> JoinChat([FromRoute] string chatId,
+            [FromBody] JoinChatRequest request, CancellationToken cancellation)
         {
             AddUserToChatCommand command = new()
             {
@@ -123,12 +113,7 @@ namespace WebAPI.Controllers
 
             var response = await _mediator.Send(command, cancellation);
 
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [HttpGet("{chatId}/admin/getMembers")]
@@ -169,13 +154,7 @@ namespace WebAPI.Controllers
             };
 
             var response = await _mediator.Send(command, cancellation);
-
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
 
         [HttpPost("{chatId}/leave")]
@@ -189,13 +168,7 @@ namespace WebAPI.Controllers
             };
 
             var response = await _mediator.Send(command, cancellation);
-
-            if (response.Successfull)
-            {
-                return Ok(response);
-            }
-
-            return BadRequest(response);
+            return this.CommandResponse(response);
         }
     }
 }
