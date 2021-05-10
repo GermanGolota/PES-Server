@@ -14,11 +14,12 @@ namespace Infrastructure.WebSockets
         {
             _webSocketsManager = webSocketsManager;
         }
-        public async Task SendMessageToSocket(UpdateMessageBase message, Guid chatId)
+        public Task SendMessageToSocket(UpdateMessageBase message, Guid chatId)
         {
             var separateThread = new Thread(async () => await SendUpdateMessage(chatId, message));
             separateThread.Priority = ThreadPriority.Normal;
             separateThread.Start();
+            return Task.CompletedTask;
         }
 
         private async Task SendUpdateMessage(Guid chatId, UpdateMessageBase updateMessage)

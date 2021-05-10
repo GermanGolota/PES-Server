@@ -20,7 +20,7 @@ namespace Application.CQRS.Queries
 
         public async Task<ChatsModel> Handle(GetMyChatsQuery request, CancellationToken cancellationToken)
         {
-            var chats = await _repo.GetMyChats(request.UserId);
+            var chats = await _repo.GetMyChats(request.Options, request.UserId);
 
             ChatsModel chatsModel = new ChatsModel
             {
