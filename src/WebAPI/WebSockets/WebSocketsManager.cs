@@ -14,7 +14,7 @@ namespace WebAPI.WebSockets
 {
     public class WebSocketsManager : IWebSocketsManager
     {
-        private ConcurrentDictionary<Guid, ChatWebSocket> WebSockets { get; set; }
+        private ConcurrentDictionary<Guid, ChatWebSocket> WebSockets { get; set; } = new ConcurrentDictionary<Guid, ChatWebSocket>();
         
         public Guid AddSocket(WebSocket socket, Guid chatId)
         {
