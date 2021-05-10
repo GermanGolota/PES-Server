@@ -71,6 +71,24 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search/my")]
+        public async Task<ActionResult<CommandResponse>> GetMyChats(CancellationToken cancellation)
+        {
+            GetMyChatsQuery query = new GetMyChatsQuery
+            {
+                UserId = this.GetUserId()
+            };
+
+            var result = await _mediator.Send(query, cancellation);
+
+            if (result is null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<CommandResponse>> DeleteChat([FromRoute] Guid id, CancellationToken cancellation)
         {
