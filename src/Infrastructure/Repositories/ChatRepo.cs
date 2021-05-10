@@ -128,5 +128,14 @@ namespace Infrastructure.Repositories
                 .Select(x => x.ChatId)
                 .ToListAsync();
         }
+
+        public async Task<List<ChatInfoModel>> GetMyChats(Guid memberId)
+        {
+            return await _context.Chats
+                .Include(x => x.Users)
+                .Where(x => x.Users.Where(x => x.UserId.Equals(memberId)).Count() > 0)
+                .MapChatsToInfoModels(memberId)
+                .ToListAsync();
+        }
     }
 }
