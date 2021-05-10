@@ -12,7 +12,7 @@ namespace Application.Contracts.Repositories
         Task<Guid> CreateChat(Guid admin, string chatName, string chatPassword);
         Task DeleteChat(Guid chatId);
         Task<ChatDisplayModel> GetChatModel(Guid chatId);
-        Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options);
+        Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options, Guid memberId);
         Task<List<Guid>> GetChatsOfUser(Guid userId);
     }
 }

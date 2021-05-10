@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,5 +10,7 @@ namespace Application.DTOs
         public Guid ChatId { get; set; }
         public string ChatName { get; set; }
         public int UserCount { get; set; }
+        public Nullable<Role> Role { get; set; }
     }
+
 }

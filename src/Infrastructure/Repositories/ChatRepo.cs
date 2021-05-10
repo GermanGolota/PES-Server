@@ -87,7 +87,7 @@ namespace Infrastructure.Repositories
             return chat;
         }
 
-        public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options)
+        public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options, Guid memberId)
         {
             int count = options.ChatsPerPage;
             bool takeAll = count.Equals(-1);
@@ -115,7 +115,7 @@ namespace Infrastructure.Repositories
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
-            var result = query.MapChatsToInfoModels();
+            var result = query.MapChatsToInfoModels(memberId);
 
             return await result.ToListAsync();
         }

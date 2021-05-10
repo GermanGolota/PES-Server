@@ -57,7 +57,8 @@ namespace WebAPI.Controllers
 
             GetChatsQuery query = new GetChatsQuery
             {
-                Options = options
+                Options = options,
+                UserId = this.GetUserId()
             };
 
             var result = await _mediator.Send(query, cancellation);
