@@ -28,7 +28,7 @@ namespace Application.CQRS.Commands
         {
             try
             {
-                await _repo.EditMessage(request.UserId, request.ChatId, request.UpdatedMessage);
+                await _repo.EditMessage(request.MessageId, request.UpdatedMessage);
             }
             catch(ExpectedException exc)
             {

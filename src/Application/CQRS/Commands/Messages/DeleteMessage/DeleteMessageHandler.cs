@@ -29,7 +29,7 @@ namespace Application.CQRS.Commands
             CommandResponse response;
             try
             {
-                await _repo.DeleteMessage(request.UserId, request.ChatId);
+                await _repo.DeleteMessage(request.MessageId);
                 response = CommandResponse.CreateSuccessfull("Successfully deleted message");
                 await SendUpdateMessage(request);
             }
