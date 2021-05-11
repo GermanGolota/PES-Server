@@ -70,6 +70,7 @@ namespace Infrastructure.Repositories
                 .Select(x => new ChatDisplayModel
                 {
                     ChatName = x.ChatName,
+                    IsMultiMessage = x.IsMultiMessage,
                     Messages = (List<MessageModel>)x.Messages
                     .OrderByDescending(message => message.LastEditedDate)
                     .Select(message => new MessageModel

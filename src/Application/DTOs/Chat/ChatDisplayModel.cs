@@ -6,5 +6,6 @@ namespace Application.DTOs
     {
         public List<MessageModel> Messages{ get; set; }
         public string ChatName { get; set; }
+        public bool IsMultiMessage { get; set; }
     }
 }
