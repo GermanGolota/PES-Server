@@ -5,7 +5,6 @@ using Core.Exceptions;
 using Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,17 +21,35 @@ namespace Infrastructure.Repositories
 
         public async Task AddMessageToChat(string messageText, Guid chatId, Guid userId)
         {
-            Message message = new Message
-            {
-                ChatId = chatId,
-                UserId = userId,
-                Text = messageText,
-                LastEditedDate = DateTime.UtcNow,
-                MessageId = Guid.NewGuid()
-            };
+            ChatMessageAdditionModel chat = await _context.Chats
+                .AsNoTracking()
+                .Include(x => x.Messages)
+                .Where(x => x.ChatId.Equals(chatId))
+                .Select(x => new ChatMessageAdditionModel
+                {
+                    IsMultiMessage = x.IsMultiMessage,
+                    MessagesCount = x.Messages.Count
+                })
+                .FirstOrDefaultAsync();
 
-            await AddMessageToChat(message);
+            if (chat.IsMultiMessage || chat.MessagesCount <= 1)
+            {
+                Message message = new Message
+                {
+                    ChatId = chatId,
+                    UserId = userId,
+                    Text = messageText,
+                    LastEditedDate = DateTime.UtcNow,
+                    MessageId = Guid.NewGuid()
+                };
+                await AddMessageToChat(message);
+            }
+            else
+            {
+                throw new ExpectedException("Can not create second message in single message chat");
+            }
         }
+
         private async Task AddMessageToChat(Message message)
         {
             await _context.Messages.AddAsync(message);
@@ -40,13 +57,12 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-
-        public async Task DeleteMessage(Guid userId, Guid chatId)
+        public async Task DeleteMessage(Guid messageId)
         {
             var message = await _context.Messages
                 //this check can't be separated into a function, becouse it would
                 //result in a client-side evaluation
-                .Where(x => x.UserId.Equals(userId) && x.ChatId.Equals(chatId))
+                .Where(x=>x.MessageId.Equals(messageId))
                 .FirstOrDefaultAsync();
 
             if (message is null)
@@ -60,10 +76,10 @@ namespace Infrastructure.Repositories
 
         }
 
-        public async Task EditMessage(Guid userId, Guid chatId, string newText)
+        public async Task EditMessage(Guid messageId, string newText)
         {
             var message = _context.Messages
-                .Where(x => x.UserId.Equals(userId) && x.ChatId.Equals(chatId))
+                .Where(x=>x.MessageId.Equals(messageId))
                 .FirstOrDefault();
 
             if (message.IsNotNull())

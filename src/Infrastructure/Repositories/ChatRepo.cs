@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
             this._context = context;
         }
 
-        public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword)
+        public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword, bool isMultiMessage)
         {
             Guid chatId = Guid.NewGuid();
             UserToChat admin = new UserToChat
@@ -34,6 +34,7 @@ namespace Infrastructure.Repositories
             {
                 ChatName = chatName,
                 ChatPassword = chatPassword,
+                IsMultiMessage = isMultiMessage,
                 Users = new List<UserToChat>
                 {
                     admin
@@ -69,6 +70,7 @@ namespace Infrastructure.Repositories
                 .Select(x => new ChatDisplayModel
                 {
                     ChatName = x.ChatName,
+                    IsMultiMessage = x.IsMultiMessage,
                     Messages = (List<MessageModel>)x.Messages
                     .OrderByDescending(message => message.LastEditedDate)
                     .Select(message => new MessageModel
@@ -151,6 +153,12 @@ namespace Infrastructure.Repositories
             if (!takeAny)
             {
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
+            }
+
+            if(options.MultiMessage != ChatMultiMessageMode.Any)
+            {
+                bool isMulti = ChatMultiMessageMode.MultiMessage == options.MultiMessage;
+                query = query.Where(x => x.IsMultiMessage == isMulti);
             }
 
             return query;

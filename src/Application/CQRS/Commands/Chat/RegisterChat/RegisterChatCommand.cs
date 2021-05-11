@@ -11,6 +11,7 @@ namespace Application.CQRS.Commands
     {
         [Required]
         public string ChatName { get; set; }
+        public bool IsMultiMessage { get; set; }
         public Guid AdminId { get; set; }
         public string ChatPassword { get; set; }
     }
