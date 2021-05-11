@@ -8,7 +8,7 @@ namespace Application.Contracts.Repositories
     public interface IMessageRepo
     {
         Task AddMessageToChat(string message, Guid chatId, Guid userId);
-        Task EditMessage(Guid userId, Guid chatId, string newText);
-        Task DeleteMessage(Guid userId, Guid chatId);
+        Task EditMessage(Guid messageId, string newText);
+        Task DeleteMessage(Guid messageId);
     }
 }
