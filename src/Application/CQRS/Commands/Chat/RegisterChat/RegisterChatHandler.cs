@@ -24,7 +24,7 @@ namespace Application.CQRS.Commands
             var response = new CommandResponse();
 
             string password = GetChatPassword(request);
-            Guid chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password);
+            Guid chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
 
             response.Successfull = true;
             response.ResultMessage = $"Successfully registered chat {chatId}";

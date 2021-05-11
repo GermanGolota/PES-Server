@@ -119,7 +119,8 @@ namespace WebAPI.Controllers
             {
                 AdminId = this.GetUserId(),
                 ChatName = request.ChatName,
-                ChatPassword = request.ChatPassword
+                ChatPassword = request.ChatPassword,
+                IsMultiMessage = request.IsMultiMessage
             };
 
             var response = await _mediator.Send(command, cancellation);

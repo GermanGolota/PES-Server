@@ -9,7 +9,7 @@ namespace Application.Contracts.Repositories
     public interface IChatRepo
     {
         /// <returns>Id of created chat</returns>
-        Task<Guid> CreateChat(Guid admin, string chatName, string chatPassword);
+        Task<Guid> CreateChat(Guid admin, string chatName, string chatPassword, bool isMultiMessage);
         Task DeleteChat(Guid chatId);
         Task<ChatDisplayModel> GetChatModel(Guid chatId);
         Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options, Guid memberId);

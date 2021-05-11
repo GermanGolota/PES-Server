@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
             this._context = context;
         }
 
-        public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword)
+        public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword, bool isMultiMessage)
         {
             Guid chatId = Guid.NewGuid();
             UserToChat admin = new UserToChat
@@ -34,6 +34,7 @@ namespace Infrastructure.Repositories
             {
                 ChatName = chatName,
                 ChatPassword = chatPassword,
+                IsMultiMessage = isMultiMessage,
                 Users = new List<UserToChat>
                 {
                     admin
