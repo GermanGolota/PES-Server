@@ -155,6 +155,12 @@ namespace Infrastructure.Repositories
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
+            if(options.MultiMessage != ChatMultiMessageMode.Any)
+            {
+                bool isMulti = ChatMultiMessageMode.MultiMessage == options.MultiMessage;
+                query = query.Where(x => x.IsMultiMessage == isMulti);
+            }
+
             return query;
         }
 

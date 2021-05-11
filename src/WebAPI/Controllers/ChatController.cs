@@ -44,15 +44,16 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search/{page?}/{maxCount?}/{term?}")]
-        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page, [FromRoute] int? maxCount, [FromRoute] string term,
-            CancellationToken cancellation)
+        [HttpGet("search/{page?}/{maxCount?}/{term?}/{isMultiMessage?}")]
+        public async Task<ActionResult<ChatsModel>> SearchForChat([FromRoute] int? page, [FromRoute] int? maxCount,
+            [FromRoute] string term, [FromRoute] bool? isMultiMessage, CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
             {
                 ChatsPerPage = maxCount ?? -1,
                 SearchTerm = term,
-                PageNumber = page ?? 1
+                PageNumber = page ?? 1,
+                MultiMessage = ConvertToMode(isMultiMessage)
             };
 
             GetChatsQuery query = new GetChatsQuery
@@ -71,15 +72,39 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search/my/{page?}/{maxCount?}/{term?}")]
+        private ChatMultiMessageMode ConvertToMode(bool? isMultiMessage)
+        {
+            ChatMultiMessageMode multiMessage;
+
+            if (isMultiMessage.HasValue)
+            {
+                if (isMultiMessage.Value)
+                {
+                    multiMessage = ChatMultiMessageMode.MultiMessage;
+                }
+                else
+                {
+                    multiMessage = ChatMultiMessageMode.SingleMessage;
+                }
+            }
+            else
+            {
+                multiMessage = ChatMultiMessageMode.Any;
+            }
+
+            return multiMessage;
+        }
+
+        [HttpGet("search/my/{page?}/{maxCount?}/{term?}/{isMultiMessage?}")]
         public async Task<ActionResult<ChatsModel>> GetMyChats([FromRoute] int? page, [FromRoute] int? maxCount,
-            [FromRoute] string term, CancellationToken cancellation)
+            [FromRoute] string term, [FromRoute] bool? isMultiMessage, CancellationToken cancellation)
         {
             var options = new ChatSelectionOptions
             {
                 ChatsPerPage = maxCount ?? -1,
                 SearchTerm = term,
-                PageNumber = page ?? 1
+                PageNumber = page ?? 1,
+                MultiMessage = ConvertToMode(isMultiMessage)
             };
 
             GetMyChatsQuery query = new GetMyChatsQuery
