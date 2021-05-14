@@ -14,6 +14,8 @@ namespace Core.Entities
         [MaxLength(50)]
         public string ChatPassword { get; set; }
         public bool IsMultiMessage { get; set; }
+        [MaxLength(100)]
+        public string ImageLocation { get; set; }
         public List<Message> Messages { get; set; }
         public List<UserToChat> Users { get; set; }
     }
