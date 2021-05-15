@@ -73,6 +73,7 @@ namespace Infrastructure.Repositories
                 {
                     ChatName = x.ChatName,
                     IsMultiMessage = x.IsMultiMessage,
+                    MessagesCount = x.Messages.Count,
                     Messages = (List<MessageModel>)x.Messages
                     .OrderByDescending(message => message.LastEditedDate)
                     .Select(message => new MessageModel
