@@ -8,5 +8,6 @@ namespace Application.DTOs
         public int MessagesCount { get; set; }
         public string ChatName { get; set; }
         public bool IsMultiMessage { get; set; }
+        public string ChatImageLocation { get; set; }
     }
 }

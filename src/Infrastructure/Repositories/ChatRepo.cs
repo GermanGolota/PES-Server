@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Repositories;
+using Application.Contracts.Service;
 using Application.DTOs;
 using Core;
 using Core.Entities;
@@ -15,10 +16,12 @@ namespace Infrastructure.Repositories
     public class ChatRepo : IChatRepo
     {
         private readonly PESContext _context;
+        private readonly IChatImageService _chatImage;
 
-        public ChatRepo(PESContext context)
+        public ChatRepo(PESContext context, IChatImageService chatImage)
         {
             this._context = context;
+            _chatImage = chatImage;
         }
 
         public async Task<Guid> CreateChat(Guid adminId, string chatName, string chatPassword, bool isMultiMessage)
@@ -91,6 +94,8 @@ namespace Infrastructure.Repositories
                 throw new NoChatException();
             }
 
+            chat.ChatImageLocation = _chatImage.GetRelativeImageLocation(chatId);
+
             return chat;
         }
 
@@ -119,20 +124,21 @@ namespace Infrastructure.Repositories
         {
             query = ApplySearchOptionsToQuery(options, query);
 
-            var result = query.MapChatsToInfoModels(memberId);
+            var result = query.MapChatsToInfoModels();
 
             var pre = await result.ToListAsync();
-            return CalculateRole(memberId, pre);
+            return ProcessChatModel(memberId, pre);
         }
 
-        private List<ChatInfoModel> CalculateRole(Guid memberId, List<PreChatInfoModel> pre)
+        private List<ChatInfoModel> ProcessChatModel(Guid memberId, List<PreChatInfoModel> pre)
         {
             return pre.Select(x => new ChatInfoModel
             {
                 ChatId = x.ChatId,
                 ChatName = x.ChatName,
                 UserCount = x.Users.Count,
-                Role = x.Users.Where(x => x.UserId.Equals(memberId)).FirstOrDefault()?.Role
+                Role = x.Users.Where(x => x.UserId.Equals(memberId)).FirstOrDefault()?.Role,
+                ChatImageLocation = _chatImage.GetRelativeImageLocation(x.ChatId)
             }).ToList();
         }
 
@@ -159,7 +165,7 @@ namespace Infrastructure.Repositories
                 query = query.Where(x => EF.Functions.Like(x.ChatName, $"%{term}%"));
             }
 
-            if(options.MultiMessage != ChatMultiMessageMode.Any)
+            if (options.MultiMessage != ChatMultiMessageMode.Any)
             {
                 bool isMulti = ChatMultiMessageMode.MultiMessage == options.MultiMessage;
                 query = query.Where(x => x.IsMultiMessage == isMulti);

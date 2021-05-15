@@ -9,7 +9,7 @@ namespace Infrastructure.Extensions
 {
     public static class QueryExtensions
     {
-        public static IQueryable<PreChatInfoModel> MapChatsToInfoModels(this IQueryable<Chat> chats, Guid memberId)
+        public static IQueryable<PreChatInfoModel> MapChatsToInfoModels(this IQueryable<Chat> chats)
         {
             return chats.Select(chat => new PreChatInfoModel
             {

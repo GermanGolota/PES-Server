@@ -37,16 +37,16 @@ namespace WebAPI.Services
                 var fileName = GetImageFileName(directoryLocation);
                 if (String.IsNullOrEmpty(fileName))
                 {
-                    result = GetDefaultImageLocation();
+                    result = GetRelativeDefaultImageLocation();
                 }
                 else
                 {
-                    result = Path.Combine(directoryLocation, fileName);
+                    result = $"/{IMAGES_FOLDER_NAME}/{chatId}/{fileName}";
                 }
             }
             else
             {
-                result = GetDefaultImageLocation();
+                result = GetRelativeDefaultImageLocation();
             }
             return result;
         }
@@ -68,9 +68,9 @@ namespace WebAPI.Services
             return result;
         }
 
-        private string GetDefaultImageLocation()
+        private string GetRelativeDefaultImageLocation()
         {
-            return Path.Combine(GetBaseImagesLocation(), "default.png");
+            return $"/{IMAGES_FOLDER_NAME}/default.png";
         }
 
         public async Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request)
