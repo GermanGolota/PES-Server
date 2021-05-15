@@ -31,7 +31,8 @@ namespace WebAPI.Controllers
         {
             GetChatQuery query = new GetChatQuery
             {
-                ChatId = id
+                ChatId = id,
+                RequesterId = this.GetUserId()
             };
 
             var result = await _mediator.Send(query, cancellation);

@@ -40,13 +40,13 @@ namespace Application.CQRS.Commands
                     await _repo.DeleteChat(request.ChatId);
                     response.Successfull = true;
                     response.ResultMessage = $"Successfully deleted chat {request.ChatId}";
+                    await SendUpdateMessage(request);
                 }
-
-
-                response.Successfull = false;
-                response.ResultMessage = ExceptionMessages.Unathorized;
-
-                await SendUpdateMessage(request);
+                else
+                {
+                    response.Successfull = false;
+                    response.ResultMessage = ExceptionMessages.Unathorized;
+                }
             }
             catch (ExpectedException exc)
             {

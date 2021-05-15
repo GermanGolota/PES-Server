@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts.Repositories;
 using Application.DTOs;
+using Core.Extensions;
 using MediatR;
 
 namespace Application.CQRS.Queries.Chat.GetChat
@@ -17,7 +18,7 @@ namespace Application.CQRS.Queries.Chat.GetChat
         }
         public async Task<ChatDisplayModel> Handle(GetChatQuery request, CancellationToken cancellationToken)
         {
-            var chat = await _repo.GetChatModel(new Guid(request.ChatId));
+            var chat = await _repo.GetChatModel(new Guid(request.ChatId), request.RequesterId);
             return chat;
         }
     }
