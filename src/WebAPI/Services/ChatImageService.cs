@@ -13,7 +13,7 @@ namespace WebAPI.Services
     {
         private const string IMAGES_FOLDER_NAME = "ChatImages";
         private const string IMAGE_FILE_NAME = "image";
-        private static readonly List<string> _supportedExtensions = new List<string> { "png", "jpg", "jpeg" };
+        private static readonly List<string> _supportedExtensions = new List<string> { "png", "jpg", "jpeg", "gif" };
 
         private readonly IWebHostEnvironment _webHost;
 
