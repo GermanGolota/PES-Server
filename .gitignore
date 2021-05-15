@@ -31,8 +31,8 @@ bld/
 .vs/
 
 #ignore all chat images except default one
-wwwroot/ChatImages
-!wwwroot/ChatImages/default.png
+src/WebAPI/wwwroot/ChatImages
+!src/WebAPI/wwwroot/ChatImages/default.png
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
