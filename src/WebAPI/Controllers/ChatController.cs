@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebAPI.Extensions;
 using WebAPI.RequestModels;
+using Core.Extensions;
+using System.IO;
 
 namespace WebAPI.Controllers
 {
@@ -222,6 +224,42 @@ namespace WebAPI.Controllers
             };
 
             var response = await _mediator.Send(command, cancellation);
+            return this.CommandResponse(response);
+        }
+
+        /// <summary>
+        /// Updates chats image
+        /// Requires file being passed as form data
+        /// </summary>
+        [HttpPost("{chatId}/admin/uploadImage")]
+        public async Task<ActionResult<CommandResponse>> UpdateChatImage([FromRoute] string chatId,
+            CancellationToken cancellation)
+        {
+            CommandResponse response;
+
+            var files = Request.Form.Files;
+            if (files.IsNotNull() && files.Count > 0)
+            {
+                var file = files[0];
+                string extension = Path.GetExtension(file.FileName);
+                if (extension.StartsWith("."))
+                {
+                    extension = extension.Substring(1);
+                }
+                UploadImageCommand command = new UploadImageCommand
+                {
+                    ChatId = new Guid(chatId),
+                    FileExtension = extension,
+                    ImageStream = file.OpenReadStream(),
+                    RequesterId = this.GetUserId()
+                };
+
+                response = await _mediator.Send(command, cancellation);
+            }
+            else
+            {
+                response = CommandResponse.CreateUnsuccessfull("No file is attached for upload");
+            }
             return this.CommandResponse(response);
         }
     }

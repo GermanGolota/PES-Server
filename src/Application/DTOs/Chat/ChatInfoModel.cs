@@ -11,6 +11,7 @@ namespace Application.DTOs
         public string ChatName { get; set; }
         public int UserCount { get; set; }
         public Role? Role { get; set; }
+        public string ChatImageLocation { get; set; }
     }
 
     public class PreChatInfoModel
