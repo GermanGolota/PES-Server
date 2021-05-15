@@ -1,10 +1,10 @@
 ﻿using Application.Contracts.Service;
+using Application.DTOs.Chat;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WebAPI.Services
@@ -12,6 +12,8 @@ namespace WebAPI.Services
     public class ChatImageService : IChatImageService
     {
         private const string IMAGES_FOLDER_NAME = "ChatImages";
+        private const string IMAGE_FILE_NAME = "image";
+        private static readonly List<string> _supportedExtensions = new List<string> { "png", "jpg", "jpeg" };
 
         private readonly IWebHostEnvironment _webHost;
 
@@ -22,7 +24,7 @@ namespace WebAPI.Services
 
         private string GetBaseImagesLocation()
         {
-            return Path.Combine(_webHost.ContentRootPath, IMAGES_FOLDER_NAME);
+            return Path.Combine(_webHost.WebRootPath, IMAGES_FOLDER_NAME);
         }
 
         public string GetRelativeImageLocation(Guid chatId)
@@ -69,6 +71,36 @@ namespace WebAPI.Services
         private string GetDefaultImageLocation()
         {
             return Path.Combine(GetBaseImagesLocation(), "default.png");
+        }
+
+        public async Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request)
+        {
+            if (_supportedExtensions.Contains(request.FileExtension))
+            {
+                var folderLocation = Path.Combine(GetBaseImagesLocation(), chatId.ToString());
+                CreateDirectoryIfNotExist(folderLocation);
+                var imageLocation = Path.Combine(folderLocation, $"{IMAGE_FILE_NAME}.{request.FileExtension}");
+                if (File.Exists(imageLocation))
+                {
+                    File.Delete(imageLocation);
+                }
+                using (FileStream image = new FileStream(imageLocation, FileMode.Create))
+                {
+                    await request.ImageStream.CopyToAsync(image);
+                }
+            }
+            else
+            {
+                throw new ExpectedException(ExceptionMessages.UnsupportedFileFormat);
+            }
+        }
+
+        private void CreateDirectoryIfNotExist(string location)
+        {
+            if (!Directory.Exists(location))
+            {
+                Directory.CreateDirectory(location);
+            }
         }
     }
 }

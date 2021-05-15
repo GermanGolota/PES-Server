@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Application.Contracts.PesScore;
 using WebAPI.Services;
+using Application.Contracts.Service;
 
 namespace WebAPI
 {
@@ -52,6 +53,7 @@ namespace WebAPI
             services.AddCustomLocalization();
 
             services.AddScoped<IPesScoreBadgeLocationResolver, PesScoreBadgeLocationResolver>();
+            services.AddScoped<IChatImageService, ChatImageService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
