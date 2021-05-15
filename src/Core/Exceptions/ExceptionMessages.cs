@@ -14,5 +14,6 @@ namespace Core.Exceptions
         public static string UserAlreadyInChat { get; } = "This user is already present in this chat";
         public static string CannotPromoteAdmin { get; } = "Admin can not be promoted";
         public static string IncorrectPassword { get; } = "This password is not valid";
+        public static string UnsupportedFileFormat { get; } = "This file format is not supported";
     }
 }
