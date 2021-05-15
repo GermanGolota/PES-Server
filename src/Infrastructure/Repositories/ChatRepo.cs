@@ -62,10 +62,12 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ChatDisplayModel> GetChatModel(Guid chatId)
+        public async Task<ChatDisplayModel> GetChatModel(Guid chatId, Guid requesterId)
         {
             var chat = await _context.Chats
-                .Include(x => x.Messages).ThenInclude(x => x.User)
+                .AsNoTracking()
+                .Include(x => x.Messages)
+                .ThenInclude(x => x.User)
                 .Where(x => x.ChatId.Equals(chatId))
                 .Select(x => new ChatDisplayModel
                 {
@@ -77,7 +79,8 @@ namespace Infrastructure.Repositories
                     {
                         Message = message.Text,
                         Username = message.User.Username,
-                        MessageId = message.MessageId
+                        MessageId = message.MessageId,
+                        IsMine = message.UserId == requesterId
                     })
                 })
                 .FirstOrDefaultAsync();

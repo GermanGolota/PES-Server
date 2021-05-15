@@ -7,5 +7,6 @@ namespace Application.DTOs
         public string Username { get; set; }
         public string Message { get; set; }
         public Guid MessageId { get; set; }
+        public bool IsMine { get; set; }
     }
 }
