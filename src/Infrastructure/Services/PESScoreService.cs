@@ -49,7 +49,7 @@ namespace Infrastructure.Services
 
             var messages = await _context.Messages
                    .AsNoTracking()
-                   .Where(x => x.User.Equals(userId))
+                   .Where(x => x.UserId.Equals(userId))
                    .Select(x => x.Text)
                    .ToListAsync();
 

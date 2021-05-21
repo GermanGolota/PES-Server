@@ -1,10 +1,6 @@
 ﻿using Application.Contracts.PesScore;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebAPI.Services
 {
@@ -38,7 +34,7 @@ namespace WebAPI.Services
             string output = null;
             if(badgeFile is not null)
             {
-                output = Path.Combine(badgesDirectoryName, badgeFile.Name);
+                output = $"/{badgesDirectoryName}/{badgeFile.Name}";
             }
             return output;
         }
