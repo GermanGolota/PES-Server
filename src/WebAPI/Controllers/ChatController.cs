@@ -200,7 +200,7 @@ namespace WebAPI.Controllers
 
         [HttpPost("{chatId}/admin/promote/{userId}")]
         public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
-            string userId, CancellationToken cancellation)
+            [FromRoute] string userId, CancellationToken cancellation)
         {
             PromoteUserCommand command = new PromoteUserCommand
             {
@@ -213,8 +213,23 @@ namespace WebAPI.Controllers
             return this.CommandResponse(response);
         }
 
+        [HttpPost("{chatId}/admin/kick/{userId}")]
+        public async Task<ActionResult<CommandResponse>> KickUser([FromRoute] string chatId,
+           [FromRoute] string userId, CancellationToken cancellation)
+        {
+            KickUserCommand command = new KickUserCommand
+            {
+                ChatId = new Guid(chatId),
+                UserId = new Guid(userId),
+                RequesterId = this.GetUserId()
+            };
+
+            var response = await _mediator.Send(command, cancellation);
+            return this.CommandResponse(response);
+        }
+
         [HttpPost("{chatId}/leave")]
-        public async Task<ActionResult<CommandResponse>> PromoteUser([FromRoute] string chatId,
+        public async Task<ActionResult<CommandResponse>> LeaveChat([FromRoute] string chatId,
             CancellationToken cancellation)
         {
             LeaveChatCommand command = new LeaveChatCommand
