@@ -16,6 +16,7 @@ namespace Core
         public DbSet<User> Users { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<UserToChat> ChatUsers { get; set; }
 
         public DbSet<RefreshToken> Tokens { get; set; }
 
