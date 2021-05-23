@@ -72,7 +72,7 @@ namespace Infrastructure.Repositories
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.User)
                 .Where(x => x.ChatId.Equals(chatId))
-                .Select(x => new ChatDisplayModel
+                .Select(x => new PreChatDisplayModel
                 {
                     ChatName = x.ChatName,
                     IsMultiMessage = x.IsMultiMessage,
@@ -85,7 +85,8 @@ namespace Infrastructure.Repositories
                         Username = message.User.Username,
                         MessageId = message.MessageId,
                         IsMine = message.UserId == requesterId
-                    })
+                    }),
+                    Users = x.Users
                 })
                 .FirstOrDefaultAsync();
 
@@ -94,9 +95,17 @@ namespace Infrastructure.Repositories
                 throw new NoChatException();
             }
 
-            chat.ChatImageLocation = _chatImage.GetRelativeImageLocation(chatId);
+            var output = new ChatDisplayModel
+            {
+                ChatImageLocation = _chatImage.GetRelativeImageLocation(chatId),
+                ChatName = chat.ChatName,
+                IsMultiMessage = chat.IsMultiMessage,
+                Messages = chat.Messages,
+                MessagesCount = chat.MessagesCount,
+                Role = chat.Users.Where(x => x.UserId.Equals(requesterId)).FirstOrDefault()?.Role
+            };
 
-            return chat;
+            return output;
         }
 
         public async Task<List<ChatInfoModel>> GetChats(ChatSelectionOptions options, Guid memberId)
