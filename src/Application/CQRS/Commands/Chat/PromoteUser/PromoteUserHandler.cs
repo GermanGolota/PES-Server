@@ -32,7 +32,7 @@ namespace Application.CQRS.Commands
             {
                 List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
 
-                if (admins.Contains(request.UserId))
+                if (admins.Contains(request.RequesterId))
                 {
                     await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
                     response.Successfull = true;

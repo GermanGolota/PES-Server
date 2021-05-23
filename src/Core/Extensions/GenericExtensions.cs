@@ -21,6 +21,11 @@ namespace Core.Extensions
             return !String.IsNullOrEmpty(str);
         }
 
+        public static bool NotContains<T>(this ICollection<T> collection, T element)
+        {
+            return !collection.Contains(element);
+        }
+
         public static bool TryAddWithRetries<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
         {
             int i = 0;

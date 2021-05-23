@@ -8,6 +8,7 @@ using Application.Contracts.Service;
 using Application.DTOs;
 using Application.DTOs.UpdateMessages;
 using Core.Exceptions;
+using Core.Extensions;
 using MediatR;
 
 namespace Application.CQRS.Commands
@@ -32,7 +33,7 @@ namespace Application.CQRS.Commands
             {
                 List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
 
-                if (admins.Contains(request.UserId))
+                if (admins.Contains(request.RequesterId) && admins.NotContains(request.UserId))
                 {
                     await _membersService.Kick(request.ChatId, request.UserId);
                     response.Successfull = true;
