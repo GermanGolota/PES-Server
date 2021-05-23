@@ -37,12 +37,14 @@ namespace Application.CQRS.Commands
                     await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
                     response.Successfull = true;
                     response.ResultMessage = $"Successfully promoted user {request.UserId} in chat {request.ChatId}";
+                    await SendUpdateMessage(request);
+                }
+                else
+                {
+                    response.Successfull = false;
+                    response.ResultMessage = ExceptionMessages.Unathorized;
                 }
 
-                response.Successfull = false;
-                response.ResultMessage = ExceptionMessages.Unathorized;
-
-                await SendUpdateMessage(request);
             }
             catch (ExpectedException exc)
             {
