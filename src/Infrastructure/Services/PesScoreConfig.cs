@@ -32,6 +32,18 @@ namespace Infrastructure.Services
 
         private int GetClosestScore(int pesScore, List<int> scores)
         {
+            scores.Sort();
+
+            if(pesScore <= scores.First())
+            {
+                return scores.First();
+            }
+
+            if(pesScore >= scores.Last())
+            {
+                return scores.Last();
+            }
+
             int closestScore = -1;
             for (int i = 0; i < scores.Count; i++)
             {
