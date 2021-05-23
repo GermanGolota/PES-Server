@@ -51,6 +51,30 @@ namespace WebAPI.Services
             return result;
         }
 
+        private string GetAbsoluteImageLocation(Guid chatId)
+        {
+            var root = GetBaseImagesLocation();
+            var directoryLocation = Path.Combine(root, chatId.ToString());
+            string result;
+            if (Directory.Exists(directoryLocation))
+            {
+                var fileName = GetImageFileName(directoryLocation);
+                if (String.IsNullOrEmpty(fileName))
+                {
+                    result = GetAbsoluteDefaultImageLocation();
+                }
+                else
+                {
+                    result = Path.Combine(root, chatId.ToString(), fileName);
+                }
+            }
+            else
+            {
+                result = GetAbsoluteDefaultImageLocation();
+            }
+            return result;
+        }
+
         private string GetImageFileName(string directoryLocation)
         {
             string result = "";
@@ -73,6 +97,11 @@ namespace WebAPI.Services
             return $"/{IMAGES_FOLDER_NAME}/default.png";
         }
 
+        private string GetAbsoluteDefaultImageLocation()
+        {
+            return Path.Combine(GetBaseImagesLocation(), "default.png");
+        }
+
         public async Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request)
         {
             if (_supportedExtensions.Contains(request.FileExtension))
@@ -80,10 +109,8 @@ namespace WebAPI.Services
                 var folderLocation = Path.Combine(GetBaseImagesLocation(), chatId.ToString());
                 CreateDirectoryIfNotExist(folderLocation);
                 var imageLocation = Path.Combine(folderLocation, $"{IMAGE_FILE_NAME}.{request.FileExtension}");
-                if (File.Exists(imageLocation))
-                {
-                    File.Delete(imageLocation);
-                }
+                DeleteChatImage(chatId, imageLocation);
+
                 using (FileStream image = new FileStream(imageLocation, FileMode.Create))
                 {
                     await request.ImageStream.CopyToAsync(image);
@@ -92,6 +119,26 @@ namespace WebAPI.Services
             else
             {
                 throw new ExpectedException(ExceptionMessages.UnsupportedFileFormat);
+            }
+        }
+
+        private void DeleteChatImage(Guid chatId, string imageLocation)
+        {
+            DeleteFileIfExists(imageLocation);
+
+            var chatImage = GetAbsoluteImageLocation(chatId);
+            var defaultImage = GetAbsoluteDefaultImageLocation();
+            if (chatImage != defaultImage)
+            {
+                DeleteFileIfExists(chatImage);
+            }
+        }
+
+        private void DeleteFileIfExists(string location)
+        {
+            if (File.Exists(location))
+            {
+                File.Delete(location);
             }
         }
 

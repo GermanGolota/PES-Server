@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Core.Extensions
@@ -15,6 +16,10 @@ namespace Core.Extensions
             return collection.IsNotNull() && collection.Count > 0;
         }
 
+        public static bool IsFilled(this string str)
+        {
+            return !String.IsNullOrEmpty(str);
+        }
 
         public static bool TryAddWithRetries<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dict, TKey key, TValue value, int retryCount)
         {
