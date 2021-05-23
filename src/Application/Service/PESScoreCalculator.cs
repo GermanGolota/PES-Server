@@ -1,5 +1,6 @@
 ﻿using Application.Contracts;
 using Application.DTOs.Service;
+using Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,22 +11,32 @@ namespace Application.PesScore
     {
         public int CalculateScore(PesScoreModel scoreModel)
         {
-            List<char> pesChars = GetAllLettersWithCounterparts(scoreModel.PesKey);
-            long matches = 0;
-            long total = 0;
-            foreach (string message in scoreModel.Messages)
+            int result = 0;
+            if (scoreModel.PesKey.IsFilled() && scoreModel.Messages.IsNotNullOrEmpty())
             {
-                for (int i = 0; i < message.Length; i++)
+                List<char> pesChars = GetAllLettersWithCounterparts(scoreModel.PesKey);
+                long matches = 0;
+                long total = 0;
+                foreach (string message in scoreModel.Messages)
                 {
-                    total++;
-                    char ch = message[i];
-                    if (pesChars.Contains(ch))
+                    for (int i = 0; i < message.Length; i++)
                     {
-                        matches++;
+                        total++;
+                        char ch = message[i];
+                        if (pesChars.Contains(ch))
+                        {
+                            matches++;
+                        }
                     }
                 }
+
+                if (total != 0)
+                {
+                    result = 100 * (int)(matches / total);
+                }
+
             }
-            return 100 * (int)(matches / total);
+            return result;
         }
 
         private List<char> GetAllLettersWithCounterparts(string str)
@@ -35,15 +46,15 @@ namespace Application.PesScore
             for (int i = 0; i < chars.Length; i++)
             {
                 char ch = chars[i];
-                if(Char.IsLetter(ch))
+                if (Char.IsLetter(ch))
                 {
-                    if(Char.IsLower(ch))
+                    if (Char.IsLower(ch))
                     {
                         output.Add(Char.ToUpper(ch));
                     }
                     else
                     {
-                        if(Char.IsUpper(ch))
+                        if (Char.IsUpper(ch))
                         {
                             output.Add(Char.ToLower(ch));
                         }
