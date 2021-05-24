@@ -48,7 +48,10 @@ namespace Application.CQRS.Commands
             }
             finally
             {
-                await cleanUp?.Invoke();
+                if (cleanUp.IsNotNull())
+                {
+                    await cleanUp();
+                }
             }
             return response;
         }

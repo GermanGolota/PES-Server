@@ -28,7 +28,10 @@ namespace Application.CQRS.Commands
                 chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
             }, $"Successfully registered chat");
 
-            result.ResultMessage += $" {chatId}";
+            if (result.Successfull)
+            {
+                result.ResultMessage += $" {chatId}";
+            }
 
             return result;
         }
