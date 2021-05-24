@@ -18,23 +18,25 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<CommandResponse> Handle(RegisterChatCommand request, 
+        public async Task<CommandResponse> Handle(RegisterChatCommand request,
             CancellationToken cancellationToken)
         {
-            var response = new CommandResponse();
+            Guid chatId = Guid.Empty;
+            var result = await CommandRunner.Run(async () =>
+            {
+                string password = GetChatPassword(request);
+                chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
+            }, $"Successfully registered chat");
 
-            string password = GetChatPassword(request);
-            Guid chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
+            result.ResultMessage += $" {chatId}";
 
-            response.Successfull = true;
-            response.ResultMessage = $"Successfully registered chat {chatId}";
-            return response;
+            return result;
         }
 
         private string GetChatPassword(RegisterChatCommand request)
         {
             string output = "1";
-            if(!String.IsNullOrEmpty(request.ChatPassword))
+            if (!String.IsNullOrEmpty(request.ChatPassword))
             {
                 output = request.ChatPassword;
             }

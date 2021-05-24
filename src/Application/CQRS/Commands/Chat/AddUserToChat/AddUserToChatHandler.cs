@@ -16,7 +16,7 @@ namespace Application.CQRS.Commands
         private readonly IMessageSender _sender;
         private readonly IChatMembersService _membersService;
 
-        public AddUserToChatHandler(IUserRepo userRepo, IMessageSender sender, 
+        public AddUserToChatHandler(IUserRepo userRepo, IMessageSender sender,
             IChatMembersService membersService)
         {
             _userRepo = userRepo;
@@ -25,22 +25,11 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(AddUserToChatCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
+            var response = await CommandRunner.Run(async () =>
             {
                 await _membersService.AddUser(request.ChatId, request.UserId, request.Password);
-                response = CommandResponse.CreateSuccessfull("Succesfully added user to chat");
                 await SendUpdateMessage(request);
-            }
-            catch(ExpectedException exc)
-            {
-                response = CommandResponse.CreateUnsuccessfull(exc.Message);
-            }
-            catch
-            {
-                response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
-            }
-
+            }, "Succesfully added user to chat");
             return response;
         }
 

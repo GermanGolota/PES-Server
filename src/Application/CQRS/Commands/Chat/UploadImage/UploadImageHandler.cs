@@ -24,41 +24,26 @@ namespace Application.CQRS.Commands
 
         public async Task<CommandResponse> Handle(UploadImageCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
+            CommandResponse response = await CommandRunner.Run(async () =>
+            {
+                var update = new ChatImageUpdateRequest
+                {
+                    FileExtension = request.FileExtension,
+                    ImageStream = request.ImageStream
+                };
+                await _imageService.UpdateChatsImage(request.ChatId, update);
+            },
+            "Sucessfully updated chats image",
+            async () =>
             {
                 var admins = await _membersService.GetAdminsOfChat(request.ChatId);
-                if (admins.Contains(request.RequesterId))
-                {
-                    var update = new ChatImageUpdateRequest
-                    {
-                        FileExtension = request.FileExtension,
-                        ImageStream = request.ImageStream
-                    };
-                    await _imageService.UpdateChatsImage(request.ChatId, update);
-
-                    response = CommandResponse.CreateSuccessfull("Sucessfully updated chats image");
-                }
-                else
-                {
-                    response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.Unathorized);
-                }
-            }
-            catch (Exception exc)
-            {
-                if (exc is ExpectedException)
-                {
-                    response = CommandResponse.CreateUnsuccessfull(exc.Message);
-                }
-                else
-                {
-                    response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
-                }
-            }
-            finally
+                return admins.Contains(request.RequesterId);
+            },
+            () =>
             {
                 request.ImageStream.Close();
-            }
+                return Task.CompletedTask;
+            });
             return response;
         }
     }
