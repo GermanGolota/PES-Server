@@ -27,12 +27,12 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(PromoteUserCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response = await CommandRunner.Run(async () =>
+            CommandResponse response = await CommandRunner.Run(request, async(request) =>
             {
                 await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
                 await SendUpdateMessage(request);
             }, $"Successfully promoted user {request.UserId} in chat {request.ChatId}",
-            async () =>
+            async (request) =>
             {
                 List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
 

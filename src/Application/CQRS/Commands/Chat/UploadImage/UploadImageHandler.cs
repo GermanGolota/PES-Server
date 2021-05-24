@@ -24,7 +24,7 @@ namespace Application.CQRS.Commands
 
         public async Task<CommandResponse> Handle(UploadImageCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response = await CommandRunner.Run(async () =>
+            CommandResponse response = await CommandRunner.Run(request, async(request) =>
             {
                 var update = new ChatImageUpdateRequest
                 {
@@ -34,12 +34,12 @@ namespace Application.CQRS.Commands
                 await _imageService.UpdateChatsImage(request.ChatId, update);
             },
             "Sucessfully updated chats image",
-            async () =>
+            async (request) =>
             {
                 var admins = await _membersService.GetAdminsOfChat(request.ChatId);
                 return admins.Contains(request.RequesterId);
             },
-            () =>
+            (request) =>
             {
                 request.ImageStream.Close();
                 return Task.CompletedTask;

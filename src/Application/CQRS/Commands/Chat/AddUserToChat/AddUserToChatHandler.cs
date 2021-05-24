@@ -25,7 +25,7 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(AddUserToChatCommand request, CancellationToken cancellationToken)
         {
-            var response = await CommandRunner.Run(async () =>
+            var response = await CommandRunner.Run(request, async (request) =>
             {
                 await _membersService.AddUser(request.ChatId, request.UserId, request.Password);
                 await SendUpdateMessage(request);

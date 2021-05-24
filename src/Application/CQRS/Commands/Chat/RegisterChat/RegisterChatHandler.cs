@@ -22,12 +22,11 @@ namespace Application.CQRS.Commands
             CancellationToken cancellationToken)
         {
             Guid chatId = Guid.Empty;
-            var result = await CommandRunner.Run(async () =>
+            var result = await CommandRunner.Run(request, async(request) =>
             {
                 string password = GetChatPassword(request);
                 chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
             }, $"Successfully registered chat");
-
             if (result.Successfull)
             {
                 result.ResultMessage += $" {chatId}";

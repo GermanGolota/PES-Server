@@ -30,13 +30,13 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
         {
-            var response = await CommandRunner.Run(async () =>
+            var response = await CommandRunner.Run(request, async(request) =>
             {
                 await _repo.DeleteChat(request.ChatId);
                 await SendUpdateMessage(request);
             },
             $"Successfully deleted chat {request.ChatId}",
-            async () =>
+            async (request) =>
             {
                 Guid creatorId = await _membersService.GetChatCreator(request.ChatId);
                 return creatorId.Equals(request.UserId);

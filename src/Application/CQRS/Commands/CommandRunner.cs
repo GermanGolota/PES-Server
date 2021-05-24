@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Core.Exceptions;
 using Core.Extensions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,21 +14,23 @@ namespace Application.CQRS.Commands
         /// <summary>
         /// This method would run a command and return proper response
         /// </summary>
-        /// <param name="command"> Command to run</param>
+        /// <typeparam name="TCommand"> Type of mediatr command to use</typeparam>
+        /// <param name="commandObj"> Command object from Mediatr </param>
+        /// <param name="commandHandler"> Command to run</param>
         /// <param name="successMessage"> Message for command being executed successfully</param>
         /// <param name="validator"> Command authorizer </param>
         /// <param name="cleanUp"> Function to get executed after execution of command</param>
-        /// <returns></returns>
-        public static async Task<CommandResponse> Run(Func<Task> command, string successMessage,
-            Func<Task<bool>> validator = null, Func<Task> cleanUp = null)
+        /// <returns> Response to command</returns>
+        public static async Task<CommandResponse> Run<TCommand>(TCommand commandObj, Func<TCommand, Task> commandHandler, string successMessage,
+            Func<TCommand, Task<bool>> validator = null, Func<TCommand, Task> cleanUp = null) where TCommand : IRequest<CommandResponse>
         {
             CommandResponse response;
             try
             {
-                bool authorized = validator is null || await validator() == true;
+                bool authorized = validator is null || await validator(commandObj) == true;
                 if (authorized)
                 {
-                    await command();
+                    await commandHandler(commandObj);
                     response = CommandResponse.CreateSuccessfull(successMessage);
                 }
                 else
@@ -50,7 +53,7 @@ namespace Application.CQRS.Commands
             {
                 if (cleanUp.IsNotNull())
                 {
-                    await cleanUp();
+                    await cleanUp(commandObj);
                 }
             }
             return response;

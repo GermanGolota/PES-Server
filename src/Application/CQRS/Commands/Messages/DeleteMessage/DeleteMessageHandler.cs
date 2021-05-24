@@ -26,21 +26,11 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
+            CommandResponse response = await CommandRunner.Run(request, async (request) =>
             {
                 await _repo.DeleteMessage(request.MessageId);
-                response = CommandResponse.CreateSuccessfull("Successfully deleted message");
                 await SendUpdateMessage(request);
-            }
-            catch (ExpectedException exc)
-            {
-                response = CommandResponse.CreateUnsuccessfull(exc.Message);
-            }
-            catch
-            {
-                response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
-            }
+            }, "Successfully deleted message");
             return response;
         }
 

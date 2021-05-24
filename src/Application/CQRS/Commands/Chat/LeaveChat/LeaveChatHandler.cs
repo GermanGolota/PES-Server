@@ -27,7 +27,7 @@ namespace Application.CQRS.Commands
         public async Task<CommandResponse> Handle(LeaveChatCommand request,
             CancellationToken cancellationToken)
         {
-            CommandResponse response = await CommandRunner.Run(async () =>
+            CommandResponse response = await CommandRunner.Run(request, async(request) =>
             {
                 await _membersService.RemoveUserFromChat(request.ChatId, request.UserId);
                 await SendUpdateMessage(request);

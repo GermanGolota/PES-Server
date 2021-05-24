@@ -28,13 +28,13 @@ namespace Application.CQRS.Commands
 
         public async Task<CommandResponse> Handle(KickUserCommand request, CancellationToken cancellationToken)
         {
-            var response = await CommandRunner.Run(async () =>
+            var response = await CommandRunner.Run(request, async(request) =>
             {
                 await _membersService.Kick(request.ChatId, request.UserId);
                 await SendUpdateMessage(request);
             }, 
             $"Successfully kicked user {request.UserId} in chat {request.ChatId}",
-            async () =>
+            async (request) =>
             {
                 List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
                 return admins.Contains(request.RequesterId) && admins.NotContains(request.UserId);
