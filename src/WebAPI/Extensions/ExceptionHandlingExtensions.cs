@@ -1,5 +1,4 @@
-﻿using Core.Exceptions;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Core.Extensions;
 
 namespace WebAPI.Extensions
 {
@@ -43,7 +43,7 @@ namespace WebAPI.Extensions
             httpContext.Response.ContentType = "application/problem+json";
             if (exc is not null)
             {
-                if (exc is ValidationException || exc is TaskCanceledException || exc is ExpectedException)
+                if (exc is ValidationException || exc.IsExpected())
                 {
                     await ProcessExpectedException(httpContext, exc, includeDetails);
                 }
