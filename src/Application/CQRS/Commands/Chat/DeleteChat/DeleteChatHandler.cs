@@ -30,35 +30,17 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response = new CommandResponse();
-            try
+            var response = await CommandRunner.Run(request, async(request) =>
+            {
+                await _repo.DeleteChat(request.ChatId);
+                await SendUpdateMessage(request);
+            },
+            $"Successfully deleted chat {request.ChatId}",
+            async (request) =>
             {
                 Guid creatorId = await _membersService.GetChatCreator(request.ChatId);
-
-                if (creatorId.Equals(request.UserId))
-                {
-                    await _repo.DeleteChat(request.ChatId);
-                    response.Successfull = true;
-                    response.ResultMessage = $"Successfully deleted chat {request.ChatId}";
-                    await SendUpdateMessage(request);
-                }
-                else
-                {
-                    response.Successfull = false;
-                    response.ResultMessage = ExceptionMessages.Unathorized;
-                }
-            }
-            catch (ExpectedException exc)
-            {
-                response.Successfull = false;
-                response.ResultMessage = exc.Message;
-            }
-            catch
-            {
-                response.Successfull = false;
-                response.ResultMessage = ExceptionMessages.ServerError;
-            }
-
+                return creatorId.Equals(request.UserId);
+            });
             return response;
         }
 

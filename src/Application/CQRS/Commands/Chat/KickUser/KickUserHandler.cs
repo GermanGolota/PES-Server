@@ -28,36 +28,17 @@ namespace Application.CQRS.Commands
 
         public async Task<CommandResponse> Handle(KickUserCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response = new CommandResponse();
-            try
+            var response = await CommandRunner.Run(request, async(request) =>
+            {
+                await _membersService.Kick(request.ChatId, request.UserId);
+                await SendUpdateMessage(request);
+            }, 
+            $"Successfully kicked user {request.UserId} in chat {request.ChatId}",
+            async (request) =>
             {
                 List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
-
-                if (admins.Contains(request.RequesterId) && admins.NotContains(request.UserId))
-                {
-                    await _membersService.Kick(request.ChatId, request.UserId);
-                    response.Successfull = true;
-                    response.ResultMessage = $"Successfully kicked user {request.UserId} in chat {request.ChatId}";
-                    await SendUpdateMessage(request);
-                }
-                else
-                {
-                    response.Successfull = false;
-                    response.ResultMessage = ExceptionMessages.Unathorized;
-                }
-
-            }
-            catch (ExpectedException exc)
-            {
-                response.Successfull = false;
-                response.ResultMessage = exc.Message;
-            }
-            catch
-            {
-                response.Successfull = false;
-                response.ResultMessage = ExceptionMessages.ServerError;
-            }
-
+                return admins.Contains(request.RequesterId) && admins.NotContains(request.UserId);
+            });
             return response;
         }
 

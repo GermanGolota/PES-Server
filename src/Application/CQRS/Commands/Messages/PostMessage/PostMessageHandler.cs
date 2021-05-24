@@ -26,34 +26,11 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(PostMessageCommand request, CancellationToken cancellationToken)
         {
-            try
+            return await CommandRunner.Run(request, async request =>
             {
                 await _repo.AddMessageToChat(request.Message, request.ChatId, request.UserId);
-            }
-            catch(ExpectedException exc)
-            {
-                return new CommandResponse
-                {
-                    ResultMessage = exc.Message,
-                    Successfull = false
-                };
-            }
-            catch
-            {
-                return new CommandResponse
-                {
-                    ResultMessage = "Something went wrong",
-                    Successfull = false
-                };
-            }
-
-            await SendUpdateMessage(request);
-
-            return new CommandResponse
-            {
-                ResultMessage = "Success",
-                Successfull = true
-            };
+                await SendUpdateMessage(request);
+            }, "Success");
         }
 
         private async Task SendUpdateMessage(PostMessageCommand request)

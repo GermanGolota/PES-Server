@@ -17,30 +17,21 @@ namespace Application.CQRS.Commands
         private readonly IMessageSender _sender;
         private readonly IUserRepo _userRepo;
 
-        public LeaveChatHandler(IChatMembersService membersService,IMessageSender sender, IUserRepo userRepo)
+        public LeaveChatHandler(IChatMembersService membersService, IMessageSender sender, IUserRepo userRepo)
         {
             _membersService = membersService;
             _sender = sender;
             _userRepo = userRepo;
         }
+
         public async Task<CommandResponse> Handle(LeaveChatCommand request,
             CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
+            CommandResponse response = await CommandRunner.Run(request, async(request) =>
             {
                 await _membersService.RemoveUserFromChat(request.ChatId, request.UserId);
-                response = CommandResponse.CreateSuccessfull($"Sucessfully left chat {request.ChatId}");
                 await SendUpdateMessage(request);
-            }
-            catch (ExpectedException exc)
-            {
-                response = CommandResponse.CreateUnsuccessfull(exc.Message);
-            }
-            catch
-            {
-                response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
-            }
+            }, $"Sucessfully left chat {request.ChatId}");
             return response;
         }
 

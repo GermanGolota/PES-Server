@@ -21,26 +21,10 @@ namespace Application.CQRS.Commands.User.Logout
 
         public async Task<CommandResponse> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
+            return await CommandRunner.Run(request, async request=>
             {
                 await _repo.Logout(request.UserId);
-                response = CommandResponse.CreateSuccessfull("Successfully logged out user");
-            }
-            catch (Exception exc)
-            {
-                string message;
-                if (exc is ExpectedException)
-                {
-                    message = exc.Message;
-                }
-                else
-                {
-                    message = ExceptionMessages.ServerError;
-                }
-                response = CommandResponse.CreateUnsuccessfull(message);
-            }
-            return response;
+            }, "Successfully logged out user");
         }
     }
 }

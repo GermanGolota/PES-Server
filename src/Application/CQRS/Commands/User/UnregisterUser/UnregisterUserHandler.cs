@@ -24,26 +24,12 @@ namespace Application.CQRS.Commands
         public async Task<CommandResponse> Handle(UnregisterUserCommand request,
             CancellationToken cancellationToken)
         {
-            var id = request.UserId;
-
-            CommandResponse response;
-
-            try
-            {
-                await _repo.RemoveUser(id);
-                await _chatMembersService.RemoveUserFromAllChats(id);
-                response = CommandResponse.CreateSuccessfull("Successfully removed user");
-            }
-            catch(ExpectedException exc)
-            {
-                response = CommandResponse.CreateUnsuccessfull(exc.Message);
-            }
-            catch
-            {
-                response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.NoUser);
-            }
-
-            return response;
+            return await CommandRunner.Run(request, async request =>
+             {
+                 var id = request.UserId;
+                 await _repo.RemoveUser(id);
+                 await _chatMembersService.RemoveUserFromAllChats(id);
+             }, "Successfully removed user");
         }
     }
 }

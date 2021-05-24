@@ -26,36 +26,12 @@ namespace Application.CQRS.Commands
         }
         public async Task<CommandResponse> Handle(EditMessageCommand request, CancellationToken cancellationToken)
         {
-            try
+            CommandResponse result = await CommandRunner.Run(request, async (request) =>
             {
                 await _repo.EditMessage(request.MessageId, request.UpdatedMessage);
-            }
-            catch(ExpectedException exc)
-            {
-                return new CommandResponse
-                {
-                    Successfull = false,
-                    ResultMessage = exc.Message
-                };
-            }
-            catch
-            {
-                return new CommandResponse
-                {
-                    Successfull = false,
-                    ResultMessage = "Something went wrong"
-                };
-            }
-
-            var response = new CommandResponse
-            {
-                Successfull = true,
-                ResultMessage = "Successfullt edited"
-            };
-
-            await SendUpdateMessage(request);
-
-            return response;
+                await SendUpdateMessage(request);
+            }, "Successfullt edited");
+            return result;
         }
 
         private async Task SendUpdateMessage(EditMessageCommand request)

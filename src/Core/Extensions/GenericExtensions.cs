@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Core.Exceptions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
@@ -50,6 +52,11 @@ namespace Core.Extensions
                 }
             }
             return false;
+        }
+
+        public static bool IsExpected(this Exception exc)
+        {
+            return exc is TaskCanceledException || exc is ExpectedException;
         }
     }
 }
