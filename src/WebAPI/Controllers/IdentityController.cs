@@ -2,6 +2,7 @@
 using Application.CQRS.Queries;
 using Application.DTOs;
 using Application.DTOs.Response;
+using Application.DTOs.User;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -115,5 +116,18 @@ namespace WebAPI.Controllers
             return BadRequest(response);
         }
 
+        [Authorize]
+        [HttpPost("my/profile")]
+        public async Task<ActionResult<CommandResponse>> GetPersonalData(CancellationToken cancellation)
+        {
+            var command = new PersonalDataCommand
+            {
+                UserId = this.GetUserId(),
+            };
+
+            UserProfileModel response = await _mediator.Send(command, cancellation);
+
+            return Ok(response);
+        }
     }
 }
