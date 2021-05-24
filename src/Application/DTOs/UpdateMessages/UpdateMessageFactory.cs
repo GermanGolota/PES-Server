@@ -55,6 +55,15 @@
             };
         }
 
+        public static UserKickedUpdateMessage CreateUserKickedUpdate(string username)
+        {
+            return new UserKickedUpdateMessage
+            {
+                ActionType = "userKicked",
+                Username = username
+            };
+        }
+
         public static ChatDeletedUpdateMessage CreateChatDeletedMessage(string username)
         {
             return new ChatDeletedUpdateMessage

@@ -205,5 +205,20 @@ namespace Infrastructure.Services
 
             return chat.Users.Where(x => x.Role.Equals(Role.Creator)).Select(x => x.UserId).FirstOrDefault();
         }
+
+        public async Task Kick(Guid chatId, Guid userId)
+        {
+            var chatUser = _context.ChatUsers
+                .Where(x => x.ChatId.Equals(chatId) && x.UserId.Equals(userId))
+                .FirstOrDefault();
+
+            if(chatUser is null)
+            {
+                throw new NoUserException();
+            }
+
+            _context.ChatUsers.Remove(chatUser);
+            await _context.SaveChangesAsync();
+        }
     }
 }
