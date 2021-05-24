@@ -21,24 +21,11 @@ namespace Application.CQRS.Commands
 
         public async Task<CommandResponse> Handle(UpdateCredentialsCommand request, CancellationToken cancellationToken)
         {
-            CommandResponse response;
-            try
-            {
-                await _repo.UpdateCredentials(request.UserId, request.Username, request.Password, request.PesKey);
-                response = CommandResponse.CreateSuccessfull("Successfully updated credentials");
-            }
-            catch(Exception exc)
-            {
-                if(exc is ExpectedException)
-                {
-                    response = CommandResponse.CreateUnsuccessfull(exc.Message);
-                }
-                else
-                {
-                    response = CommandResponse.CreateUnsuccessfull(ExceptionMessages.ServerError);
-                }
-            }
-            return response;
+            return await CommandRunner.Run(request, async request =>
+             {
+                 await _repo.UpdateCredentials(request.UserId, request.Username, request.Password, request.PesKey);
+             }, "Successfully updated credentials");
+
         }
     }
 }
