@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts;
 using Application.Contracts.Repositories;
-using Application.DTOs;
 using Application.DTOs.UpdateMessages;
-using Core.Exceptions;
-using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class EditMessageHandler : IRequestHandler<EditMessageCommand, CommandResponse>
+    public class EditMessageHandler : PesCommand<EditMessageCommand>
     {
         private readonly IMessageRepo _repo;
         private readonly IMessageSender _sender;
@@ -24,14 +18,13 @@ namespace Application.CQRS.Commands
             _sender = sender;
             _userRepo = userRepo;
         }
-        public async Task<CommandResponse> Handle(EditMessageCommand request, CancellationToken cancellationToken)
+
+        public override string SuccessMessage => "Successfullt edited";
+
+        public override async Task Run(EditMessageCommand request, CancellationToken token)
         {
-            CommandResponse result = await CommandRunner.Run(request, async (request) =>
-            {
-                await _repo.EditMessage(request.MessageId, request.UpdatedMessage);
-                await SendUpdateMessage(request);
-            }, "Successfullt edited");
-            return result;
+            await _repo.EditMessage(request.MessageId, request.UpdatedMessage);
+            await SendUpdateMessage(request);
         }
 
         private async Task SendUpdateMessage(EditMessageCommand request)

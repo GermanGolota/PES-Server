@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.Commands
 {
-    public class DeleteMessageHandler : IRequestHandler<DeleteMessageCommand, CommandResponse>
+    public class DeleteMessageHandler : PesCommand<DeleteMessageCommand>
     {
         private readonly IMessageRepo _repo;
         private readonly IUserRepo _userRepo;
@@ -24,14 +24,13 @@ namespace Application.CQRS.Commands
             _userRepo = userRepo;
             _sender = sender;
         }
-        public async Task<CommandResponse> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)
+
+        public override string SuccessMessage => "Successfully deleted message";
+
+        public override async Task Run(DeleteMessageCommand request, CancellationToken token)
         {
-            CommandResponse response = await CommandRunner.Run(request, async (request) =>
-            {
-                await _repo.DeleteMessage(request.MessageId);
-                await SendUpdateMessage(request);
-            }, "Successfully deleted message");
-            return response;
+            await _repo.DeleteMessage(request.MessageId);
+            await SendUpdateMessage(request);
         }
 
         private async Task SendUpdateMessage(DeleteMessageCommand request)

@@ -28,11 +28,11 @@ namespace Infrastructure.Repositories
                 .Select(x => new ChatMessageAdditionModel
                 {
                     IsMultiMessage = x.IsMultiMessage,
-                    MessagesCount = x.Messages.Count
+                    UserMessagesCount = x.Messages.Where(x => x.UserId.Equals(userId)).Count()
                 })
                 .FirstOrDefaultAsync();
 
-            if (chat.IsMultiMessage || chat.MessagesCount <= 1)
+            if (chat.IsMultiMessage || chat.UserMessagesCount == 0)
             {
                 Message message = new Message
                 {
@@ -42,7 +42,9 @@ namespace Infrastructure.Repositories
                     LastEditedDate = DateTime.UtcNow,
                     MessageId = Guid.NewGuid()
                 };
-                await AddMessageToChat(message);
+
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -50,19 +52,12 @@ namespace Infrastructure.Repositories
             }
         }
 
-        private async Task AddMessageToChat(Message message)
-        {
-            await _context.Messages.AddAsync(message);
-
-            await _context.SaveChangesAsync();
-        }
-
         public async Task DeleteMessage(Guid messageId)
         {
             var message = await _context.Messages
                 //this check can't be separated into a function, becouse it would
                 //result in a client-side evaluation
-                .Where(x=>x.MessageId.Equals(messageId))
+                .Where(x => x.MessageId.Equals(messageId))
                 .FirstOrDefaultAsync();
 
             if (message is null)
@@ -79,7 +74,7 @@ namespace Infrastructure.Repositories
         public async Task EditMessage(Guid messageId, string newText)
         {
             var message = _context.Messages
-                .Where(x=>x.MessageId.Equals(messageId))
+                .Where(x => x.MessageId.Equals(messageId))
                 .FirstOrDefault();
 
             if (message.IsNotNull())

@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class RegisterChatHandler : IRequestHandler<RegisterChatCommand, CommandResponse>
+    public class RegisterChatHandler : PesCommand<RegisterChatCommand>
     {
         private readonly IChatRepo _repo;
 
@@ -18,21 +18,15 @@ namespace Application.CQRS.Commands
         {
             this._repo = repo;
         }
-        public async Task<CommandResponse> Handle(RegisterChatCommand request,
-            CancellationToken cancellationToken)
-        {
-            Guid chatId = Guid.Empty;
-            var result = await CommandRunner.Run(request, async(request) =>
-            {
-                string password = GetChatPassword(request);
-                chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
-            }, $"Successfully registered chat");
-            if (result.Successfull)
-            {
-                result.ResultMessage += $" {chatId}";
-            }
 
-            return result;
+        private string _successMessage;
+        public override string SuccessMessage => _successMessage;
+
+        public override async Task Run(RegisterChatCommand request, CancellationToken token)
+        {
+            string password = GetChatPassword(request);
+            var chatId = await _repo.CreateChat(request.AdminId, request.ChatName, password, request.IsMultiMessage);
+            _successMessage = $"Successfully registered chat {chatId}";
         }
 
         private string GetChatPassword(RegisterChatCommand request)

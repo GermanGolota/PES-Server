@@ -57,7 +57,7 @@ namespace Infrastructure.Services
         {
             var chat = await _context.Chats
                 .Include(x => x.Users)
-                .Where(x => x.ChatId.Equals(chatId))
+                .Where(x => x.ChatId == chatId)
                 .FirstOrDefaultAsync();
 
             if (chat is null)
@@ -169,7 +169,7 @@ namespace Infrastructure.Services
 
         public async Task RemoveUserFromChat(Guid chatId, Guid userId)
         {
-            var chat = await GetChatWithUsers(userId);
+            var chat = await GetChatWithUsers(chatId);
 
             var userQuerry = chat.Users.Where(x => x.UserId.Equals(userId));
 
@@ -178,6 +178,14 @@ namespace Infrastructure.Services
             if (user.IsNotNull())
             {
                 chat.Users.Remove(user);
+                var userMessages = await _context.Messages
+                    .Where(x => x.UserId.Equals(userId))
+                    .ToListAsync();
+                if (userMessages.Count > 0)
+                {
+
+                    _context.Messages.RemoveRange(userMessages);
+                }
             }
             else
             {
@@ -212,7 +220,7 @@ namespace Infrastructure.Services
                 .Where(x => x.ChatId.Equals(chatId) && x.UserId.Equals(userId))
                 .FirstOrDefault();
 
-            if(chatUser is null)
+            if (chatUser is null)
             {
                 throw new NoUserException();
             }

@@ -11,7 +11,7 @@ using Application.Contracts.Service;
 
 namespace Application.CQRS.Commands
 {
-    public class UnregisterUserHandler : IRequestHandler<UnregisterUserCommand, CommandResponse>
+    public class UnregisterUserHandler : PesCommand<UnregisterUserCommand>
     {
         private readonly IUserRepo _repo;
         private readonly IChatMembersService _chatMembersService;
@@ -21,15 +21,14 @@ namespace Application.CQRS.Commands
             this._repo = repo;
             _chatMembersService = chatMembersService;
         }
-        public async Task<CommandResponse> Handle(UnregisterUserCommand request,
-            CancellationToken cancellationToken)
+
+        public override string SuccessMessage => "Successfully removed user";
+
+        public override async Task Run(UnregisterUserCommand request, CancellationToken token)
         {
-            return await CommandRunner.Run(request, async request =>
-             {
-                 var id = request.UserId;
-                 await _repo.RemoveUser(id);
-                 await _chatMembersService.RemoveUserFromAllChats(id);
-             }, "Successfully removed user");
+            var id = request.UserId;
+            await _repo.RemoveUser(id);
+            await _chatMembersService.RemoveUserFromAllChats(id);
         }
     }
 }

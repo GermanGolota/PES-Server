@@ -14,7 +14,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class DeleteChatHandler : IRequestHandler<DeleteChatCommand, CommandResponse>
+    public class DeleteChatHandler : PesCommand<DeleteChatCommand>
     {
         private readonly IChatRepo _repo;
         private readonly IUserRepo _userRepo;
@@ -28,20 +28,20 @@ namespace Application.CQRS.Commands
             _sender = sender;
             _membersService = membersService;
         }
-        public async Task<CommandResponse> Handle(DeleteChatCommand request, CancellationToken cancellationToken)
+
+        public override string SuccessMessage => $"Successfully deleted chat";
+
+        public override async Task<bool> Authorize(DeleteChatCommand request, CancellationToken token)
         {
-            var response = await CommandRunner.Run(request, async(request) =>
-            {
-                await _repo.DeleteChat(request.ChatId);
-                await SendUpdateMessage(request);
-            },
-            $"Successfully deleted chat {request.ChatId}",
-            async (request) =>
-            {
-                Guid creatorId = await _membersService.GetChatCreator(request.ChatId);
-                return creatorId.Equals(request.UserId);
-            });
-            return response;
+            Guid creatorId = await _membersService.GetChatCreator(request.ChatId);
+            return creatorId.Equals(request.UserId);
+        }
+
+        public override async Task Run(DeleteChatCommand request, CancellationToken token)
+        {
+
+            await _repo.DeleteChat(request.ChatId);
+            await SendUpdateMessage(request);
         }
 
         private async Task SendUpdateMessage(DeleteChatCommand request)

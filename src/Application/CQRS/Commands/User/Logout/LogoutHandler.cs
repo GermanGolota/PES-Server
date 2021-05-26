@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands.User.Logout
 {
-    public class LogoutHandler : IRequestHandler<LogoutCommand, CommandResponse>
+    public class LogoutHandler : PesCommand<LogoutCommand>
     {
         private readonly IUserRepo _repo;
 
@@ -19,12 +19,11 @@ namespace Application.CQRS.Commands.User.Logout
             _repo = repo;
         }
 
-        public async Task<CommandResponse> Handle(LogoutCommand request, CancellationToken cancellationToken)
+        public override string SuccessMessage => "Successfully logged out user";
+
+        public override async Task Run(LogoutCommand request, CancellationToken cancellation)
         {
-            return await CommandRunner.Run(request, async request=>
-            {
-                await _repo.Logout(request.UserId);
-            }, "Successfully logged out user");
+            await _repo.Logout(request.UserId);
         }
     }
 }
