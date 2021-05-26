@@ -12,7 +12,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class PostMessageHandler : IRequestHandler<PostMessageCommand, CommandResponse>
+    public class PostMessageHandler : PesCommand<PostMessageCommand>
     {
         private readonly IMessageRepo _repo;
         private readonly IUserRepo _userRepo;
@@ -24,13 +24,13 @@ namespace Application.CQRS.Commands
             _userRepo = userRepo;
             _sender = sender;
         }
-        public async Task<CommandResponse> Handle(PostMessageCommand request, CancellationToken cancellationToken)
+
+        public override string SuccessMessage => "Success";
+
+        public override async Task Run(PostMessageCommand request, CancellationToken token)
         {
-            return await CommandRunner.Run(request, async request =>
-            {
-                await _repo.AddMessageToChat(request.Message, request.ChatId, request.UserId);
-                await SendUpdateMessage(request);
-            }, "Success");
+            await _repo.AddMessageToChat(request.Message, request.ChatId, request.UserId);
+            await SendUpdateMessage(request);
         }
 
         private async Task SendUpdateMessage(PostMessageCommand request)
