@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class AddUserToChatHandler : IRequestHandler<AddUserToChatCommand, CommandResponse>
+    public class AddUserToChatHandler : PesCommand<AddUserToChatCommand>
     {
         private readonly IUserRepo _userRepo;
         private readonly IMessageSender _sender;
@@ -23,14 +23,13 @@ namespace Application.CQRS.Commands
             _sender = sender;
             _membersService = membersService;
         }
-        public async Task<CommandResponse> Handle(AddUserToChatCommand request, CancellationToken cancellationToken)
+
+        public override string SuccessMessage => "Succesfully added user to chat";
+
+        public override async Task Run(AddUserToChatCommand request, CancellationToken token)
         {
-            var response = await CommandRunner.Run(request, async (request) =>
-            {
-                await _membersService.AddUser(request.ChatId, request.UserId, request.Password);
-                await SendUpdateMessage(request);
-            }, "Succesfully added user to chat");
-            return response;
+            await _membersService.AddUser(request.ChatId, request.UserId, request.Password);
+            await SendUpdateMessage(request);
         }
 
         private async Task SendUpdateMessage(AddUserToChatCommand request)

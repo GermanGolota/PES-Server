@@ -13,7 +13,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class PromoteUserHandler : IRequestHandler<PromoteUserCommand, CommandResponse>
+    public class PromoteUserHandler : PesCommand<PromoteUserCommand>
     {
         private readonly IUserRepo _userRepo;
         private readonly IMessageSender _sender;
@@ -25,20 +25,22 @@ namespace Application.CQRS.Commands
             _sender = sender;
             _membersService = membersService;
         }
-        public async Task<CommandResponse> Handle(PromoteUserCommand request, CancellationToken cancellationToken)
-        {
-            CommandResponse response = await CommandRunner.Run(request, async(request) =>
-            {
-                await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
-                await SendUpdateMessage(request);
-            }, $"Successfully promoted user {request.UserId} in chat {request.ChatId}",
-            async (request) =>
-            {
-                List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
 
-                return admins.Contains(request.RequesterId);
-            });
-            return response;
+        private string _successMessage;
+        public override string SuccessMessage => _successMessage;
+
+        public override async Task<bool> Authorize(PromoteUserCommand request, CancellationToken token)
+        {
+            List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
+
+            return admins.Contains(request.RequesterId);
+        }
+
+        public override async Task Run(PromoteUserCommand request, CancellationToken token)
+        {
+            await _membersService.PromoteToAdmin(request.ChatId, request.UserId);
+            await SendUpdateMessage(request);
+            _successMessage = $"Successfully promoted user {request.UserId} in chat {request.ChatId}";
         }
 
         private async Task SendUpdateMessage(PromoteUserCommand request)

@@ -13,7 +13,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class KickUserHandler : IRequestHandler<KickUserCommand, CommandResponse>
+    public class KickUserHandler : PesCommand<KickUserCommand>
     {
         private readonly IUserRepo _userRepo;
         private readonly IMessageSender _sender;
@@ -26,20 +26,20 @@ namespace Application.CQRS.Commands
             _membersService = membersService;
         }
 
-        public async Task<CommandResponse> Handle(KickUserCommand request, CancellationToken cancellationToken)
+        private string _successMessage;
+        public override string SuccessMessage => _successMessage;
+
+        public override async Task<bool> Authorize(KickUserCommand request, CancellationToken token)
         {
-            var response = await CommandRunner.Run(request, async(request) =>
-            {
-                await _membersService.Kick(request.ChatId, request.UserId);
-                await SendUpdateMessage(request);
-            }, 
-            $"Successfully kicked user {request.UserId} in chat {request.ChatId}",
-            async (request) =>
-            {
-                List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
-                return admins.Contains(request.RequesterId) && admins.NotContains(request.UserId);
-            });
-            return response;
+            List<Guid> admins = await _membersService.GetAdminsOfChat(request.ChatId);
+            return admins.Contains(request.RequesterId) && admins.NotContains(request.UserId);
+        }
+
+        public override async Task Run(KickUserCommand request, CancellationToken token)
+        {
+            await _membersService.Kick(request.ChatId, request.UserId);
+            await SendUpdateMessage(request);
+            _successMessage = $"Successfully kicked user {request.UserId} in chat {request.ChatId}";
         }
 
         private async Task SendUpdateMessage(KickUserCommand request)

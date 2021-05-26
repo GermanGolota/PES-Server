@@ -11,7 +11,7 @@ using Application.Contracts.Service;
 
 namespace Application.CQRS.Commands
 {
-    class LeaveChatHandler : IRequestHandler<LeaveChatCommand, CommandResponse>
+    class LeaveChatHandler : PesCommand<LeaveChatCommand>
     {
         private readonly IChatMembersService _membersService;
         private readonly IMessageSender _sender;
@@ -24,15 +24,14 @@ namespace Application.CQRS.Commands
             _userRepo = userRepo;
         }
 
-        public async Task<CommandResponse> Handle(LeaveChatCommand request,
-            CancellationToken cancellationToken)
+        private string _successMessage;
+        public override string SuccessMessage => _successMessage;
+
+        public override async Task Run(LeaveChatCommand request, CancellationToken token)
         {
-            CommandResponse response = await CommandRunner.Run(request, async(request) =>
-            {
-                await _membersService.RemoveUserFromChat(request.ChatId, request.UserId);
-                await SendUpdateMessage(request);
-            }, $"Sucessfully left chat {request.ChatId}");
-            return response;
+            await _membersService.RemoveUserFromChat(request.ChatId, request.UserId);
+            await SendUpdateMessage(request);
+            _successMessage = $"Sucessfully left chat {request.ChatId}";
         }
 
         private async Task SendUpdateMessage(LeaveChatCommand request)
