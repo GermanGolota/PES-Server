@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Application.CQRS.Commands
 {
-    public class UpdateCredentialsHandler : IRequestHandler<UpdateCredentialsCommand, CommandResponse>
+    public class UpdateCredentialsHandler : PesCommand<UpdateCredentialsCommand>
     {
         private readonly IUserRepo _repo;
 
@@ -19,13 +19,11 @@ namespace Application.CQRS.Commands
             _repo = repo;
         }
 
-        public async Task<CommandResponse> Handle(UpdateCredentialsCommand request, CancellationToken cancellationToken)
-        {
-            return await CommandRunner.Run(request, async request =>
-             {
-                 await _repo.UpdateCredentials(request.UserId, request.Username, request.Password, request.PesKey);
-             }, "Successfully updated credentials");
+        public override string SuccessMessage => "Successfully updated credentials";
 
+        public override async Task Run(UpdateCredentialsCommand request, CancellationToken token)
+        {
+            await _repo.UpdateCredentials(request.UserId, request.Username, request.Password, request.PesKey);
         }
     }
 }
