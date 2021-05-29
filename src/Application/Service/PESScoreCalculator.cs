@@ -32,7 +32,7 @@ namespace Application.PesScore
 
                 if (total != 0)
                 {
-                    result = 100 * (int)(matches / total);
+                    result = (int)(100 * matches / total);
                 }
 
             }
