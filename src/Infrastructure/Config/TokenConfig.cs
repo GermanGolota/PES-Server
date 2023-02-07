@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Infrastructure.Config;
 
-namespace Infrastructure.Config
+public class TokenConfig
 {
-    public class TokenConfig
-    {
-        public string EncryptionKey { get; set; }
-    }
+    public string EncryptionKey { get; set; }
 }

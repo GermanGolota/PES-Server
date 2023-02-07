@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Application.Contracts;
 
-namespace Application.Contracts
+public interface IPesScoreConfig
 {
-    public interface IPesScoreConfig
-    {
-        string GetTitleForScore(int pesScore);
-    }
+    string GetTitleForScore(int pesScore);
 }

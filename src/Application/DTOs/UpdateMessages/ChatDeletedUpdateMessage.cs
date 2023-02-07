@@ -1,7 +1,6 @@
-﻿namespace Application.DTOs.UpdateMessages
+﻿namespace Application.DTOs.UpdateMessages;
+
+public class ChatDeletedUpdateMessage : UpdateMessageBase
 {
-    public class ChatDeletedUpdateMessage : UpdateMessageBase
-    {
-        public string Username { get; set; }
-    }
+    public string Username { get; set; }
 }

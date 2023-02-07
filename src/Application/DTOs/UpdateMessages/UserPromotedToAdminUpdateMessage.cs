@@ -1,7 +1,6 @@
-﻿namespace Application.DTOs.UpdateMessages
+﻿namespace Application.DTOs.UpdateMessages;
+
+public class UserPromotedToAdminUpdateMessage : UpdateMessageBase
 {
-    public class UserPromotedToAdminUpdateMessage : UpdateMessageBase
-    {
-        public string Username { get; set; }
-    }
+    public string Username { get; set; }
 }

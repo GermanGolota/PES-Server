@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebAPI.RequestModels
+namespace WebAPI.RequestModels;
+
+public class CreateChatRequest
 {
-    public class CreateChatRequest
-    {
-        [Required]
-        public string ChatName { get; set; }
-        public string ChatPassword { get; set; }
-        public bool IsMultiMessage { get; set; }
-    }
+    [Required] public string ChatName { get; set; }
+
+    public string ChatPassword { get; set; }
+    public bool IsMultiMessage { get; set; }
 }

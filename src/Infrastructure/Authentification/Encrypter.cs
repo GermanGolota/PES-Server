@@ -1,27 +1,25 @@
-﻿using Infrastructure.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Contracts;
 
-namespace Infrastructure.Authentication
+namespace Infrastructure.Authentication;
+
+public class Encrypter : IEncrypter
 {
-    public class Encrypter : IEncrypter
-    {
-        private readonly HashAlgorithm _algorithm;
+    private readonly HashAlgorithm _algorithm;
 
-        public Encrypter(HashAlgorithm algorithm)
-        {
-            this._algorithm = algorithm;
-        }
-        public Task<string> Encrypt(string ToBeEncrypt)
-        {
-            var bytes = Encoding.UTF8.GetBytes(ToBeEncrypt);
-            var hash = _algorithm.ComputeHash(bytes);
-            string output = Convert.ToBase64String(hash);
-            return Task.FromResult(output);
-        }
+    public Encrypter(HashAlgorithm algorithm)
+    {
+        _algorithm = algorithm;
+    }
+
+    public Task<string> Encrypt(string ToBeEncrypt)
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(ToBeEncrypt);
+        byte[] hash = _algorithm.ComputeHash(bytes);
+        string output = Convert.ToBase64String(hash);
+        return Task.FromResult(output);
     }
 }

@@ -1,31 +1,31 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts.Repositories;
 using Application.DTOs;
 using MediatR;
 
-namespace Application.CQRS.Queries
+namespace Application.CQRS.Queries;
+
+public class GetChatsHandler : IRequestHandler<GetChatsQuery, ChatsModel>
 {
-    public class GetChatsHandler : IRequestHandler<GetChatsQuery, ChatsModel>
+    private readonly IChatRepo _repo;
+
+    public GetChatsHandler(IChatRepo repo)
     {
-        private readonly IChatRepo _repo;
+        _repo = repo;
+    }
 
-        public GetChatsHandler(IChatRepo repo)
+    public async Task<ChatsModel> Handle(GetChatsQuery request, CancellationToken cancellationToken)
+    {
+        List<ChatInfoModel> chats = await _repo.GetChats(request.Options, request.UserId);
+
+        ChatsModel chatsModel = new()
         {
-            this._repo = repo;
-        }
-        public async Task<ChatsModel> Handle(GetChatsQuery request, CancellationToken cancellationToken)
-        {
-            var chats = await _repo.GetChats(request.Options, request.UserId);
+            Chats = chats,
+            ChatCount = chats.Count
+        };
 
-            ChatsModel chatsModel = new ChatsModel
-            {
-                Chats = chats,
-                ChatCount = chats.Count
-            };
-
-            return chatsModel;
-        }
+        return chatsModel;
     }
 }

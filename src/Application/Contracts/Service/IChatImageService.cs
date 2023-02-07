@@ -1,13 +1,11 @@
-﻿using Application.DTOs.Chat;
-using System;
-using System.IO;
+﻿using System;
 using System.Threading.Tasks;
+using Application.DTOs.Chat;
 
-namespace Application.Contracts.Service
+namespace Application.Contracts.Service;
+
+public interface IChatImageService
 {
-    public interface IChatImageService
-    {
-        string GetRelativeImageLocation(Guid chatId);
-        Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request);
-    }
+    string GetRelativeImageLocation(Guid chatId);
+    Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request);
 }

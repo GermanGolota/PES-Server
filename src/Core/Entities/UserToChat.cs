@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.Entities
+namespace Core.Entities;
+
+public class UserToChat
 {
-    public class UserToChat
-    {
-        public Guid UserId { get; set; }
-        public Guid ChatId { get; set; }
-        public Role Role { get; set; }
-    }
+    public Guid UserId { get; set; }
+    public Guid ChatId { get; set; }
+    public Role Role { get; set; }
+}
 
-    public enum Role
-    {
-        User = 1,
-        Admin = 3,
-        Creator = 5
-    }
+public enum Role
+{
+    User = 1,
+    Admin = 3,
+    Creator = 5
 }

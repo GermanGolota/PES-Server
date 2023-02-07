@@ -1,76 +1,78 @@
-﻿namespace Application.DTOs.UpdateMessages
+﻿namespace Application.DTOs.UpdateMessages;
+
+public static class UpdateMessageFactory
 {
-    public static class UpdateMessageFactory
+    public static MessageCreationUpdateMessage CreateMessageCreatedUpdate(string username, string text)
     {
-        public static MessageCreationUpdateMessage CreateMessageCreatedUpdate(string username, string text)
+        return new MessageCreationUpdateMessage
         {
-            return new MessageCreationUpdateMessage
-            {
-                ActionType = "messageCreation",
-                Text = text,
-                Username = username
-            };
-        }
+            ActionType = "messageCreation",
+            Text = text,
+            Username = username
+        };
+    }
 
-        public static MessageDeletionUpdateMessage CreateMessageDeletedUpdate(string username)
+    public static MessageDeletionUpdateMessage CreateMessageDeletedUpdate(string username)
+    {
+        return new MessageDeletionUpdateMessage
         {
-            return new MessageDeletionUpdateMessage
-            {
-                ActionType = "messageDeletion",
-                Username = username
-            };
-        }
-        public static MessageEditUpdateMessage CreateMessageEditedUpdate(string username, string newText)
-        {
-            return new MessageEditUpdateMessage
-            {
-                ActionType = "messageEdit",
-                Username = username,
-                NewText = newText
-            };
-        }
-        public static UserJoinedChatUpdateMessage CreateUserJoinedUpdate(string username)
-        {
-            return new UserJoinedChatUpdateMessage
-            {
-                ActionType = "userJoinedChat",
-                Username = username,
-            };
-        }
-        public static UserLeftChatUpdateMessage CreateUserLeftUpdate(string username)
-        {
-            return new UserLeftChatUpdateMessage
-            {
-                ActionType = "userJoinedChat",
-                Username = username,
-            };
-        }
+            ActionType = "messageDeletion",
+            Username = username
+        };
+    }
 
-        public static UserPromotedToAdminUpdateMessage CreateUserPromotedUpdate(string username)
+    public static MessageEditUpdateMessage CreateMessageEditedUpdate(string username, string newText)
+    {
+        return new MessageEditUpdateMessage
         {
-            return new UserPromotedToAdminUpdateMessage
-            {
-                ActionType = "userPromotedToAdmin",
-                Username = username
-            };
-        }
+            ActionType = "messageEdit",
+            Username = username,
+            NewText = newText
+        };
+    }
 
-        public static UserKickedUpdateMessage CreateUserKickedUpdate(string username)
+    public static UserJoinedChatUpdateMessage CreateUserJoinedUpdate(string username)
+    {
+        return new UserJoinedChatUpdateMessage
         {
-            return new UserKickedUpdateMessage
-            {
-                ActionType = "userKicked",
-                Username = username
-            };
-        }
+            ActionType = "userJoinedChat",
+            Username = username
+        };
+    }
 
-        public static ChatDeletedUpdateMessage CreateChatDeletedMessage(string username)
+    public static UserLeftChatUpdateMessage CreateUserLeftUpdate(string username)
+    {
+        return new UserLeftChatUpdateMessage
         {
-            return new ChatDeletedUpdateMessage
-            {
-                ActionType = "chatDeleted",
-                Username = username
-            };
-        }
+            ActionType = "userJoinedChat",
+            Username = username
+        };
+    }
+
+    public static UserPromotedToAdminUpdateMessage CreateUserPromotedUpdate(string username)
+    {
+        return new UserPromotedToAdminUpdateMessage
+        {
+            ActionType = "userPromotedToAdmin",
+            Username = username
+        };
+    }
+
+    public static UserKickedUpdateMessage CreateUserKickedUpdate(string username)
+    {
+        return new UserKickedUpdateMessage
+        {
+            ActionType = "userKicked",
+            Username = username
+        };
+    }
+
+    public static ChatDeletedUpdateMessage CreateChatDeletedMessage(string username)
+    {
+        return new ChatDeletedUpdateMessage
+        {
+            ActionType = "chatDeleted",
+            Username = username
+        };
     }
 }

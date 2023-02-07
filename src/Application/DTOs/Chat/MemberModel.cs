@@ -1,8 +1,7 @@
-﻿namespace Application.DTOs.Chat
+﻿namespace Application.DTOs.Chat;
+
+public class MemberModel
 {
-    public class MemberModel
-    {
-        public string Username { get; set; }
-        public bool IsAdmin { get; set; }
-    }
+    public string Username { get; set; }
+    public bool IsAdmin { get; set; }
 }

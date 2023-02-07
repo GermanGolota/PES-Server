@@ -1,14 +1,11 @@
-﻿using Application.DTOs.Service;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using Application.DTOs.Service;
 
-namespace Application.Contracts
+namespace Application.Contracts;
+
+public interface IPesScoreService
 {
-    public interface IPesScoreService
-    {
-        Task<PesScoreModel> GetPesScoreFor(string username);
-        Task<PesScoreModel> GetPesScoreFor(Guid userId);
-    }
+    Task<PesScoreModel> GetPesScoreFor(string username);
+    Task<PesScoreModel> GetPesScoreFor(Guid userId);
 }

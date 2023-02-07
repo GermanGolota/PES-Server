@@ -1,8 +1,7 @@
-﻿namespace Application.DTOs
+﻿namespace Application.DTOs;
+
+public class EditMessageResponse
 {
-    public class EditMessageResponse
-    {
-        public bool SuccessfullyEdited { get; set; }
-        public string Message { get; set; }
-    }
+    public bool SuccessfullyEdited { get; set; }
+    public string Message { get; set; }
 }

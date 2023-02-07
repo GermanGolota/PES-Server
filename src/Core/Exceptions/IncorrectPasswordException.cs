@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Core.Exceptions;
 
-namespace Core.Exceptions
+public class IncorrectPasswordException : ExpectedException
 {
-    public class IncorrectPasswordException : ExpectedException
+    public IncorrectPasswordException() : base(ExceptionMessages.IncorrectPassword)
     {
-        public IncorrectPasswordException():base(ExceptionMessages.IncorrectPassword)
-        {
-
-        }
     }
 }

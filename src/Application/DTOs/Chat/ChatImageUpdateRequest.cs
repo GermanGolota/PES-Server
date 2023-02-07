@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 
-namespace Application.DTOs.Chat
+namespace Application.DTOs.Chat;
+
+public class ChatImageUpdateRequest
 {
-    public class ChatImageUpdateRequest
-    {
-        public Stream ImageStream { get; set; }
-        public string FileExtension { get; set; }
-    }
+    public Stream ImageStream { get; set; }
+    public string FileExtension { get; set; }
 }

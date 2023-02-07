@@ -1,153 +1,138 @@
-﻿using Application.Contracts.Service;
-using Application.DTOs.Chat;
-using Core.Exceptions;
-using Microsoft.AspNetCore.Hosting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Application.Contracts.Service;
+using Application.DTOs.Chat;
+using Core.Exceptions;
+using Microsoft.AspNetCore.Hosting;
 
-namespace WebAPI.Services
+namespace WebAPI.Services;
+
+public class ChatImageService : IChatImageService
 {
-    public class ChatImageService : IChatImageService
+    private const string IMAGES_FOLDER_NAME = "ChatImages";
+    private const string IMAGE_FILE_NAME = "image";
+    private static readonly List<string> _supportedExtensions = new() { "png", "jpg", "jpeg", "gif" };
+
+    private readonly IWebHostEnvironment _webHost;
+
+    public ChatImageService(IWebHostEnvironment webHost)
     {
-        private const string IMAGES_FOLDER_NAME = "ChatImages";
-        private const string IMAGE_FILE_NAME = "image";
-        private static readonly List<string> _supportedExtensions = new List<string> { "png", "jpg", "jpeg", "gif" };
+        _webHost = webHost;
+    }
 
-        private readonly IWebHostEnvironment _webHost;
-
-        public ChatImageService(IWebHostEnvironment webHost)
+    public string GetRelativeImageLocation(Guid chatId)
+    {
+        string root = GetBaseImagesLocation();
+        string directoryLocation = Path.Combine(root, chatId.ToString());
+        string result;
+        if (Directory.Exists(directoryLocation))
         {
-            _webHost = webHost;
-        }
-
-        private string GetBaseImagesLocation()
-        {
-            return Path.Combine(_webHost.WebRootPath, IMAGES_FOLDER_NAME);
-        }
-
-        public string GetRelativeImageLocation(Guid chatId)
-        {
-            var root = GetBaseImagesLocation();
-            var directoryLocation = Path.Combine(root, chatId.ToString());
-            string result;
-            if (Directory.Exists(directoryLocation))
-            {
-                var fileName = GetImageFileName(directoryLocation);
-                if (String.IsNullOrEmpty(fileName))
-                {
-                    result = GetRelativeDefaultImageLocation();
-                }
-                else
-                {
-                    result = $"/{IMAGES_FOLDER_NAME}/{chatId}/{fileName}";
-                }
-            }
-            else
-            {
+            string fileName = GetImageFileName(directoryLocation);
+            if (string.IsNullOrEmpty(fileName))
                 result = GetRelativeDefaultImageLocation();
-            }
-            return result;
+            else
+                result = $"/{IMAGES_FOLDER_NAME}/{chatId}/{fileName}";
+        }
+        else
+        {
+            result = GetRelativeDefaultImageLocation();
         }
 
-        private string GetAbsoluteImageLocation(Guid chatId)
+        return result;
+    }
+
+    public async Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request)
+    {
+        if (_supportedExtensions.Contains(request.FileExtension))
         {
-            var root = GetBaseImagesLocation();
-            var directoryLocation = Path.Combine(root, chatId.ToString());
-            string result;
-            if (Directory.Exists(directoryLocation))
+            string folderLocation = Path.Combine(GetBaseImagesLocation(), chatId.ToString());
+            CreateDirectoryIfNotExist(folderLocation);
+            string imageLocation = Path.Combine(folderLocation, $"{IMAGE_FILE_NAME}.{request.FileExtension}");
+            DeleteChatImage(chatId, imageLocation);
+
+            using (FileStream image = new(imageLocation, FileMode.Create))
             {
-                var fileName = GetImageFileName(directoryLocation);
-                if (String.IsNullOrEmpty(fileName))
-                {
-                    result = GetAbsoluteDefaultImageLocation();
-                }
-                else
-                {
-                    result = Path.Combine(root, chatId.ToString(), fileName);
-                }
+                await request.ImageStream.CopyToAsync(image);
             }
-            else
-            {
+        }
+        else
+        {
+            throw new ExpectedException(ExceptionMessages.UnsupportedFileFormat);
+        }
+    }
+
+    private string GetBaseImagesLocation()
+    {
+        return Path.Combine(_webHost.WebRootPath, IMAGES_FOLDER_NAME);
+    }
+
+    private string GetAbsoluteImageLocation(Guid chatId)
+    {
+        string root = GetBaseImagesLocation();
+        string directoryLocation = Path.Combine(root, chatId.ToString());
+        string result;
+        if (Directory.Exists(directoryLocation))
+        {
+            string fileName = GetImageFileName(directoryLocation);
+            if (string.IsNullOrEmpty(fileName))
                 result = GetAbsoluteDefaultImageLocation();
-            }
-            return result;
-        }
-
-        private string GetImageFileName(string directoryLocation)
-        {
-            string result = "";
-            var imageDirectory = new DirectoryInfo(directoryLocation);
-            var images = imageDirectory.GetFiles();
-            foreach (var image in images)
-            {
-                string name = Path.GetFileNameWithoutExtension(image.Name);
-                if (name.Equals("image"))
-                {
-                    result = image.Name;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        private string GetRelativeDefaultImageLocation()
-        {
-            return $"/{IMAGES_FOLDER_NAME}/default.png";
-        }
-
-        private string GetAbsoluteDefaultImageLocation()
-        {
-            return Path.Combine(GetBaseImagesLocation(), "default.png");
-        }
-
-        public async Task UpdateChatsImage(Guid chatId, ChatImageUpdateRequest request)
-        {
-            if (_supportedExtensions.Contains(request.FileExtension))
-            {
-                var folderLocation = Path.Combine(GetBaseImagesLocation(), chatId.ToString());
-                CreateDirectoryIfNotExist(folderLocation);
-                var imageLocation = Path.Combine(folderLocation, $"{IMAGE_FILE_NAME}.{request.FileExtension}");
-                DeleteChatImage(chatId, imageLocation);
-
-                using (FileStream image = new FileStream(imageLocation, FileMode.Create))
-                {
-                    await request.ImageStream.CopyToAsync(image);
-                }
-            }
             else
-            {
-                throw new ExpectedException(ExceptionMessages.UnsupportedFileFormat);
-            }
+                result = Path.Combine(root, chatId.ToString(), fileName);
         }
-
-        private void DeleteChatImage(Guid chatId, string imageLocation)
+        else
         {
-            DeleteFileIfExists(imageLocation);
-
-            var chatImage = GetAbsoluteImageLocation(chatId);
-            var defaultImage = GetAbsoluteDefaultImageLocation();
-            if (chatImage != defaultImage)
-            {
-                DeleteFileIfExists(chatImage);
-            }
+            result = GetAbsoluteDefaultImageLocation();
         }
 
-        private void DeleteFileIfExists(string location)
+        return result;
+    }
+
+    private string GetImageFileName(string directoryLocation)
+    {
+        string result = "";
+        DirectoryInfo imageDirectory = new DirectoryInfo(directoryLocation);
+        FileInfo[] images = imageDirectory.GetFiles();
+        foreach (FileInfo image in images)
         {
-            if (File.Exists(location))
+            string name = Path.GetFileNameWithoutExtension(image.Name);
+            if (name.Equals("image"))
             {
-                File.Delete(location);
+                result = image.Name;
+                break;
             }
         }
 
-        private void CreateDirectoryIfNotExist(string location)
-        {
-            if (!Directory.Exists(location))
-            {
-                Directory.CreateDirectory(location);
-            }
-        }
+        return result;
+    }
+
+    private string GetRelativeDefaultImageLocation()
+    {
+        return $"/{IMAGES_FOLDER_NAME}/default.png";
+    }
+
+    private string GetAbsoluteDefaultImageLocation()
+    {
+        return Path.Combine(GetBaseImagesLocation(), "default.png");
+    }
+
+    private void DeleteChatImage(Guid chatId, string imageLocation)
+    {
+        DeleteFileIfExists(imageLocation);
+
+        string chatImage = GetAbsoluteImageLocation(chatId);
+        string defaultImage = GetAbsoluteDefaultImageLocation();
+        if (chatImage != defaultImage) DeleteFileIfExists(chatImage);
+    }
+
+    private void DeleteFileIfExists(string location)
+    {
+        if (File.Exists(location)) File.Delete(location);
+    }
+
+    private void CreateDirectoryIfNotExist(string location)
+    {
+        if (!Directory.Exists(location)) Directory.CreateDirectory(location);
     }
 }

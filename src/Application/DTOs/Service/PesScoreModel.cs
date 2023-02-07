@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Application.DTOs.Service
+namespace Application.DTOs.Service;
+
+public class PesScoreModel
 {
-    public class PesScoreModel
-    {
-        public List<string> Messages { get; set; }
-        public string PesKey { get; set; }
-    }
+    public List<string> Messages { get; set; }
+    public string PesKey { get; set; }
 }

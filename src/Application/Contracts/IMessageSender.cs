@@ -1,12 +1,10 @@
-﻿using Application.DTOs.UpdateMessages;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Application.DTOs.UpdateMessages;
 
+namespace Application.Contracts;
 
-namespace Application.Contracts
+public interface IMessageSender
 {
-    public interface IMessageSender
-    {
-        Task SendMessageToSocket(UpdateMessageBase message, Guid chatId);
-    }
+    Task SendMessageToSocket(UpdateMessageBase message, Guid chatId);
 }

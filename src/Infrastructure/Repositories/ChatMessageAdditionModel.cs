@@ -1,8 +1,7 @@
-﻿namespace Infrastructure.Repositories
+﻿namespace Infrastructure.Repositories;
+
+public class ChatMessageAdditionModel
 {
-    public class ChatMessageAdditionModel
-    {
-        public bool IsMultiMessage { get; set; }
-        public int UserMessagesCount { get; set; }
-    }
+    public bool IsMultiMessage { get; set; }
+    public int UserMessagesCount { get; set; }
 }

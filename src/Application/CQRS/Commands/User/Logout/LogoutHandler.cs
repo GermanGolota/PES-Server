@@ -1,29 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Contracts.Repositories;
-using Application.DTOs;
-using Core.Exceptions;
-using MediatR;
 
-namespace Application.CQRS.Commands.User.Logout
+namespace Application.CQRS.Commands.User.Logout;
+
+public class LogoutHandler : PesCommand<LogoutCommand>
 {
-    public class LogoutHandler : PesCommand<LogoutCommand>
+    private readonly IUserRepo _repo;
+
+    public LogoutHandler(IUserRepo repo)
     {
-        private readonly IUserRepo _repo;
+        _repo = repo;
+    }
 
-        public LogoutHandler(IUserRepo repo)
-        {
-            _repo = repo;
-        }
+    public override string SuccessMessage => "Successfully logged out user";
 
-        public override string SuccessMessage => "Successfully logged out user";
-
-        public override async Task Run(LogoutCommand request, CancellationToken cancellation)
-        {
-            await _repo.Logout(request.UserId);
-        }
+    public override async Task Run(LogoutCommand request, CancellationToken cancellation)
+    {
+        await _repo.Logout(request.UserId);
     }
 }

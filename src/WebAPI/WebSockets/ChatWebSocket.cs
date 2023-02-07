@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Net.WebSockets;
 
-namespace WebAPI.WebSockets
+namespace WebAPI.WebSockets;
+
+public class ChatWebSocket
 {
-    public class ChatWebSocket
-    {
-        public Guid ChatId { get; set; }
-        public WebSocket Client{ get; set; }
-    }
+    public Guid ChatId { get; set; }
+    public WebSocket Client { get; set; }
 }
