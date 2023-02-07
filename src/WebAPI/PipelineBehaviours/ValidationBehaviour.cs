@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,7 +17,8 @@ namespace WebAPI.PipelineBehaviours
             _validators = validators;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
         {
             var context = new ValidationContext<TRequest>(request);
             var failures = _validators
