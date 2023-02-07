@@ -1,5 +1,5 @@
 #Get SDK
-FROM mcr.microsoft.com/dotnet/sdk:5.0 as build-env 
+FROM mcr.microsoft.com/dotnet/sdk:7.0 as build-env 
 WORKDIR /src
 #Copy API project
 COPY WebAPI/WebAPI.csproj API/
@@ -16,7 +16,7 @@ RUN dotnet build API/WebAPI.csproj
 #Publish
 RUN dotnet publish -c Release API/WebAPI.csproj -o out
 #Generate runtime image
-FROM mcr.microsoft.com/dotnet/sdk:5.0
+FROM mcr.microsoft.com/dotnet/sdk:7.0
 WORKDIR /src
 ENV ASPNETCORE_ENVIROMENT=Production
 EXPOSE 5001
