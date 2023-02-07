@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace WebAPI.WebSockets
+namespace WebAPI.WebSockets;
+
+public class WebsocketConnectionMessage
 {
-    public class WebsocketConnectionMessage
-    {
-        public Guid ChatId { get; set; }
-    }
+    public Guid ChatId { get; set; }
 }

@@ -1,15 +1,14 @@
-﻿using Application.DTOs.Chat;
-using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Application.DTOs.Chat;
+using MediatR;
 
-namespace Application.CQRS.Queries
+namespace Application.CQRS.Queries;
+
+public class GetChatMembersAdminQuery : IRequest<List<ChatMemberModelAdmin>>
 {
-    public class GetChatMembersAdminQuery : IRequest<List<ChatMemberModelAdmin>>
-    {
-        public Guid ChatId { get; set; }
-        //user, who asks for members
-        public Guid UserId { get; set; }
-    }
+    public Guid ChatId { get; set; }
+
+    //user, who asks for members
+    public Guid UserId { get; set; }
 }

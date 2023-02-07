@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Application.DTOs.UpdateMessages
+namespace Application.DTOs.UpdateMessages;
+
+public class UpdateMessageBase
 {
-    public class UpdateMessageBase
-    {
-        [JsonProperty("typeAction")]
-        public string ActionType { get; set; }
-    }
+    [JsonProperty("typeAction")] public string ActionType { get; set; }
 }

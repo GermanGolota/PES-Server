@@ -1,26 +1,25 @@
-﻿namespace Application.DTOs
+﻿namespace Application.DTOs;
+
+public class CommandResponse
 {
-    public class CommandResponse
+    public bool Successfull { get; set; }
+    public string ResultMessage { get; set; }
+
+    public static CommandResponse CreateSuccessfull(string message)
     {
-        public bool Successfull { get; set; }
-        public string ResultMessage { get; set; }
-
-        public static CommandResponse CreateSuccessfull(string message)
+        return new CommandResponse
         {
-            return new CommandResponse
-            {
-                Successfull = true,
-                ResultMessage = message
-            };
-        }
+            Successfull = true,
+            ResultMessage = message
+        };
+    }
 
-        public static CommandResponse CreateUnsuccessfull(string message)
+    public static CommandResponse CreateUnsuccessfull(string message)
+    {
+        return new CommandResponse
         {
-            return new CommandResponse
-            {
-                Successfull = false,
-                ResultMessage = message
-            };
-        }
+            Successfull = false,
+            ResultMessage = message
+        };
     }
 }

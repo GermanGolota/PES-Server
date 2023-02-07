@@ -1,12 +1,8 @@
 ﻿using Application.DTOs.Service;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Application.Contracts
+namespace Application.Contracts;
+
+public interface IPesScoreCalculator
 {
-    public interface IPesScoreCalculator
-    {
-        int CalculateScore(PesScoreModel scoreModel);
-    }
+    int CalculateScore(PesScoreModel scoreModel);
 }

@@ -1,8 +1,7 @@
-﻿namespace Application.DTOs.UpdateMessages
+﻿namespace Application.DTOs.UpdateMessages;
+
+public class MessageEditUpdateMessage : UpdateMessageBase
 {
-    public class MessageEditUpdateMessage : UpdateMessageBase
-    {
-        public string Username { get; set; }
-        public string NewText { get; set; }
-    }
+    public string Username { get; set; }
+    public string NewText { get; set; }
 }

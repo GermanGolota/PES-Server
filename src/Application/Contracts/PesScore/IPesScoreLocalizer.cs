@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 
-namespace Application.Contracts.PesScore
+namespace Application.Contracts.PesScore;
+
+public interface IPesScoreLocalizer
 {
-    public interface IPesScoreLocalizer
-    {
-        string GetLocalizedNameFor(string pesScoreTitle, CultureInfo culture);
-    }
+    string GetLocalizedNameFor(string pesScoreTitle, CultureInfo culture);
 }

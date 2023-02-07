@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.Exceptions
+namespace Core.Exceptions;
+
+public class NoMessageException : Exception
 {
-    public class NoMessageException : Exception
+    public NoMessageException() : base(ExceptionMessages.NoMessage)
     {
-        public NoMessageException():base(ExceptionMessages.NoMessage)
-        {
-
-        }
     }
 }

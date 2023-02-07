@@ -1,12 +1,11 @@
-﻿using Application.DTOs.Response;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Application.DTOs.Response;
 
-namespace Application.Contracts
+namespace Application.Contracts;
+
+public interface IJWTokenManager
 {
-    public interface IJWTokenManager
-    {
-        Task<JWTokenModel> Authorize(string username, string password, CancellationToken cancellation);
-        Task<JWTokenModel> Refresh(string token, string refreshToken, CancellationToken cancellation);
-    }
+    Task<JWTokenModel> Authorize(string username, string password, CancellationToken cancellation);
+    Task<JWTokenModel> Refresh(string token, string refreshToken, CancellationToken cancellation);
 }

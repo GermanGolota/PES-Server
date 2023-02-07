@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Application.DTOs
+namespace Application.DTOs;
+
+public class ChatsModel
 {
-    public class ChatsModel
-    {
-        public List<ChatInfoModel> Chats { get; set; }
-        public int ChatCount { get; set; }
-    }
+    public List<ChatInfoModel> Chats { get; set; }
+    public int ChatCount { get; set; }
 }

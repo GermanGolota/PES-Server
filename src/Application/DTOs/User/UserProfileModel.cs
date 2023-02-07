@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Application.DTOs.User;
 
-namespace Application.DTOs.User
+public class UserProfileModel
 {
-    public class UserProfileModel
-    {
-        public string Username { get; set; }
-    }
+    public string Username { get; set; }
 }

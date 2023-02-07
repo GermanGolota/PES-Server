@@ -1,17 +1,12 @@
-﻿using Infrastructure.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Infrastructure.Contracts;
 
-namespace InfrastructureTests.Mocks
+namespace InfrastructureTests.Mocks;
+
+public class EncrypterMock : IEncrypter
 {
-    public class EncrypterMock : IEncrypter
+    public Task<string> Encrypt(string ToBeEncrypt)
     {
-        public Task<string> Encrypt(string ToBeEncrypt)
-        {
-            return Task.FromResult(ToBeEncrypt);
-        }
+        return Task.FromResult(ToBeEncrypt);
     }
 }
