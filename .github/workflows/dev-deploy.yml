@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_GROUP_ID: ${{ secrets.TELEGRAM_GROUP_ID }}
+
 jobs:
   build:
     runs-on: self-hosted
@@ -13,8 +17,48 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Send message to Telegram group
+        uses: appleboy/telegram-action@master
+        if: always()
+        with:
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_GROUP_ID }}
+          message: |
+            Backend is building...
+
       - name: Build Docker container
         run: |
           docker-compose -f src/docker-compose.yml build
+
+      - name: Send message to Telegram group
+        uses: appleboy/telegram-action@master
+        if: always()
+        with:
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_GROUP_ID }}
+          message: |
+            Backend has been build
+
+      - name: Start Docker container
+        id: start
+        run: |
           docker-compose -f src/docker-compose.yml down
           docker-compose -f src/docker-compose.yml up
+
+      - name: Send message to Telegram group
+        uses: appleboy/telegram-action@master
+        if: always()
+        with:
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_GROUP_ID }}
+          message: |
+            New version of backend has been deployed!!! ඞ
+
+      - name: Send message to Telegram group
+        uses: appleboy/telegram-action@master
+        if: steps.start.outcome != 'success'
+        with:
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_GROUP_ID }}
+          message: |
+            Backend deployment has failed!!! ඞඞඞ
