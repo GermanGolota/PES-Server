@@ -39,15 +39,27 @@ jobs:
           message: |
             Backend has been build
 
-      - name: Start Docker container
-        id: start
+      - name: Stop Docker container
         run: |
           docker-compose -f src/docker-compose.yml down
-          docker-compose -f src/docker-compose.yml up
 
       - name: Send message to Telegram group
         uses: appleboy/telegram-action@master
         if: always()
+        with:
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_GROUP_ID }}
+          message: |
+            Stopped old backend
+
+      - name: Stop Docker container
+        id: start
+        run: |
+          docker-compose -f src/docker-compose.yml up -d
+
+      - name: Send message to Telegram group
+        uses: appleboy/telegram-action@master
+        if: steps.start.outcome == 'success'
         with:
           token: ${{ env.TELEGRAM_BOT_TOKEN }}
           to: ${{ env.TELEGRAM_GROUP_ID }}
