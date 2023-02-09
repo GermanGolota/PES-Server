@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using WebAPI.Extensions;
 using WebAPI.Services;
 
@@ -56,7 +57,7 @@ public class Startup
     {
         app.UseRequestLocalization();
 
-        if (env.IsDevelopment())
+        if (env.IsDevelopment() || SwaggerIncluded(Configuration))
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PES WebAPI v1"));
@@ -77,5 +78,11 @@ public class Startup
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    }
+
+    private static bool SwaggerIncluded(IConfiguration configuration)
+    {
+        var value = configuration["SwaggerIncluded"];
+        return value is not null && Boolean.TryParse(value, out var config) && config;
     }
 }
