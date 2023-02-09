@@ -5,11 +5,11 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "scheduledb"
+      POSTGRES_DB: "PesDb"
     ports:
-      - "5432:5432"
+      - "1233:5432"
   api:
-    image: yaroslavholota/pes_api:latest
+    build: ./
     environment:
       Port: 5432
       User: postgres
@@ -17,9 +17,10 @@ services:
       Host: "postgresdb"
       DB: "PesDb"
       InitializeDb: "true"
+      SwaggerIncluded: "true"
     ports:
-      - "5000:5000"
-      - "5001:5001"
+      - "5000:443"
+      - "1234:80"
     depends_on:
       - "postgresdb"
     restart: unless-stopped

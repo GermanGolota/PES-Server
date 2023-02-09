@@ -1,26 +1,23 @@
-#Get SDK
-FROM mcr.microsoft.com/dotnet/sdk:7.0 as build-env 
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-#Copy API project
-COPY WebAPI/WebAPI.csproj API/
-#Restore nuget packages
-RUN dotnet restore API/WebAPI.csproj
-#Copy the rest of the files of API project
-COPY WebAPI/ API/
-#Copy dependent project
-COPY Core Core/
-COPY Infrastructure Infrastructure/
-COPY Application Application/
-#Build the project
-RUN dotnet build API/WebAPI.csproj
-#Publish
-RUN dotnet publish -c Release API/WebAPI.csproj -o out
-#Generate runtime image
-FROM mcr.microsoft.com/dotnet/sdk:7.0
-WORKDIR /src
-ENV ASPNETCORE_ENVIROMENT=Production
-EXPOSE 5001
-EXPOSE 5000
-ENV ASPNETCORE_URLS=http://+:5001;https://+:5000   
-COPY --from=build-env /src/out .
+COPY ["WebAPI/WebAPI.csproj", "WebAPI/"]
+COPY ["Application/Application.csproj", "Application/"]
+COPY ["Core/Core.csproj", "Core/"]
+COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+RUN dotnet restore "WebAPI/WebAPI.csproj"
+COPY . .
+WORKDIR "/src/WebAPI"
+RUN dotnet build "WebAPI.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "WebAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
